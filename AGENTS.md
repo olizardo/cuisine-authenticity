@@ -15,33 +15,57 @@
 
 ---
 
-## 2. Complete $4 \times 2 \times 2$ Nested Factorial Taxonomy & Model Fit
+## 2. Complete Factorial Taxonomy, Meta Models & Model Status
 
-Every model in the project is organized into a deterministic $4 \times 2 \times 2$ factorial space crossing 4 Domains $\times$ 2 Threshold Structures $\times$ 2 Random Effect Levels.
+Every model in the project is organized into a deterministic factorial taxonomy crossing 4 Substantive Domains $\times$ 2 Threshold Structures $\times$ 2 Random Effect Levels ($16$ cells), plus an **Omnibus Meta Domain** putting all mechanisms into simultaneous mutual adjustment.
 
 ### Systematic Naming Formula
 $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds}}$$
 
-* **`{domain}`:** `base` | `practices` | `dispositions` | `cosmopolitan`
+* **`{domain}`:** `base` (Cultural Capital) | `practices` | `dispositions` | `cosmopolitan` | `meta`
 * **`{threshold}`:** `strict` (Proportional Odds $\beta_k = \beta$) | `relaxed` (Category-Specific Transitions `cs()`)
 * **`{re}`:** `ri` (Random Intercepts Only) | `rs` (Crossed Random Slopes on Cuisines)
 
-### Consolidated WAIC Fit Table Across Completed Models
+### Complete Factorial Registry & Real-Time Status
 
-| Rank | Model Identifier | Specification | Cache File | WAIC | SE | $p_{\text{WAIC}}$ | $\Delta$ WAIC |
-|:---:|:---|:---|:---|:---:|:---:|:---:|:---:|
-| 1 | **Model 4 (Base Relaxed RS)** | Relaxed CS + Random Slopes | `hier_base_relaxed_rs.rds` | **54,961.97** | 244.84 | 1,217.7 | 0.00 |
-| 2 | **Model 3 (Base Strict RS)** | Strict + Random Slopes | `hier_base_strict_rs.rds` | **55,171.37** | 243.27 | 1,185.3 | +209.40 |
-| 3 | **Model 5 (Practices Strict RS)** | Dining Practices + Random Slopes | `hier_practices_strict_rs.rds` | **55,176.81** | 242.61 | 1,160.9 | +214.84 |
-| 4 | **Model 2 (Base Relaxed RI)** | Relaxed CS + Random Intercepts | `hier_base_relaxed_ri.rds` | **55,177.51** | 243.10 | 1,173.0 | +215.54 |
-| 5 | **Model 6 (Dispositions Strict RS)** | Taste Dispositions + Random Slopes | `hier_dispositions_strict_rs.rds` | **55,248.60** | 242.35 | 1,163.0 | +286.63 |
-| 6 | **Model 7 (Cosmo Strict RS)** | Cosmopolitanism + Random Slopes | `hier_cosmopolitan_strict_rs.rds` | **55,296.93** | 242.10 | 1,152.4 | +334.96 |
-| 7 | **Model 1 (Base Strict RI)** | Strict Baseline + Random Intercepts | `hier_base_strict_ri.rds` | **55,310.59** | 241.69 | 1,142.1 | +348.62 |
+| Domain | Specification | Threshold Constraint | Random Effects | Status & Location | Systematic File |
+|:---|:---|:---|:---|:---|:---|
+| **Base (Cultural Capital)** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_base_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_base_relaxed_ri.rds` |
+| | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_base_strict_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_base_relaxed_rs.rds` |
+| **Practices** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed on Hoffman2** | `hier_practices_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed on Hoffman2** | `hier_practices_relaxed_ri.rds` |
+| | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_practices_strict_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Running (Hoffman2, 65%)** | `hier_practices_relaxed_rs.rds` |
+| **Dispositions** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed on Hoffman2** | `hier_dispositions_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed on Hoffman2** | `hier_dispositions_relaxed_ri.rds` |
+| | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_dispositions_strict_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Running (Hoffman2, 80%)** | `hier_dispositions_relaxed_rs.rds` |
+| **Cosmopolitan** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Running (Hoffman2, Final Chain)** | `hier_cosmopolitan_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed on Hoffman2** | `hier_cosmopolitan_relaxed_ri.rds` |
+| | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_cosmopolitan_strict_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Running (Hoffman2, 70%)** | `hier_cosmopolitan_relaxed_rs.rds` |
+| **Omnibus Meta** | Meta Relaxed RI | Relaxed CS (All 14 Vars) | Random Intercepts | **Running (Hoffman2 Array 14512323 Task 1)** | `hier_meta_relaxed_ri.rds` |
+| | Meta-Meta Relaxed RS | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Running (Hoffman2 Array 14512323 Task 2)** | `hier_meta_relaxed_rs.rds` |
 
-*Full fit comparison cache: `cache/full_model_fit_comparison.rds` and `.csv`.*
+### Consolidated WAIC Fit Table (Completed Models)
+
+| Rank | Model Description | Domain | Relaxed (`cs`) | Random Slopes | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ |
+|:---:|:---|:---|:---:|:---:|:---|:---:|:---:|:---:|
+| 1 | **Relaxed CS + Random Slopes (Model 4)** | Cultural Capital | ✓ | ✓ | `hier_base_relaxed_rs.rds` | **54,961.97 (244.84)** | 1,217.9 | **-348.62** |
+| 2 | **Random Slopes Strict (Model 3)** | Cultural Capital | — | ✓ | `hier_base_strict_rs.rds` | **55,171.37 (243.27)** | 1,185.2 | **-139.22** |
+| 3 | **EXT-Practices Strict RS (Model 5)** | Dining Practices | — | ✓ | `hier_practices_strict_rs.rds` | **55,176.81 (242.61)** | 1,160.9 | **-133.78** |
+| 4 | **Relaxed CS (Model 2)** | Cultural Capital | ✓ | — | `hier_base_relaxed_ri.rds` | **55,177.51 (243.10)** | 1,173.3 | **-133.08** |
+| 5 | **EXT-Dispositions Strict RS (Model 6)** | Taste Dispositions | — | ✓ | `hier_dispositions_strict_rs.rds` | **55,248.60 (242.35)** | 1,162.9 | **-61.99** |
+| 6 | **EXT-Cosmopolitan Strict RS (Model 7)** | Cosmopolitan Capital | — | ✓ | `hier_cosmopolitan_strict_rs.rds` | **55,296.93 (242.10)** | 1,151.7 | **-13.66** |
+| 7 | **Baseline Strict (Model 1)** | Cultural Capital | — | — | `hier_base_strict_ri.rds` | **55,310.59 (241.69)** | 1,141.6 | **0.00** |
+
+*Consolidated WAIC cache: `cache/full_model_fit_comparison.rds` and `.csv`.*
 
 ### WAIC Computation Protocol
-* **Memory Safety:** Always compute WAIC with `cores = 1` sequentially in `add_criterion()`. Spawning multiple processes causes memory usage to exceed system limits ($N = 18,180 \times 4,000$ draws) leading to Linux OOM-killer termination.
+* **Cluster-Side Computation:** Compute WAIC directly on Hoffman2 via `scripts/submit_hoffman_waic.sh` and `scripts/compute_taxonomy_waic.R` using sequential 1-core execution with 16GB memory.
+* **Safety Protocol:** Models are automatically written to disk immediately after MCMC completion before WAIC extraction.
 * **Cluster Path Clearance:** Clear `m$file <- NULL` before calling `add_criterion()` to prevent write attempts to UCLA Hoffman2 paths.
 
 ---
