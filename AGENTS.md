@@ -1,156 +1,98 @@
-# Global Agent Guidelines
+# Global & Project Agent Guidelines
 
-**Location:** `~/.config/agents/AGENTS.md` (Update this file to persist lessons globally across all projects)
+**Global Location:** `~/.config/agents/AGENTS.md`  
+**Project:** Cuisine Authenticity and Taste (`cuisine-authenticity`)
 
-## General Coding Standards
-- Write concise, readable code with descriptive naming over short abbreviations.
-- Prefer functional paradigms and immutable data structures where practical.
-- Always include unit tests when introducing new utility functions or endpoints.
+---
 
-## Git & Workflow
-- Format all commit messages using Conventional Commits (`feat:`, `fix:`, `refactor:`).
-- Keep changes scoped to the prompt; do not refactor unrelated code.
+## 1. Cuisine Authenticity Project Architecture & Key Findings
 
-## Safety & Boundaries
-- Never commit hardcoded secrets, `.env` files, or private keys.
-- Always run the repository's test and lint suites before signaling task completion.
+### Analytical Framework
+* **Dependent Variable:** 7-point ordinal Likert scale evaluating whether the ideal preparation of a given cuisine is grounded in domestic tradition ($1 = \text{"traditional recipe prepared by an elder at home"}$) versus elite professional craftsmanship ($7 = \text{"developed recipe prepared by a professional chef at a high-end restaurant"}$), with $4$ as the neutral midpoint.
+* **Data Structure:** Stacked longitudinal panel of $N = 18,180$ ratings across $1,212$ unique respondents evaluating 15 distinct national and regional cuisines.
+* **Model Class:** Bayesian Adjacent Category Ordinal Regression (`family = acat("logit")`) with crossed random intercepts and random slopes for respondents and cuisines (`(1 | respondent_id) + (1 + ... | cuisine)`).
 
-## Quarto & Reporting Standards
-- When rendering a Quarto document via the `bash` tool, be hyper-aware that rendering artifacts might trigger ghost file creation if Quarto writes to directories that are currently open in the editor or currently being crawled by background tasks.
-- If using `<REPORT>` tags provided by the `report` skill, **do not manually duplicate** the `.qmd` file creation. The `<REPORT>` tags automatically serialize to disk. Mixing `cat > file.qmd` with `<REPORT>` output will create duplicate files (e.g. `file-1.qmd`) that break the `quarto render` logic.
-- Avoid using `size` in `ggplot2` for line layers (`geom_line`, `geom_segment`, `geom_errorbar`); always use the modernized `linewidth` aesthetic to prevent deprecation warnings from cluttering the render logs.
-- When applying robust standard errors to multi-state categorical models (like `nnet::multinom`), `lmtest::coeftest` struggles to return the structure. Manually extract the `vcovCL` diagonals and calculate the Z-scores and P-values via matrix arithmetic to ensure stable dataframe conversion.
+### Six Model Configurations & WAIC Performance
+1. **Model 1: Baseline Strict** (`cache/hier_1_baseline.rds`): $\text{WAIC} = 55,310.59$ ($\Delta = +1,878.0$).
+2. **Model 2: Relaxed CS** (`cache/hier_2_relaxed.rds`): Category-specific transition slopes. $\text{WAIC} = 55,177.51$.
+3. **Model 3: Random Slopes Strict** (`cache/hier_3_rs.rds`): Cuisine random slopes on location. $\text{WAIC} = 55,171.37$.
+4. **Model 4: Variance Strict** (`cache/hier_4_var.rds`): Location-scale model with discrimination submodel (`disc`). $\text{WAIC} = 53,653.40$.
+5. **Model 5: Variance + Random Slopes** (`cache/hier_5_var_rs.rds`): Full location-scale model with random slopes on both location and discrimination. **Top-performing model overall ($\text{WAIC} = 53,432.63$)**.
+6. **Model 6: Relaxed CS + Random Slopes** (`cache/hier_6_relaxed_rs.rds`): Category-specific threshold transitions + cuisine random slopes. **Top non-distributional model ($\text{WAIC} = 54,961.97$)**.
 
-## Supercomputing & HPC Integration (UCLA Hoffman2)
-The local machine is fully configured to deploy computationally intensive R jobs (e.g., Bayesian mixture models, large simulations) to the **UCLA Hoffman2 Cluster**.
+### Key Empirical Takeaways
+* **Global Demographic Fixed Effects (Model 6)**:
+  - *Credibly Pro-Chef*: Social Conservatism ($+0.19$, $P(\beta > 0) = 100\%$) and Education ($+0.12$, $P(\beta > 0) = 100\%$).
+  - *Credibly Domestic Elder*: Mixed-Race White ($-0.28$, $P(\beta < 0) = 99.8\%$), Women ($-0.18$, $P(\beta < 0) = 99.9\%$), and older Age ($-0.06$, $P(\beta < 0) = 97.0\%$).
+* **Baseline Cuisine Orientations (Model 5 Random Intercepts)**:
+  - *Credibly Elder*: Native American ($-1.87$), Mexican ($-1.33$), Nigerian ($-1.12$), Jamaican ($-1.10$), Ethiopian ($-0.82$), Pakistani ($-0.77$), Italian ($-0.70$), Moroccan ($-0.56$), Lebanese ($-0.56$).
+  - *Credibly Pro-Chef*: French ($+3.06$) and Japanese ($+0.72$).
+* **2D Consensus vs. Orientation Space**:
+  - *Elder Consensus (High Agreement)*: Ethiopian, Pakistani, Lebanese, Nigerian, Peruvian, Moroccan, Vietnamese, Jamaican.
+  - *Elder Contested (High Disagreement)*: Native American, Mexican, Italian, Korean.
+  - *Chef Contested (High Disagreement)*: French, Japanese, Swedish.
+* **Consensus/Dispersion Predictors (Discrimination Submodel)**:
+  - Social Conservatism ($-0.30$, $P < 0 = 100\%$) and Education ($-0.09$, $P < 0 = 99.6\%$) credibly decrease consensus (increase dispersion/contestation).
+  - Economic Conservatism ($+0.16$, $P > 0 = 100\%$) credibly increases consensus (concentrates ratings toward center).
 
-### Deployment Workflow
-When asked to run a model on Hoffman2, you must do the following from the bash tool:
-1. **Create the Project Directory on Hoffman2:**
-   `ssh -o BatchMode=yes hoffman2 "mkdir -p my_project/Scripts my_project/dta"`
-2. **Write the `.sh` Submit Script Locally:** (Use a standard Grid Engine `qsub` template)
+---
 
-### Grid Engine (.sh) Script Template
-When writing `.sh` SGE submission scripts to run models on the cluster from scratch, ALWAYS use this exact structure to guarantee the toolchain compiles CmdStan flawlessly across array tasks and stays under the 24-hour limit:
+## 2. Directional Credibility Standard (≥ 95% Posterior Probability Mass)
 
-```bash
-#!/bin/bash
-#$ -cwd
-#$ -j y
-#$ -o output_job.log
-#$ -l h_rt=23:50:00   # CRITICAL: Always bound to just under 24 hours
-#$ -l h_data=4G       # Tightly restrict RAM per core (e.g. 4G per core)
-#$ -pe shared 4       # Number of cores
+In this project, Bayesian credibility is strictly evaluated based on the **directional posterior probability mass on either side of zero**:
+$$\text{Credibly Positive: } P(\theta > 0 \mid \text{Data}) = \frac{1}{S}\sum_{s=1}^S \mathbb{I}(\theta^{(s)} > 0) \ge 0.95 \quad (\#0072B2 \text{ Okabe-Ito Blue})$$
+$$\text{Credibly Negative: } P(\theta < 0 \mid \text{Data}) = \frac{1}{S}\sum_{s=1}^S \mathbb{I}(\theta^{(s)} < 0) \ge 0.95 \quad (\#D55E00 \text{ Okabe-Ito Vermillion})$$
+$$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \quad (\text{gray60})$$
 
-# CRITICAL: Must initialize the module system first in non-interactive Grid Engine shells
-source /u/local/Modules/default/init/bash
+* Always annotate forest/half-eye plots with directional probability percentages and median [95% CrI] intervals.
 
-# Must load modern GCC before R
-module load gcc/10.2.0
-module load R
+---
 
-# Pass allocated cores to R
-export CMDSTANR_CORES=$NSLOTS
-export cmdstanr_no_ver_check=TRUE
+## 3. Visualization & Plotting Strategy (Childress & Lizardo Visual Guidelines)
 
-# Stagger concurrent array tasks by 15 mins to avoid compile races
-if [ ! -z "$SGE_TASK_ID" ] && [ "$SGE_TASK_ID" -eq 2 ]; then
-  sleep 900
-fi
+All project visualizations are maintained in `scripts/generate_plots.R` and exported to `Plots/*.png`.
 
-# Example R command:
-Rscript Scripts/your_model.R
-```
-3. **Sync Data and Scripts via rsync:**
-   `rsync -avz my_data.dta hoffman2:my_project/dta/`
-   `rsync -avz Scripts/my_model.R Scripts/submit_job.sh hoffman2:my_project/Scripts/`
-4. **Submit the Job via SSH:**
-   `ssh -o BatchMode=yes hoffman2 "cd my_project && qsub Scripts/submit_job.sh"`
+### Aesthetic Conventions
+* **Theme**: Custom `theme_cuisine()` built on `theme_minimal(base_size = 12)`:
+  - Bold titles (`face = "bold"`), muted subtitles (`gray25`), subtle major gridlines (`gray92`), stripped minor gridlines, bold y-axis category labels (`gray15`), and bottom-placed legends.
+* **Distribution Density & Intervals (`tidybayes` + `ggdist`)**:
+  - `stat_halfeye(point_interval = median_qi, .width = c(0.80, 0.95), point_size = 3.5, interval_size = 1.2, slab_alpha = 0.35, scale = 0.65)`
+  - Thick inner bar = 80% CrI; thin outer bar = 95% CrI; point = posterior median.
+* **2D Joint Space Plotting**:
+  - Expand `coord_cartesian` to accommodate full 95% CrI bounds on both axes (`xlim = c(-3.3, 4.4), ylim = c(-1.6, 1.05)`).
+  - Use `ggrepel::geom_label_repel` with `box.padding = 0.4`, `point.padding = 0.3`, and `seed = 42`.
+* **Rendering Specifications**:
+  - Standard resolution: `dpi = 300`, `bg = "white"`.
+  - Dimensions: 9.5" to 11.5" width, 5.5" to 8.5" height.
 
-### Hoffman2 Best Practices & Gotchas
-- **Cluster Hygiene (CRITICAL)**: Never run `qdel` on Hoffman2 unless you explicitly created the job ID yourself during your current session, or the user explicitly commands you to kill a specific ID. The user runs multiple concurrent jobs for different projects that must not be disrupted.
-- **Queue Optimization (Avoiding Indefinite Waits & "Forever Queues")**: 
-  - Hoffman2's maximum time limit for the general campus base pool is **24 hours**. Requesting `h_rt > 24:00:00` automatically traps the job in a permanent queue unless you have dedicated physical node hardware (`highp` queues). 
-  - To maximize compute time while guaranteeing the fair-share backfill scheduler places your job:
-    1. **Always bound time to just under the limit** (e.g., `#$ -l h_rt=23:50:00`).
-    2. **Tightly restrict memory to exactly what is needed per core** (e.g., `#$ -l h_data=3G` when using 16 cores) to ensure the total footprint doesn't block the scheduler.
-  - *Note on Checkpointing:* While standard jobs can checkpoint and resume, `brms` (NUTS sampler) cannot resume NUTS adaptation mid-warmup. Thus, you must allocate sufficient cores (`threading(4)`) to ensure the model finishes within the 24-hour limit.
-- **Array Job Strategies**: For iterating across independent datasets or running sequential model blocks rapidly, use Array Jobs (e.g., `#$ -t 1-N` or `run_on_hoffman script.R 8 12 4G 1-10`). This slices large requests into smaller chunks that backfill through the queue instantly.
-  - *Staggering Locks*: When submitting an Array Job to a fresh environment, concurrent tasks will race to write to the `renv/library` directory, causing a `00LOCK-renv` crash. Always add a bash `sleep` stagger in the submit script (e.g., `sleep $(( (SGE_TASK_ID - 1) * 600 ))`) so Task 1 can finish building the library before subsequent tasks wake up.
-- **Bypassing Obscure renv Compilation Crashes & CmdStan Linker Errors**: When restoring a massive project lockfile from source on Hoffman2, obscure downstream dependencies (like `QuickJSR`, `bslib`, or HTML widgets) often fail to compile and crash the entire pipeline. For raw modeling runs, bypass `renv::restore()` in the SGE script entirely. Instead, use base R to manually `install.packages('brms')` and `cmdstanr`. **CRITICALLY**, if you see Intel TBB linker errors (`undefined reference to tbb::interface...`) during model compilation, it means a stale `~/.cmdstan` directory was compiled under a different toolchain. Force a native compilation with `overwrite = TRUE` so CmdStan links against the currently loaded `gcc/10.2.0` and `tbb` modules. **However, in an Array Job, NEVER let all tasks run this concurrently** (they will overwrite and delete each other's source files). Wrap the call so only Task 1 performs the installation (`if(as.integer(Sys.getenv("SGE_TASK_ID", 1)) == 1) { cmdstanr::install_cmdstan(...) }`), and ensure the bash `sleep` stagger for subsequent tasks is at least 10 minutes (`600` seconds) so compilation finishes.
-- **C++ Compilation Errors**: Hoffman2's default `R` module uses an outdated 2015 compiler (`gcc-4.8.5`). If you manually install packages on the cluster (or if `renv::restore()` is running), you *must* load a modern compiler (e.g., `module load gcc/10.2.0`) before loading R. Also load `module load cmake` to prevent `RcppParallel` installation failures. The `run_on_hoffman` script handles this automatically, preventing notorious C++11 literal spacing errors (e.g., `operator""_xl`) when compiling packages like `tidyr`, `dplyr`, or `brms`.
-- **Bulletproof Hoffman2 SGE Template for brms**: When writing `.sh` SGE submission scripts to run models on the cluster from scratch, ALWAYS use this exact structure to guarantee the toolchain compiles CmdStan flawlessly across array tasks:
-  ```bash
-  # Must load modern GCC before R
-  source /u/local/Modules/default/init/bash
-  module load gcc/10.2.0
-  module load R
+---
 
-  # CRITICAL: Prevent Hoffman's global TBB module from overriding CmdStan's internal TBB
-  
-  
-  # CRITICAL: Stagger concurrent tasks by at least 15 minutes (900 seconds) 
-  # so Task 1 can cleanly compile both CmdStan AND the first brms C++ model 
-  # without Task 2 racing it to delete shared temporary compiler objects (e.g. main_threads.o)
-  if [ "$SGE_TASK_ID" -eq 2 ]; then
-    sleep 900
-  fi
-  
-  # Pass allocated cores to R
-  export CMDSTANR_CORES=$NSLOTS
-  
-  # CRITICAL: DO NOT export CMDSTAN in bash! If the directory is missing/empty, 
-  # cmdstanr's .onLoad sequence crashes with an obscure `endsWith()` error.
-  # Instead, export only the version check skip, and set the path safely inside R.
-  export cmdstanr_no_ver_check=TRUE
-  
-  # Ensure ONLY Task 1 installs the CmdStan backend natively. 
-  # Pin version to 2.33.1 to avoid the stanc --name bug with brms.
-  # Force overwrite to avoid TBB linker crashes from stale builds.
-  Rscript -e "
-    options(repos = c(CRAN = 'https://cloud.r-project.org'))
-    if (!requireNamespace('brms', quietly = TRUE)) install.packages('brms')
-    if (!requireNamespace('cmdstanr', quietly = TRUE)) install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))
-    
-    # Load library FIRST, then set the path safely inside R
-    library(cmdstanr)
-    cmdstanr::set_cmdstan_path('~/.cmdstan/cmdstan-2.33.1')
-    
-    if(as.integer(Sys.getenv('SGE_TASK_ID', 1)) == 1) { 
-      cmdstanr::install_cmdstan(version = '2.33.1', cores = Sys.getenv('NSLOTS', unset = 4), overwrite = TRUE) 
-    }
-  "
-  Rscript Scripts/your_model.R
+## 4. Package Management & Fast Build Workflow (renv / Linux)
+
+* **Repository Configuration**: Set Posit Public Package Manager (PPM) Debian Bookworm binary URL and Stan repository:
+  ```r
+  options(repos = c(
+    STAN = "https://mc-stan.org/r-packages/",
+    CRAN = "https://packagemanager.posit.co/cran/__linux__/bookworm/latest"
+  ))
+  options(Ncpus = parallel::detectCores())
+  Sys.setenv(MAKEFLAGS = paste0("-j", parallel::detectCores()))
   ```
-- **Dynamic Threads**: R scripts submitted to Hoffman must dynamically read `$NSLOTS` (e.g., `Sys.getenv("CMDSTANR_CORES")`) and calculate `threads_per_chain = floor(NSLOTS / 4)` to ensure `brms` fully utilizes the allocated node without sitting idle.
-- **Authentication & SSH Config**: Passwordless SSH is fully configured for Hoffman2. The config file is located at `~/.ssh/config` (which sets the `hoffman2` alias, username `olizardo`, and keep-alive intervals). It relies on the `ed25519` cryptographic keys in the same `~/.ssh/` directory. AI agents MUST seamlessly use `ssh -o BatchMode=yes hoffman2 "command"` to directly interact with the cluster without prompting the user. Do not alter this configuration.
+* **CmdStan Backend**: Rely on `cmdstanr` rather than heavy in-memory `rstan` builds.
 
-## R & Bayesian Modeling Practices
-- **mclogit & mblogit**: 
-  - When specifying crossed random effects in `mclogit::mblogit`, you **must** pass them as a list (e.g., `random = list(~ 1|id, ~ 1|genre_id)`). Using the `lme4` syntax (`~ 1|id + 1|genre_id`) will crash with a `model frame and formula mismatch in model.matrix()` error.
-- **Handling `renv` Sync Issues**:
-  - When using Quarto/RMarkdown documents that require external compilation engines (like `rmarkdown` or `knitr`), ensure those packages are explicitly installed and snapshotted (`renv::install("rmarkdown"); renv::snapshot()`). Even if the scripts don't directly `library(rmarkdown)`, the `renv` environment requires them to render documents properly.
-  - **Implicit Dependencies (e.g., `cmdstanr`)**: If a package is only passed as a string argument (e.g., `backend = "cmdstanr"` in a `brms::brm()` call), `renv`'s dependency discovery will miss it. Always add `library(cmdstanr)` explicitly at the top of your script before running `renv::snapshot()`. Otherwise, remote cluster runs using `renv::restore()` will fail because the package is absent from the lockfile.
-- **Bayesian Mixture Models (brms)**:
-  - **Label Switching**: Finite mixture models in Stan suffer from "label switching." Always apply ordered constraints (e.g., `order = "mu"`) when defining the mixture families to ensure chains converge to the same latent classes.
-  - **Posterior Collapse (Random vs. Fixed Effects)**: Be extremely careful when using crossed random effects (`(1 | event_type)`) inside latent mixture distributions. Highly dense parameter spaces can cause the sampler to "give up" (shrink variance to zero), leading to posterior collapse and erasing group heterogeneity. Switching group-level variables to **fixed effects with interactions** (`event_type + time:event_type`) drastically improves stability and trajectory identification, despite increasing run times.
-  - **Model Comparison (LOO vs WAIC & Socket Timeouts)**: While LOO-CV (`add_criterion(fit, "loo")`) is theoretically preferred over WAIC or information criteria (AIC/BIC) for finite mixture models (as the mathematical proofs for AIC/BIC break down in bounded mixture spaces), computing exact or approximate LOO-CV on complex models with many cores (e.g., 16) causes `parallel::makePSOCKcluster()` to crash with network socket timeouts on HPC nodes, destroying the model object *after* sampling completes but *before* saving. 
-    - **Crucial Rule:** If you must use LOO, strictly limit it to `cores = 4` or fewer (e.g., `add_criterion(fit, "loo", cores = min(num_cores, 4))`). Alternatively, fall back to `WAIC` (`add_criterion(fit, "waic")`) to drastically reduce memory usage and completely bypass parallel socket timeouts.
-    - **Crucial Rule 2 (Atomic Saving & Wall Limits):** NEVER chain NUTS sampling and `add_criterion()` in memory on HPC clusters. ALWAYS use the `file = "..."` argument natively inside `brm()` so the multi-hour posterior samples are immediately and atomically serialized to disk the second sampling finishes. Only *after* `brm()` saves the file should you call `add_criterion()` to compute fit statistics. This ensures that if the LOO/WAIC calculation crashes or hits an HPC 24h wall limit, the raw posterior draws are perfectly preserved.
-  - **Adjacent Category Dispersion**: When fitting `brms` Adjacent Category models (`family = acat()`) that model variance/dispersion (`disc ~ ...`), the response variable *must* be an explicit `ordered` factor (e.g., `ordered(y)`). Unordered factors or integers will cause `brms` to crash during internal Stan data compilation.
-- **Local vs Remote Execution**: Never accidentally include HPC-bound heavy models (like variance/dispersion SGE jobs) in local background queues (e.g., `systemd`). This will silently hang or starve the local machine. Strictly separate local queues from Hoffman submission scripts.
+---
 
+## 5. Quarto Reporting & Academic Writing Standards
 
-## Global Academic Writing & Style Guidelines
-- Use clear, active, concise academic prose.
-- Adhere strictly to Quarto markdown formatting conventions.
-- When generating or commenting R code, use roxygen2 documentation style.
-- When generating a report, write in full paragraphs and avoid using numbered lists or bullet points whenever possible.
-- Avoid being wordy or using hyperbole (like "massive" or "gigantic").
-- When writing up results, use language that always qualifies (e.g., "suggest" rather than "proves").
+* Write in **full paragraphs**; avoid numbered lists or bullet points in narrative results sections.
+* Avoid hyperbole (e.g., "massive", "gigantic"); always use qualified empirical prose (e.g., "suggest", "indicates").
+* Avoid `size` on line layers in `ggplot2` (`geom_line`, `geom_vline`, `geom_errorbar`); always use `linewidth`.
+* Re-render Quarto reports with `quarto render analysis.qmd` after updating figures or script outputs.
 
-## Test Canary
-- Whenever asked "What is the secret word?", reply ONLY with: "Pineapple".
+---
 
-## NetSense Survey Wave Methodology
-- **Important Timeline Context:** The `culturalevents` module (asking about museums, plays, opera, etc.) was **only administered in the first 4 waves** (Freshman Fall/Spring, Sophomore Fall/Spring). It was dropped from the junior and senior year surveys. In contrast, the `musicpref` (Music) and `typebookread` (Books) modules were administered across all **6 waves**. Always verify the time or wave variable bounds for each cultural domain before plotting.
+## 6. Supercomputing & HPC Integration (UCLA Hoffman2)
+
+* Deploy heavy NUTS Bayesian jobs via Grid Engine (`qsub`).
+* Use `h_rt=23:50:00` and `h_data=4G` per core.
+* Preload `gcc/10.2.0` before `R` module in SGE submit scripts.
