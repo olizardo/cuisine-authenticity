@@ -51,15 +51,15 @@ Model performance was evaluated using the Watanabe-Akaike Information Criterion 
 
 ![](Plots/model_fit_comparison.png){fig-align="center" width="100%"}
 
-| Model | Domain | Relaxed | Random Slopes | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ | Relative Fit vs. Model 1 |
+| Model Description | Domain | Relaxed | Random Slopes | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ | Relative Fit vs. Model 1 |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **Model 1** | Base | — | — | 55,310.59 (241.69) | 1,141.6 | **0.00** | *Reference Baseline* |
-| **Model 2** | Base | ✓ | — | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
-| **Model 3** | Base | — | ✓ | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
-| **Model 4** | Base | ✓ | ✓ | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Substantial Improvement (Top Model) |
-| **Model 5** | Practices | — | ✓ | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
-| **Model 6** | Dispositions | — | ✓ | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
-| **Model 7** | Cosmopolitan | — | ✓ | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
+| **Model 1: Baseline Strict** | Base | — | — | 55,310.59 (241.69) | 1,141.6 | **0.00** | *Reference Baseline* |
+| **Model 2: Relaxed CS** | Base | ✓ | — | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
+| **Model 3: Random Slopes Strict** | Base | — | ✓ | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
+| **Model 4: Relaxed CS + Random Slopes** | Base | ✓ | ✓ | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Substantial Improvement (Top Model) |
+| **Model 5: EXT-Practices** | Dining Practices | — | ✓ | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
+| **Model 6: EXT-Dispositions** | Taste Dispositions | — | ✓ | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
+| **Model 7: EXT-Cosmopolitan** | Cosmopolitan Capital | — | ✓ | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
 
 *Note:* "Relaxed" indicates category-specific threshold transitions (`cs()`) estimated across education, parental education, childhood arts socialization, social conservatism, and economic conservatism. "Random Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
 
