@@ -98,7 +98,7 @@ p_prac <- ggplot(df_prac, aes(x = value, y = parameter, fill = credibility)) +
     .width = c(0.80, 0.95),
     point_size = 3.5,
     interval_size = 1.2,
-    slab_alpha = 0.35,
+    slab_alpha = 0.15,
     scale = 0.65
   ) +
   geom_text(
@@ -178,7 +178,7 @@ p_disp <- ggplot(df_disp, aes(x = value, y = parameter, fill = credibility)) +
     .width = c(0.80, 0.95),
     point_size = 3.5,
     interval_size = 1.2,
-    slab_alpha = 0.35,
+    slab_alpha = 0.15,
     scale = 0.65
   ) +
   geom_text(
@@ -258,7 +258,7 @@ p_cosmo <- ggplot(df_cosmo, aes(x = value, y = parameter, fill = credibility)) +
     .width = c(0.80, 0.95),
     point_size = 3.5,
     interval_size = 1.2,
-    slab_alpha = 0.35,
+    slab_alpha = 0.15,
     scale = 0.65
   ) +
   geom_text(

@@ -302,7 +302,7 @@ generate_stability_plot <- function(full_draws_df, stability_summary) {
       .width = c(0.80, 0.95),
       point_size = 2.8,
       interval_size = 1.0,
-      slab_alpha = 0.45,
+      slab_alpha = 0.15,
       scale = 0.65
     ) +
     geom_point(

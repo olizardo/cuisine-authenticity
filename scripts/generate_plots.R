@@ -268,7 +268,7 @@ if (!is.null(m6)) {
       .width = c(0.80, 0.95),
       point_size = 3.2,
       interval_size = 1.1,
-      slab_alpha = 0.40,
+      slab_alpha = 0.15,
       scale = 0.68
     ) +
     scale_fill_manual(values = color_credibility, name = "Directional Credibility (≥ 95% Posterior Mass)") +
@@ -430,7 +430,7 @@ if (!is.null(m6)) {
       .width = c(0.80, 0.95),
       point_size = 2.8,
       interval_size = 1.0,
-      slab_alpha = 0.45,
+      slab_alpha = 0.15,
       scale = 0.65
     ) +
     geom_point(

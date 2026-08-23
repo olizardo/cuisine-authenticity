@@ -108,7 +108,7 @@ p_ext1 <- ggplot(df_h1_h3, aes(x = value, y = parameter, fill = credibility)) +
     .width = c(0.80, 0.95),
     point_size = 3.5,
     interval_size = 1.2,
-    slab_alpha = 0.35,
+    slab_alpha = 0.15,
     scale = 0.65
   ) +
   geom_text(
@@ -184,7 +184,7 @@ p_ext3 <- ggplot(df_cc, aes(x = value, y = dimension, fill = credibility)) +
     .width = c(0.80, 0.95),
     point_size = 3.5,
     interval_size = 1.2,
-    slab_alpha = 0.35,
+    slab_alpha = 0.15,
     scale = 0.65
   ) +
   geom_text(

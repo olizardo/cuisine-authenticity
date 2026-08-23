@@ -135,7 +135,7 @@ p_ideo <- ggplot(df_ideo, aes(x = Category, y = contrast_log_odds, fill = Predic
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
   stat_halfeye(
     position = position_dodge(width = 0.65),
-    alpha = 0.60,
+    slab_alpha = 0.15,
     .width = c(0.80, 0.95),
     point_interval = median_qi,
     scale = 0.45,
@@ -185,7 +185,7 @@ p_cult <- ggplot(df_cult, aes(x = Category, y = contrast_log_odds, fill = Predic
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
   stat_halfeye(
     position = position_dodge(width = 0.70),
-    alpha = 0.60,
+    slab_alpha = 0.15,
     .width = c(0.80, 0.95),
     point_interval = median_qi,
     scale = 0.45,
@@ -235,7 +235,7 @@ p_prac <- ggplot(df_prac, aes(x = Category, y = contrast_log_odds, fill = Predic
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
   stat_halfeye(
     position = position_dodge(width = 0.70),
-    alpha = 0.60,
+    slab_alpha = 0.15,
     .width = c(0.80, 0.95),
     point_interval = median_qi,
     scale = 0.45,
@@ -287,7 +287,7 @@ p_disp <- ggplot(df_disp, aes(x = Category, y = contrast_log_odds, fill = Predic
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
   stat_halfeye(
     position = position_dodge(width = 0.75),
-    alpha = 0.60,
+    slab_alpha = 0.15,
     .width = c(0.80, 0.95),
     point_interval = median_qi,
     scale = 0.45,
@@ -335,7 +335,7 @@ p_cosmo <- ggplot(df_cosmo, aes(x = Category, y = contrast_log_odds, fill = Pred
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
   stat_halfeye(
     position = position_dodge(width = 0.65),
-    alpha = 0.60,
+    slab_alpha = 0.15,
     .width = c(0.80, 0.95),
     point_interval = median_qi,
     scale = 0.45,
@@ -398,7 +398,7 @@ df_master <- full_mid_df %>%
 p_master <- ggplot(df_master, aes(x = Category, y = contrast_log_odds, fill = Direction_Type, color = Direction_Type)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.6) +
   stat_halfeye(
-    alpha = 0.60,
+    slab_alpha = 0.15,
     .width = c(0.80, 0.95),
     point_interval = median_qi,
     scale = 0.65,

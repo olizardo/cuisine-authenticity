@@ -251,7 +251,7 @@ plot_consensus_cuisine_slopes <- function(slopes_df, vars, var_labels, title, su
       .width = c(0.80, 0.95),
       point_size = 2.8,
       interval_size = 1.0,
-      slab_alpha = 0.40,
+      slab_alpha = 0.15,
       scale = 0.65
     ) +
     geom_point(
