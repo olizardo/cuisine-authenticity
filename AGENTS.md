@@ -34,34 +34,40 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_base_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_base_strict_rs.rds` |
 | | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_base_relaxed_rs.rds` |
-| **Practices** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed on Hoffman2** | `hier_practices_strict_ri.rds` |
-| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed on Hoffman2** | `hier_practices_relaxed_ri.rds` |
+| **Practices** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_practices_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_practices_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_practices_strict_rs.rds` |
-| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Running (Hoffman2, 65%)** | `hier_practices_relaxed_rs.rds` |
-| **Dispositions** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed on Hoffman2** | `hier_dispositions_strict_ri.rds` |
-| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed on Hoffman2** | `hier_dispositions_relaxed_ri.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **MCMC Finished (Hoffman2 Saving)** | `hier_practices_relaxed_rs.rds` |
+| **Dispositions** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_dispositions_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_dispositions_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_dispositions_strict_rs.rds` |
-| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Running (Hoffman2, 80%)** | `hier_dispositions_relaxed_rs.rds` |
-| **Cosmopolitan** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Running (Hoffman2, Final Chain)** | `hier_cosmopolitan_strict_ri.rds` |
-| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed on Hoffman2** | `hier_cosmopolitan_relaxed_ri.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_dispositions_relaxed_rs.rds` |
+| **Cosmopolitan** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_cosmopolitan_strict_ri.rds` |
+| | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_cosmopolitan_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_cosmopolitan_strict_rs.rds` |
-| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Running (Hoffman2, 70%)** | `hier_cosmopolitan_relaxed_rs.rds` |
-| **Omnibus Meta** | Meta Relaxed RI | Relaxed CS (All 14 Vars) | Random Intercepts | **Running (Hoffman2 Array 14512323 Task 1)** | `hier_meta_relaxed_ri.rds` |
-| | Meta-Meta Relaxed RS | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Running (Hoffman2 Array 14512323 Task 2)** | `hier_meta_relaxed_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed on Hoffman2** | `hier_cosmopolitan_relaxed_rs.rds` |
+| **Omnibus Meta** | Meta Relaxed RI | Relaxed CS (All 14 Vars) | Random Intercepts | **Running (Hoffman2 Array 14512323 Task 1, 45% Warmup)** | `hier_meta_relaxed_ri.rds` |
+| | Meta-Meta Relaxed RS | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Running (Hoffman2 Array 14512323 Task 2, Sampling)** | `hier_meta_relaxed_rs.rds` |
 
-### Consolidated WAIC Fit Table (Completed Models)
+### Consolidated WAIC Fit Table (Ordered by Model Complexity)
 
-| Rank | Model Description | Domain | Relaxed (`cs`) | Random Slopes | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ |
-|:---:|:---|:---|:---:|:---:|:---|:---:|:---:|:---:|
-| 1 | **Relaxed CS + Random Slopes (Model 4)** | Cultural Capital | ✓ | ✓ | `hier_base_relaxed_rs.rds` | **54,961.97 (244.84)** | 1,217.9 | **-348.62** |
-| 2 | **Random Slopes Strict (Model 3)** | Cultural Capital | — | ✓ | `hier_base_strict_rs.rds` | **55,171.37 (243.27)** | 1,185.2 | **-139.22** |
-| 3 | **EXT-Practices Strict RS (Model 5)** | Dining Practices | — | ✓ | `hier_practices_strict_rs.rds` | **55,176.81 (242.61)** | 1,160.9 | **-133.78** |
-| 4 | **Relaxed CS (Model 2)** | Cultural Capital | ✓ | — | `hier_base_relaxed_ri.rds` | **55,177.51 (243.10)** | 1,173.3 | **-133.08** |
-| 5 | **EXT-Dispositions Strict RS (Model 6)** | Taste Dispositions | — | ✓ | `hier_dispositions_strict_rs.rds` | **55,248.60 (242.35)** | 1,162.9 | **-61.99** |
-| 6 | **EXT-Cosmopolitan Strict RS (Model 7)** | Cosmopolitan Capital | — | ✓ | `hier_cosmopolitan_strict_rs.rds` | **55,296.93 (242.10)** | 1,151.7 | **-13.66** |
-| 7 | **Baseline Strict (Model 1)** | Cultural Capital | — | — | `hier_base_strict_ri.rds` | **55,310.59 (241.69)** | 1,141.6 | **0.00** |
+| Domain | Model Specification | Threshold Constraint | Random Effects | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ |
+|:---|:---|:---:|:---:|:---|:---:|:---:|:---:|
+| **Core Baseline** | **Model 1: Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_base_strict_ri.rds` | 55,310.59 (241.69) | 1,141.6 | **0.00** |
+| | **Model 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_base_relaxed_ri.rds` | 55,177.51 (243.10) | 1,173.3 | **-133.08** |
+| | **Model 3: Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_base_strict_rs.rds` | 55,171.37 (243.27) | 1,185.2 | **-139.22** |
+| | **Model 4: Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_base_relaxed_rs.rds` | **54,961.97 (244.84)** | 1,217.9 | **-348.62** |
+| **Dining Practices** | **Practices Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_practices_strict_ri.rds` | 55,312.19 (241.87) | 1,148.9 | **+1.60** |
+| | **Practices Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_practices_relaxed_ri.rds` | **54,818.89 (248.11)** | 1,237.9 | **-491.70** |
+| | **Practices Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_practices_strict_rs.rds` | 55,176.81 (242.61) | 1,160.9 | **-133.78** |
+| **Taste Dispositions** | **Dispositions Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_dispositions_strict_ri.rds` | 55,310.82 (241.77) | 1,146.7 | **+0.23** |
+| | **Dispositions Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_dispositions_relaxed_ri.rds` | **54,585.83 (246.04)** | 1,223.1 | **-724.76** |
+| | **Dispositions Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_dispositions_strict_rs.rds` | 55,248.60 (242.35) | 1,162.9 | **-61.99** |
+| **Cosmopolitan Capital** | **Cosmopolitan Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_cosmopolitan_relaxed_ri.rds` | **55,069.96 (243.34)** | 1,189.6 | **-240.63** |
+| | **Cosmopolitan Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_cosmopolitan_strict_rs.rds` | 55,296.93 (242.10) | 1,151.7 | **-13.66** |
 
 *Consolidated WAIC cache: `cache/full_model_fit_comparison.rds` and `.csv`.*
+*Cluster WAIC Batch Job `14512447` computing criteria for newly finished Relaxed RS models.*
 
 ### WAIC Computation Protocol
 * **Cluster-Side Computation:** Compute WAIC directly on Hoffman2 via `scripts/submit_hoffman_waic.sh` and `scripts/compute_taxonomy_waic.R` using sequential 1-core execution with 16GB memory.
@@ -116,8 +122,9 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 ### Plot Conventions & Guidelines
 * **No Redundant Text Labels:** Do not overlay text annotations with point estimates / CI bounds on forest plots when the visual halfeyes and interval bars already convey them.
 * **Tightened Axis Framing:** Adjust `coord_cartesian()` and `scale_x_continuous()` tightly to empirical distribution spans (e.g. `[-0.65, +1.05]` for cuisine random intercepts; `[-0.52, +0.35]` for demographic fixed effects).
+* **Single-Gridline Alignment for Multi-Model Envelopes:** In stability and consensus forest plots, align all model specifications for a given variable along the **exact same single horizontal gridline** using `position_identity()` and semi-transparent intervals (`alpha = 0.55`) so that the visual overlap cleanly conveys the dense consensus core and specification variance.
 * **Category Grouping & Ordering:**
-  - *Demographic Fixed Effects (Figure 3):* Order y-axis predictors by substantive domain from bottom to top: Ethnoracial Identification $\to$ Demographics $\to$ Cultural & Socioeconomic Capital $\to$ Political Ideology. Exclude sparse categories with unstable bounds (*Nonbinary / Other Gender*).
+  - *Demographic Fixed Effects (Figure 3):* Order y-axis predictors by substantive domain from bottom to top: Ethnoracial Identification $\to$ Demographics $\to$ Cultural & Socioeconomic Capital $\to$ Dining & Arts Practices $\to$ Taste Dispositions $\to$ Cosmopolitan Capital $\to$ Political Ideology. Exclude sparse categories with unstable bounds (*Nonbinary / Other Gender*).
   - *Cuisine Random Slopes (Figures 6, 7, 12, 14, 16):* Order cuisines along the y-axis strictly by the target focal predictor's median net slope (e.g. Social Conservatism for Ideology; Educational Attainment for Cultural Capital; Fine Dining for Practices; Exotic & Authentic Taste for Dispositions; Global Citizen Identity for Cosmopolitanism).
   - *Midpoint Contrasts:* Prefer midpoint contrast plots (vs. Category 4) over raw threshold transition steps.
 
