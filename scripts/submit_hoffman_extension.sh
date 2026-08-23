@@ -18,20 +18,14 @@ export CMDSTANR_CORES=$NSLOTS
 export cmdstanr_no_ver_check=TRUE
 
 # Stagger concurrent tasks by 15 mins if running array jobs
-if [ ! -z "$SGE_TASK_ID" ] && [ "$SGE_TASK_ID" -eq 2 ]; then
+if [ "${SGE_TASK_ID:-0}" -eq 2 ]; then
   sleep 900
 fi
 
 # Ensure CmdStan backend is properly loaded and configured
 Rscript -e "
-  options(repos = c(CRAN = 'https://cloud.r-project.org'))
-  if (!requireNamespace('brms', quietly = TRUE)) install.packages('brms')
-  if (!requireNamespace('cmdstanr', quietly = TRUE)) install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))
   library(cmdstanr)
   cmdstanr::set_cmdstan_path('~/.cmdstan/cmdstan-2.33.1')
-  if (as.integer(Sys.getenv('SGE_TASK_ID', 1)) == 1 && !dir.exists('~/.cmdstan/cmdstan-2.33.1')) {
-    cmdstanr::install_cmdstan(version = '2.33.1', cores = Sys.getenv('NSLOTS', unset = 4), overwrite = TRUE)
-  }
 "
 
 # Execute R modeling script

@@ -5,7 +5,11 @@
 #' @author Cuisine Authenticity Project
 
 suppressPackageStartupMessages({
-  library(tidyverse)
+  library(dplyr)
+  library(tidyr)
+  library(tibble)
+  library(readr)
+  library(purrr)
   library(haven)
   library(here)
 })
