@@ -5,14 +5,14 @@
 
 ---
 
-## 1. Cuisine Authenticity Project Architecture & Key Findings
+## 1. Cuisine Authenticity Project Architecture & Core Empirical Findings
 
 ### Analytical Framework
 * **Dependent Variable:** 7-point ordinal Likert scale evaluating whether the ideal preparation of a given cuisine is grounded in domestic tradition ($1 = \text{"traditional recipe prepared by an elder at home"}$) versus elite professional craftsmanship ($7 = \text{"developed recipe prepared by a professional chef at a high-end restaurant"}$), with $4$ as the neutral midpoint.
 * **Data Structure:** Stacked longitudinal panel of $N = 18,180$ ratings across $1,212$ unique respondents evaluating 15 distinct national and regional cuisines.
-* **Model Class:** Bayesian Adjacent Category Ordinal Regression (`family = acat("logit")`) with crossed random intercepts and random slopes for respondents and cuisines (`(1 | respondent_id) + (1 + ... | cuisine)`).
+* **Model Class:** Bayesian Adjacent Category Ordinal Regression (`family = acat("logit")`) with crossed random intercepts and random slopes for respondents and cuisines (`(1 | respondent_id) + (1 + ... | cuisine)`), estimated using `brms` with the `cmdstanr` backend.
 
-### Six Model Configurations & WAIC Performance
+### Primary Baseline Model Configurations & WAIC Performance
 1. **Model 1: Baseline Strict** (`cache/hier_1_baseline.rds`): $\text{WAIC} = 55,310.59$ ($\Delta = +1,878.0$).
 2. **Model 2: Relaxed CS** (`cache/hier_2_relaxed.rds`): Category-specific transition slopes. $\text{WAIC} = 55,177.51$.
 3. **Model 3: Random Slopes Strict** (`cache/hier_3_rs.rds`): Cuisine random slopes on location. $\text{WAIC} = 55,171.37$.
@@ -20,24 +20,53 @@
 5. **Model 5: Variance + Random Slopes** (`cache/hier_5_var_rs.rds`): Full location-scale model with random slopes on both location and discrimination. **Top-performing model overall ($\text{WAIC} = 53,432.63$)**.
 6. **Model 6: Relaxed CS + Random Slopes** (`cache/hier_6_relaxed_rs.rds`): Category-specific threshold transitions + cuisine random slopes. **Top non-distributional model ($\text{WAIC} = 54,961.97$)**.
 
-### Key Empirical Takeaways
-* **Global Demographic Fixed Effects (Model 6)**:
-  - *Credibly Pro-Chef*: Social Conservatism ($+0.19$, $P(\beta > 0) = 100\%$) and Education ($+0.12$, $P(\beta > 0) = 100\%$).
-  - *Credibly Domestic Elder*: Mixed-Race White ($-0.28$, $P(\beta < 0) = 99.8\%$), Women ($-0.18$, $P(\beta < 0) = 99.9\%$), and older Age ($-0.06$, $P(\beta < 0) = 97.0\%$).
-* **Baseline Cuisine Orientations (Model 5 Random Intercepts)**:
-  - *Credibly Elder*: Native American ($-1.87$), Mexican ($-1.33$), Nigerian ($-1.12$), Jamaican ($-1.10$), Ethiopian ($-0.82$), Pakistani ($-0.77$), Italian ($-0.70$), Moroccan ($-0.56$), Lebanese ($-0.56$).
-  - *Credibly Pro-Chef*: French ($+3.06$) and Japanese ($+0.72$).
+### Novel Extension Models (Hoffman2 HPC Deployments)
+7. **Model EXT-Practices** (`cache/hier_ext_practices.rds`): Disaggregates dining frequencies (`fancy_restaurant`, `fast_food`) and highbrow arts participation (`highbrow_arts_freq`) with crossed random slopes across cuisines.
+8. **Model EXT-Dispositions** (`cache/hier_ext_dispositions.rds`): Tests Bourdieu taste dispositions (`taste_authentic`, `taste_familiar`, `taste_light`, `taste_rich`) to validate construct congruence.
+9. **Model EXT-Cosmopolitan** (`cache/hier_ext_cosmopolitan.rds`): Tests cosmopolitan world-citizen identity (`cosmo_global`) and inter-ethnic friendship network diversity (`network_diversity`).
+
+---
+
+## 2. Key Empirical Findings & Hypothesis Tests
+
+### Core Theoretical Hypotheses (Childress & Lizardo)
+* **H1 & H2: Ideological Sorting into Highbrow Modes**:
+  - *Social Conservatism*: Credibly pro-chef ($+0.43$, $95\%\text{ CrI } [0.08, 0.84]$, $P(\beta > 0) = 99.1\%$ in Model 5; $+0.19$, $P = 100\%$ in Model 6).
+  - *Progressive / Social Liberalism*: Credibly domestic elder authenticity.
+* **H3: Social vs. Economic Ideological Asymmetry**:
+  - *Economic Conservatism*: Attenuated and centered near zero ($+0.01$, $95\%\text{ CrI } [-0.34, 0.42]$, $P(\beta > 0) = 52.9\%$).
+  - *Posterior Contrast Test*: $P(|\beta_{\text{social}}| > |\beta_{\text{economic}}| \mid \text{Data}) = 88.0\%$. Culinary distinction is fundamentally organized around symbolic and cultural boundaries rather than fiscal/market preferences.
+* **H4: Cuisine Consecration Hierarchies & Ideological Slopes**:
+  - *Consecrated / Haute Cuisines* (French $\mu = +3.06$, Japanese $\mu = +0.72$): Firmly chef-anchored at baseline.
+  - *Subaltern / Peripheral Cuisines* (Native American $\mu = -1.87$, Mexican $\mu = -1.33$, Nigerian $\mu = -1.12$, Jamaican $\mu = -1.10$, Ethiopian $\mu = -0.82$, Pakistani $\mu = -0.77$, Italian $\mu = -0.70$): Strongly elder-anchored at baseline.
+  - *Ideological Tension*: Social conservatism acts as a powerful countervailing force on subaltern cuisines ($\beta_{\text{slope}} \approx +0.47\text{ to }+0.53$), pulling peripheral traditions toward professionalization.
+
+### Cultural Capital & Socialization Mechanisms
+* **Cultural Capital Dual Mechanism (Model EXT-Practices)**:
+  - *Adult Highbrow Arts Participation*: Credibly pro-chef ($+0.14$, $P > 0 = 99.98\%$).
+  - *Fine Dining Frequency*: Credibly pro-chef ($+0.09$, $P > 0 = 98.2\%$).
+  - *Childhood Arts Socialization*: Once adult cultural consumption is controlled, early childhood arts exposure credibly shifts ratings toward **domestic elder authenticity** ($-0.094$, $P(\beta < 0) = 99.92\%$). Early embodied socialization roots taste in heritage and tradition, whereas adult institutionalized consumption valorizes professional restaurant gastronomy.
+  - *Educational Attainment*: Credibly pro-chef ($+0.43$, $P > 0 = 99.9\%$).
+  - *Household Income*: Centered near zero ($-0.01$, $P = 42.1\%$), demonstrating detachment of cultural schemas from sheer economic wealth.
+
+### Construct Validation & Network Diversity
+* **Bourdieu Taste Dispositions (Model EXT-Dispositions)**:
+  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($-0.085$, $P(\beta < 0) = 99.43\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking.
+* **Social Networks (Model EXT-Cosmopolitan)**:
+  - Inter-ethnic close friendship network diversity credibly increases appreciation for professional chef execution ($+0.061$, $P > 0 = 97.85\%$).
+
+### Consensus vs. Contestation (Discrimination Submodel)
 * **2D Consensus vs. Orientation Space**:
-  - *Elder Consensus (High Agreement)*: Ethiopian, Pakistani, Lebanese, Nigerian, Peruvian, Moroccan, Vietnamese, Jamaican.
-  - *Elder Contested (High Disagreement)*: Native American, Mexican, Italian, Korean.
-  - *Chef Contested (High Disagreement)*: French, Japanese, Swedish.
-* **Consensus/Dispersion Predictors (Discrimination Submodel)**:
-  - Social Conservatism ($-0.30$, $P < 0 = 100\%$) and Education ($-0.09$, $P < 0 = 99.6\%$) credibly decrease consensus (increase dispersion/contestation).
+  - *Elder Consensus (High Agreement)*: Ethiopian ($+0.54$), Pakistani ($+0.50$), Lebanese ($+0.47$), Nigerian ($+0.47$), Peruvian ($+0.38$), Moroccan ($+0.34$), Vietnamese ($+0.31$), Jamaican ($+0.29$).
+  - *Elder Contested (High Disagreement)*: Native American ($-0.49$), Mexican ($-0.47$), Italian ($-1.10$), Korean ($-0.10$).
+  - *Chef Contested (High Disagreement)*: French ($-0.98$), Japanese ($-0.58$), Swedish ($-0.22$).
+* **Demographic Predictors of Consensus**:
+  - Social Conservatism ($-0.30$, $P < 0 = 100\%$) and Education ($-0.09$, $P < 0 = 99.6\%$) credibly decrease consensus (increase evaluation contestation).
   - Economic Conservatism ($+0.16$, $P > 0 = 100\%$) credibly increases consensus (concentrates ratings toward center).
 
 ---
 
-## 2. Directional Credibility Standard (≥ 95% Posterior Probability Mass)
+## 3. Directional Credibility Standard (≥ 95% Posterior Probability Mass)
 
 In this project, Bayesian credibility is strictly evaluated based on the **directional posterior probability mass on either side of zero**:
 $$\text{Credibly Positive: } P(\theta > 0 \mid \text{Data}) = \frac{1}{S}\sum_{s=1}^S \mathbb{I}(\theta^{(s)} > 0) \ge 0.95 \quad (\#0072B2 \text{ Okabe-Ito Blue})$$
@@ -48,9 +77,9 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 
 ---
 
-## 3. Visualization & Plotting Strategy (Childress & Lizardo Visual Guidelines)
+## 4. Visualization & Plotting Strategy (Childress & Lizardo Visual Guidelines)
 
-All project visualizations are maintained in `scripts/generate_plots.R` and exported to `Plots/*.png`.
+All project visualizations are maintained in `scripts/generate_plots.R`, `scripts/generate_extension_plots.R`, and `scripts/generate_novel_extension_plots.R`, exported to `Plots/*.png`.
 
 ### Aesthetic Conventions
 * **Theme**: Custom `theme_cuisine()` built on `theme_minimal(base_size = 12)`:
@@ -67,25 +96,10 @@ All project visualizations are maintained in `scripts/generate_plots.R` and expo
 
 ---
 
-## 4. Package Management & Fast Build Workflow (renv / Linux)
-
-* **Repository Configuration**: Set Posit Public Package Manager (PPM) Debian Bookworm binary URL and Stan repository:
-  ```r
-  options(repos = c(
-    STAN = "https://mc-stan.org/r-packages/",
-    CRAN = "https://packagemanager.posit.co/cran/__linux__/bookworm/latest"
-  ))
-  options(Ncpus = parallel::detectCores())
-  Sys.setenv(MAKEFLAGS = paste0("-j", parallel::detectCores()))
-  ```
-* **CmdStan Backend**: Rely on `cmdstanr` rather than heavy in-memory `rstan` builds.
-
----
-
 ## 5. Quarto Reporting & Academic Writing Standards
 
 * Write in **full paragraphs**; avoid numbered lists or bullet points in narrative results sections.
-* Avoid hyperbole (e.g., "massive", "gigantic"); always use qualified empirical prose (e.g., "suggest", "indicates").
+* Avoid hyperbole (e.g., "massive", "gigantic"); always use qualified empirical prose (e.g., "suggest", "indicates", "corroborates").
 * Avoid `size` on line layers in `ggplot2` (`geom_line`, `geom_vline`, `geom_errorbar`); always use `linewidth`.
 * Re-render Quarto reports with `quarto render analysis.qmd` after updating figures or script outputs.
 
@@ -96,3 +110,5 @@ All project visualizations are maintained in `scripts/generate_plots.R` and expo
 * Deploy heavy NUTS Bayesian jobs via Grid Engine (`qsub`).
 * Use `h_rt=23:50:00` and `h_data=4G` per core.
 * Preload `gcc/10.2.0` before `R` module in SGE submit scripts.
+* Prevent package conflicts by importing individual required packages (`dplyr`, `tidyr`, `tibble`, `readr`, `purrr`, `haven`, `brms`, `cmdstanr`) rather than the `tidyverse` bundle.
+* Always use atomic serialization with `file = "..."` inside `brm()` to safeguard posterior draws before computing post-processing fit statistics.
