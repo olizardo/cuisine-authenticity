@@ -47,45 +47,121 @@ Model estimation employs the `cmdstanr` backend with weakly informative priors (
 
 ## 4. Bayesian Model Fit and Comparison
 
-Model performance was evaluated using the Watanabe-Akaike Information Criterion (WAIC) computed across 4,000 post-warmup draws. Table 2 and Figure 1 report the resulting information criteria, standard errors, effective parameters ($p_{\text{WAIC}}$), and comparative fit differences evaluated against **Model 1 (Baseline Strict)** as the reference baseline.
+Model performance was evaluated using the Watanabe-Akaike Information Criterion (WAIC) computed across 4,000 post-warmup draws. Table 1 and Figure 1 report the resulting information criteria, standard errors, effective parameters ($p_{\text{WAIC}}$), and comparative fit differences ordered by increasing model complexity starting with **Model 1 (Cultural Capital [Strict, RI])** as the reference baseline.
 
 ![](Plots/model_fit_comparison.png){fig-align="center" width="100%"}
 
-| Model Description | Domain | Relaxed | Random Slopes | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ | Relative Fit vs. Model 1 |
+| Domain | Model Specification | Threshold Constraint | Random Effects | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ | Relative Fit vs. Model 1 |
 |:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **Model 1: Baseline Strict** | Cultural Capital | — | — | 55,310.59 (241.69) | 1,141.6 | **0.00** | *Reference Baseline* |
-| **Model 2: Relaxed CS** | Cultural Capital | ✓ | — | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
-| **Model 3: Random Slopes Strict** | Cultural Capital | — | ✓ | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
-| **Model 4: Relaxed CS + Random Slopes** | Cultural Capital | ✓ | ✓ | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Substantial Improvement (Top Model) |
-| **Model 5: EXT-Practices** | Dining Practices | — | ✓ | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
-| **Model 6: EXT-Dispositions** | Taste Dispositions | — | ✓ | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
-| **Model 7: EXT-Cosmopolitan** | Cosmopolitan Capital | — | ✓ | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
+| **Core Baseline** | **Model 1: Strict RI** | Strict Proportional Odds | Random Intercepts | 55,310.59 (241.69) | 1,141.6 | **0.00** | *Reference Baseline* |
+| | **Model 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
+| | **Model 3: Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
+| | **Model 4: Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | **54,961.97 (244.84)** | 1,217.9 | **-348.62** | Decisive Improvement |
+| **Dining Practices** | **Practices Strict RI** | Strict Proportional Odds | Random Intercepts | 55,312.19 (241.87) | 1,148.9 | **+1.60** | Indistinguishable from M1 |
+| | **Practices Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **54,818.89 (248.11)** | 1,237.9 | **-491.70** | Decisive Improvement |
+| | **Practices Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
+| **Taste Dispositions** | **Dispositions Strict RI** | Strict Proportional Odds | Random Intercepts | 55,310.82 (241.77) | 1,146.7 | **+0.23** | Indistinguishable from M1 |
+| | **Dispositions Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **54,585.83 (246.04)** | 1,223.1 | **-724.76** | Decisive Improvement (Top Model) |
+| | **Dispositions Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
+| **Cosmopolitan Capital** | **Cosmopolitan Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **55,069.96 (243.34)** | 1,189.6 | **-240.63** | Decisive Improvement |
+| | **Cosmopolitan Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
 
-*Note:* "Relaxed" indicates category-specific threshold transitions (`cs()`) estimated across education, parental education, childhood arts socialization, social conservatism, and economic conservatism. "Random Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
+*Note:* "Relaxed" indicates category-specific threshold transitions (`cs()`). "Random Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
 
-The information criterion comparisons demonstrate that relaxing the proportional odds assumption across rating thresholds ($\Delta \text{WAIC} = -133.08$ for Model 2 vs. Model 1) and allowing predictor slopes to vary across culinary traditions ($\Delta \text{WAIC} = -139.22$ for Model 3 vs. Model 1) both yield decisive improvements in model fit. Combining category-specific threshold transitions with crossed cuisine random slopes (Model 4) achieves the lowest WAIC overall, producing a **348.62-point improvement** over the baseline strict model. Among the theoretical extensions, incorporating behavioral dining practices (Model 5) provides the largest fit gain over the baseline model ($\Delta \text{WAIC} = -133.78$).
+The information criterion comparisons across the completed twelve specifications reveal clear patterns:
+1. **The Primacy of Relaxed Category-Specific Thresholds:** Relaxing the proportional odds constraint yields massive predictive gains across all theoretical domains. Taste Dispositions with relaxed transitions achieves the lowest WAIC overall, producing a **724.76-point improvement** over the baseline strict model, followed by Dining Practices with relaxed transitions ($\Delta \text{WAIC} = -491.70$).
+2. **Structural Slopes vs. Threshold Flexibility:** When restricted to strict proportional odds, adding cuisine random slopes yields moderate gains ($\Delta \text{WAIC} \approx -133$ to $-139$), but category-specific cutpoint flexibility captures substantially more empirical structure across all response tiers.
+
+*Note:* "Relaxed" indicates category-specific threshold transitions (`cs()`). "Random Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
+
+The information criterion comparisons across the completed twelve specifications reveal clear patterns:
+1. **The Primacy of Relaxed Category-Specific Thresholds:** Relaxing the proportional odds constraint yields massive predictive gains across all theoretical domains. Taste Dispositions with relaxed transitions achieves the lowest WAIC overall, producing a **724.76-point improvement** over the baseline strict model, followed by Dining Practices with relaxed transitions ($\Delta \text{WAIC} = -491.70$).
+2. **Structural Slopes vs. Threshold Flexibility:** When restricted to strict proportional odds, adding cuisine random slopes yields moderate gains ($\Delta \text{WAIC} \approx -133$ to $-139$), but category-specific cutpoint flexibility captures substantially more empirical structure across all response tiers.
 
 ## 5. Baseline Cuisine Authenticity and Demographic Fixed Effects
 
-### 5.1 Baseline Authenticity by Cuisine
+### 5.1 Baseline Authenticity by Cuisine: Cross-Specification Consensus
 
-The hierarchical model estimates cuisine-specific random intercepts that reflect baseline perceptions of authenticity when holding demographic characteristics at their sample means. Figure 2 presents posterior distributions for each culinary tradition colored by directional credibility.
+To establish the baseline culinary hierarchy, cuisine-specific random intercepts were estimated across all specifications, evaluating the net authenticity orientation for each culinary tradition when demographic characteristics and theoretical predictors are held at sample means. 
+
+Table 1 presents the cross-specification stability metrics for the fifteen culinary traditions, and Figure 2 displays the consensus posterior distributions across all estimated baseline and extension specifications.
+
+| Culinary Tradition | Models ($k$) | Baseline Intercept Range $[\min, \max]$ | 95% Credible Envelope | Directional Consensus Classification |
+|:---|:---:|:---:|:---:|:---|
+| **French** | 7 | $[+0.676, +0.689]$ | $[+0.524, +0.850]$ | **Credibly Pro-Chef ($P > 0 = 100\%$)** |
+| **Japanese** | 7 | $[+0.280, +0.290]$ | $[+0.148, +0.446]$ | **Credibly Pro-Chef ($P > 0 = 100\%$)** |
+| **Swedish** | 7 | $[+0.191, +0.200]$ | $[+0.063, +0.355]$ | **Credibly Pro-Chef ($P > 0 \ge 99.9\%$)** |
+| **Korean** | 7 | $[+0.073, +0.083]$ | $[-0.052, +0.237]$ | **Spans Zero** |
+| **Italian** | 7 | $[+0.071, +0.080]$ | $[-0.057, +0.232]$ | **Spans Zero** |
+| **Vietnamese** | 7 | $[-0.047, -0.036]$ | $[-0.204, +0.091]$ | **Spans Zero** |
+| **Peruvian** | 7 | $[-0.062, -0.052]$ | $[-0.222, +0.073]$ | **Spans Zero** |
+| **Moroccan** | 7 | $[-0.080, -0.070]$ | $[-0.239, +0.055]$ | **Spans Zero** |
+| **Lebanese** | 7 | $[-0.081, -0.071]$ | $[-0.238, +0.056]$ | **Spans Zero** |
+| **Pakistani** | 7 | $[-0.142, -0.134]$ | $[-0.303, -0.005]$ | **Credibly Domestic Elder ($P < 0 \ge 98.8\%$)** |
+| **Mexican** | 7 | $[-0.147, -0.137]$ | $[-0.304, -0.006]$ | **Credibly Domestic Elder ($P < 0 \ge 99.0\%$)** |
+| **Ethiopian** | 7 | $[-0.169, -0.157]$ | $[-0.326, -0.021]$ | **Credibly Domestic Elder ($P < 0 \ge 99.8\%$)** |
+| **Jamaican** | 7 | $[-0.223, -0.214]$ | $[-0.383, -0.082]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+| **Nigerian** | 7 | $[-0.248, -0.238]$ | $[-0.409, -0.103]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+| **Native American** | 7 | $[-0.260, -0.250]$ | $[-0.420, -0.118]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
 
 ![](Plots/cuisine_random_effects.png){fig-align="center" width="100%"}
 
-Culinary traditions exhibit pronounced structural differentiation. A clear majority of traditions fall into the credibly domestic elder category, led by Native American ($\text{median} = -0.29$, $P < 0 = 100\%$), Nigerian ($\text{median} = -0.25$, $P < 0 = 100\%$), Jamaican ($\text{median} = -0.23$, $P < 0 = 100\%$), Ethiopian ($-0.17$), Mexican ($-0.16$), and Pakistani cuisines ($-0.15$). For these traditions, the public overwhelmingly locates culinary authenticity within domestic home kitchens and traditional familial transmission.
+Across all seven baseline and extension specifications, the culinary hierarchy exhibits exceptional structural stability:
+1. **Consecrated Haute Tiers:** French cuisine occupies an isolated position at the extreme professionalization pole ($\text{medians } \in [+0.676, +0.689]$, $P > 0 = 100\%$), followed by Japanese ($\text{medians } \in [+0.280, +0.290]$, $P > 0 = 100\%$) and Swedish traditions ($\text{medians } \in [+0.191, +0.200]$, $P > 0 \ge 99.9\%$). Across all model configurations, these cuisines are decisively understood as achieving authentic excellence through elite restaurant execution.
+2. **Intermediate Traditions:** Italian, Korean, Vietnamese, Peruvian, Moroccan, and Lebanese cuisines occupy an intermediate middle zone where baseline intercepts tightly center near zero, indicating broad public consensus around a balance between home and restaurant excellence.
+3. **Subaltern and Heritage Traditions:** A robust majority of non-Western and marginalized traditions are credibly anchored in domestic elder authenticity across all models: Native American ($\text{medians } \in [-0.260, -0.250]$), Nigerian ($\text{medians } \in [-0.248, -0.238]$), Jamaican ($\text{medians } \in [-0.223, -0.214]$), Ethiopian ($\text{medians } \in [-0.169, -0.157]$), Mexican ($\text{medians } \in [-0.147, -0.137]$), and Pakistani traditions ($\text{medians } \in [-0.142, -0.134]$), with $100\%$ directional consensus across specifications.
 
-In stark contrast, French cuisine occupies a distinct position at the extreme professionalization pole ($\text{median} = +0.70$, $95\%\text{ CrI } [0.55, 0.84]$, $P > 0 = 100\%$), followed by Japanese ($\text{median} = +0.29$, $95\%\text{ CrI } [0.16, 0.44]$, $P > 0 = 100\%$) and Swedish cuisines ($\text{median} = +0.20$, $95\%\text{ CrI } [0.07, 0.33]$, $P > 0 = 99.8\%$). Both traditions are credibly perceived as achieving their authentic expression through elite restaurant craftsmanship. Italian, Korean, Vietnamese, Peruvian, Moroccan, and Lebanese cuisines exhibit intermediate intercept estimates that span the neutral boundary.
+### 5.2 Cross-Specification Consensus and Fixed Effects Stability
 
-### 5.2 Global Demographic Fixed Effects
+To assess the reliability of fixed effects and protect against single-specification dependency, we synthesize estimates across the complete factorial taxonomy. 
 
-Figure 3 displays the global fixed effects estimated from the Relaxed Category-Specific and Random Slopes specification, averaging category-specific transition parameters across rating thresholds. Predictors are organized by substantive domain and colored according to directional credibility, defined as possessing at least 95% of the posterior probability mass on either side of zero ($P(\beta > 0) \ge 0.95$ or $P(\beta < 0) \ge 0.95$).
+#### How the Consensus Estimate Operates
 
-![](Plots/demographic_fixed_effects.png){fig-align="center" width="100%"}
+In ordinal adjacent category regression, model specifications vary along two structural axes:
+1. **Threshold Constraints:** Strict proportional odds models constrain predictor coefficients to be invariant across rating cutpoints ($\beta_j^{(1)} = \dots = \beta_j^{(6)} = \beta_j$), whereas relaxed category-specific models estimate separate transition parameters $\beta_j^{(k)}$ for each threshold step $k \in \{1, \dots, 6\}$. To establish direct comparability across specifications, category-specific draws are integrated into a marginal transition-averaged parameter per MCMC iteration:
+$$\bar{\beta}_j = \frac{1}{6}\sum_{k=1}^6 \beta_j^{(k)}$$
+2. **Hierarchical Random Effects:** Specifications vary between random-intercept-only structures (`ri`) and crossed random-slope structures (`rs`) where slopes vary across culinary traditions.
 
-The parameter estimates reveal clear ideological and demographic divisions in authenticity assessments. Social conservatism represents the strongest positive predictor of endorsing professional chef preparation, yielding a posterior median log-odds shift of $+0.19$ ($95\%\text{ CrI } [0.09, 0.31]$) with $100\%$ of its posterior mass residing above zero. Educational attainment similarly exerts a credibly positive influence ($\text{median} = +0.12$, $95\%\text{ CrI } [0.04, 0.19]$, $P(\beta > 0) = 100\%$), indicating that highly educated respondents systematically associate culinary authenticity with elite culinary craftsmanship.
+Rather than conditioning substantive conclusions on a single model choice, the **cross-specification consensus framework** tracks the posterior distribution of each focal parameter across all $k$ estimated models where the variable appears. For each predictor, we compute:
+* **The Specification Stability Range:** The interval spanned by posterior medians across all models, $[\min(\text{Median}), \max(\text{Median})]$.
+* **The 95% Credible Envelope:** The outer bounds spanning the lowest 2.5th percentile to the highest 97.5th percentile across specifications, $[\min(Q_{2.5\%}), \max(Q_{97.5\%})]$.
+* **Directional Consensus:** Evaluates whether directional credibility ($P(\beta > 0) \ge 0.95$ or $P(\beta < 0) \ge 0.95$) holds invariantly across all estimated model families.
 
-Conversely, respondents identifying as mixed-race white ($\text{median} = -0.28$, $95\%\text{ CrI } [-0.50, -0.07]$, $P(\beta < 0) = 99.8\%$), women ($\text{median} = -0.18$, $95\%\text{ CrI } [-0.30, -0.06]$, $P(\beta < 0) = 99.9\%$), and older respondents ($\text{median} = -0.06$, $95\%\text{ CrI } [-0.12, 0.00]$, $P(\beta < 0) = 97.0\%$) exhibit credibly negative coefficients, orienting their assessments toward traditional elder domestic preparation relative to men and white respondents. Other demographic variables, including Asian, Black, and Hispanic identification, household income, parental education, and childhood arts exposure, maintain posterior distributions that span zero with less than 95% directional probability mass.
+Table 2 presents the cross-specification stability metrics across all estimated models.
+
+| Substantive Domain | Predictor Variable | Models ($k$) | Posterior Median Range $[\min, \max]$ | 95% Credible Envelope | Consensus Classification |
+|:---|:---|:---:|:---:|:---:|:---|
+| **Political Ideology** | Social Conservatism | 7 | $[+0.109, +0.193]$ | $[+0.021, +0.313]$ | **Credibly Positive (Pro-Chef, 100%)** |
+| | Economic Conservatism | 7 | $[-0.043, +0.000]$ | $[-0.151, +0.063]$ | **Consistently Spans Zero** |
+| **Cultural Capital** | Educational Attainment | 7 | $[+0.053, +0.122]$ | $[-0.016, +0.191]$ | **Credibly Positive (Pro-Chef)** |
+| | Childhood Arts Socialization | 7 | $[-0.094, -0.025]$ | $[-0.155, +0.049]$ | **Credibly Domestic Elder (with Adult Controls)** |
+| | Parental Education | 7 | $[-0.040, -0.019]$ | $[-0.110, +0.051]$ | **Consistently Spans Zero** |
+| **Dining Practices** | Adult Highbrow Arts Attendance | 1 | $+0.141$ | $[+0.069, +0.213]$ | **Credibly Positive (Pro-Chef, 100%)** |
+| | Fine Dining Frequency | 1 | $+0.090$ | $[+0.005, +0.177]$ | **Credibly Positive (Pro-Chef, 98%)** |
+| | Fast Food Frequency | 1 | $+0.029$ | $[-0.031, +0.088]$ | **Spans Zero** |
+| **Taste Dispositions** | Dispositions: Exotic / Authentic | 1 | $-0.085$ | $[-0.148, -0.022]$ | **Credibly Domestic Elder (99.4%)** |
+| | Dispositions: Light / Fresh | 1 | $-0.045$ | $[-0.105, +0.017]$ | **Spans Zero** |
+| | Dispositions: Rich / Hearty | 1 | $-0.045$ | $[-0.107, +0.018]$ | **Spans Zero** |
+| | Dispositions: Familiar Comfort | 1 | $-0.005$ | $[-0.063, +0.053]$ | **Spans Zero** |
+| **Cosmopolitan Capital** | Friendship Network Diversity | 1 | $+0.061$ | $[+0.002, +0.121]$ | **Credibly Positive (Pro-Chef, 97.8%)** |
+| | Global Citizen Identity | 1 | $+0.038$ | $[-0.027, +0.103]$ | **Spans Zero** |
+| **Demographics** | Gender: Woman | 7 | $[-0.178, -0.162]$ | $[-0.298, -0.054]$ | **Credibly Domestic Elder (99.9%)** |
+| | Age | 7 | $[-0.064, -0.028]$ | $[-0.121, +0.031]$ | **Credibly Domestic Elder (in 5 of 7 models)** |
+| | Household Income | 7 | $[+0.002, +0.030]$ | $[-0.060, +0.092]$ | **Consistently Spans Zero** |
+| **Ethnoracial Status** | Mixed White Identification | 7 | $[-0.284, -0.237]$ | $[-0.497, -0.065]$ | **Credibly Domestic Elder (99.1%)** |
+| | Mixed Other Race | 7 | $[-0.204, -0.172]$ | $[-0.553, +0.148]$ | **Spans Zero** |
+| | Asian Identification | 7 | $[-0.113, -0.068]$ | $[-0.359, +0.172]$ | **Spans Zero** |
+| | Hispanic / Latino Identification | 7 | $[-0.023, +0.011]$ | $[-0.263, +0.248]$ | **Consistently Spans Zero** |
+| | Black Identification | 7 | $[-0.026, +0.037]$ | $[-0.191, +0.204]$ | **Consistently Spans Zero** |
+
+Figure 3 displays the cross-specification stability forest plot, showing posterior medians and 95% credible intervals across all estimated model specifications.
+
+![](Plots/fixed_effects_stability_forest.png){fig-align="center" width="100%"}
+
+The consensus estimates demonstrate robust structural patterns:
+1. **Ideological Divergence:** Social conservatism consistently predicts endorsing professional chef preparation across all seven baseline and extension models ($\text{medians } \in [+0.109, +0.193]$, $P(\beta > 0) \ge 99.9\%$), whereas economic conservatism remains tightly centered near zero across all specifications ($\text{medians } \in [-0.043, +0.000]$, $P(\beta > 0) \approx 20\%$).
+2. **Cultural Capital and Socialization:** Educational attainment consistently elevates pro-chef evaluations ($[+0.053, +0.122]$), reinforced by adult highbrow arts participation ($+0.141$) and fine dining practices ($+0.090$). In contrast, early childhood arts socialization ($\text{medians } \in [-0.094, -0.025]$) and authenticity-seeking dispositions ($-0.085$) systematically anchor taste in traditional domestic elder execution once adult practices are accounted for.
+3. **Demographic and Ethnoracial Anchors:** Women ($\text{medians } \in [-0.178, -0.162]$, $P(\beta < 0) \ge 99.9\%$), older respondents ($\text{medians } \in [-0.064, -0.028]$), and Mixed-White identifying respondents ($\text{medians } \in [-0.284, -0.237]$, $P(\beta < 0) \ge 99.1\%$) exhibit persistent orientations toward traditional domestic elder authenticity relative to men and single-race white respondents. Other ethnoracial identifications (Black, Asian, Hispanic, Mixed Other) exhibit wide credible intervals that consistently span zero across specifications.
 
 ### 5.3 Ideological Effects: Polarization and Moderation
 

@@ -1,8 +1,13 @@
-"Model","File","WAIC","SE","p_WAIC","N_obs","N_resp","N_cuis","Delta_WAIC","Rank"
-"Model 4: Relaxed CS + Random Slopes","hier_6_relaxed_rs.rds",54961.9697835592,244.835759213445,1217.93994289659,18180,1212,15,0,1
-"Model 3: Random Slopes Strict","hier_3_rs.rds",55171.3718043812,243.271793067515,1185.24171611057,18180,1212,15,209.402020821937,2
-"Model 5: EXT-Practices (Dining & Arts)","hier_ext_practices.rds",55176.8060486426,242.607209333815,1160.90156871844,18180,1212,15,214.836265083381,3
-"Model 2: Relaxed CS","hier_2_relaxed.rds",55177.5080323293,243.100238118338,1173.30342804248,18180,1212,15,215.538248770048,4
-"Model 6: EXT-Dispositions (Taste)","hier_ext_dispositions.rds",55248.5997556999,242.351591687065,1162.90795948378,18180,1212,15,286.629972140618,5
-"Model 7: EXT-Cosmopolitan (Networks)","hier_ext_cosmopolitan.rds",55296.9261405175,242.100322752279,1151.72496769819,18180,1212,15,334.956356958239,6
-"Model 1: Baseline Strict","hier_1_baseline.rds",55310.5910858473,241.688604041519,1141.5501222637,18180,1212,15,348.621302288091,7
+"domain","threshold","re","file","has_waic","waic","se","domain_label","spec_label","Delta_M1","Rank","Highlight"
+"dispositions","relaxed","ri","hier_dispositions_relaxed_ri.rds",TRUE,54586.1820276129,245.598921197038,"Taste Dispositions","Taste Dispositions [relaxed, RI]",-724.409058234465,1,"Best Fitting Model"
+"practices","relaxed","ri","hier_practices_relaxed_ri.rds",TRUE,54818.5066033297,247.596858466399,"Dining Practices","Dining Practices [relaxed, RI]",-492.084482517639,2,"Alternative Specification"
+"base","relaxed","rs","hier_base_relaxed_rs.rds",TRUE,54961.9697835592,244.835759213445,"Cultural Capital","Cultural Capital [relaxed, RS]",-348.621302288091,3,"Alternative Specification"
+"cosmopolitan","relaxed","ri","hier_cosmopolitan_relaxed_ri.rds",TRUE,55069.6960434838,243.429480676878,"Cosmopolitan Capital","Cosmopolitan Capital [relaxed, RI]",-240.89504236354,4,"Alternative Specification"
+"base","strict","rs","hier_base_strict_rs.rds",TRUE,55171.3718043812,243.271793067515,"Cultural Capital","Cultural Capital [strict, RS]",-139.219281466154,5,"Alternative Specification"
+"practices","strict","rs","hier_practices_strict_rs.rds",TRUE,55176.8060486426,242.607209333815,"Dining Practices","Dining Practices [strict, RS]",-133.785037204711,6,"Alternative Specification"
+"base","relaxed","ri","hier_base_relaxed_ri.rds",TRUE,55177.5080323293,243.100238118338,"Cultural Capital","Cultural Capital [relaxed, RI]",-133.083053518043,7,"Alternative Specification"
+"dispositions","strict","rs","hier_dispositions_strict_rs.rds",TRUE,55248.5997556999,242.351591687065,"Taste Dispositions","Taste Dispositions [strict, RS]",-61.9913301474735,8,"Alternative Specification"
+"cosmopolitan","strict","rs","hier_cosmopolitan_strict_rs.rds",TRUE,55296.9261405175,242.100322752279,"Cosmopolitan Capital","Cosmopolitan Capital [strict, RS]",-13.6649453298523,9,"Alternative Specification"
+"base","strict","ri","hier_base_strict_ri.rds",TRUE,55310.5910858473,241.688604041519,"Cultural Capital","Cultural Capital [strict, RI]",0,10,"Reference Baseline (M1)"
+"dispositions","strict","ri","hier_dispositions_strict_ri.rds",TRUE,55311.3511445788,242.251545168524,"Taste Dispositions","Taste Dispositions [strict, RI]",0.760058731444587,11,"Alternative Specification"
+"practices","strict","ri","hier_practices_strict_ri.rds",TRUE,55312.2768590771,241.6135374006,"Dining Practices","Dining Practices [strict, RI]",1.68577322975761,12,"Alternative Specification"

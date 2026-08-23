@@ -122,10 +122,12 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
   - *Midpoint Contrasts:* Prefer midpoint contrast plots (vs. Category 4) over raw threshold transition steps.
 
 ### Complete Figure Registry & Quarto Workflow
+* `scripts/extract_fixed_effects_stability.R`:
+  - Figure 3: `Plots/fixed_effects_stability_forest.png` (Cross-Specification Fixed Effects Stability Envelope)
 * `scripts/generate_plots.R`:
   - Figure 1: `Plots/model_fit_comparison.png` (WAIC Model Fit Comparison)
   - Figure 2: `Plots/cuisine_random_effects.png` (Baseline Cuisine Random Intercepts)
-  - Figure 3: `Plots/demographic_fixed_effects.png` (Global Demographic Fixed Effects)
+  - (Legacy Single-Model Fixed Effects): `Plots/demographic_fixed_effects.png`
   - Figure 4: `Plots/ideology_cs_midpoint_effects.png` (Ideology Midpoint Contrast Shifts)
   - Figure 5: `Plots/cultural_cs_midpoint_effects.png` (Cultural Capital Midpoint Contrast Shifts)
   - Figure 6: `Plots/rs_cuisine_slopes_ideology.png` (Cuisine Random Slopes: Ideology, ordered by Social Conservatism)
