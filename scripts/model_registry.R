@@ -45,7 +45,7 @@ MODEL_REGISTRY <- tribble(
 
   # Meta Omnibus Domain
   "meta",          "Omnibus Meta",     "relaxed",  "Relaxed CS (All Vars)", "ri",  "Random Intercepts",    2,     "hier_meta_relaxed_ri.rds",       "hier_meta_relaxed_ri.rds",   "completed",
-  "meta",          "Omnibus Meta-Meta","relaxed",  "Relaxed CS (All Vars)", "rs",  "Crossed Random Slopes", 4,     "hier_meta_relaxed_rs.rds",       "hier_meta_relaxed_rs.rds",   "running_hoffman"
+  "meta",          "Omnibus Meta-Meta","relaxed",  "Relaxed CS (All Vars)", "rs",  "Crossed Random Slopes", 4,     "hier_meta_relaxed_rs.rds",       "hier_meta_relaxed_rs.rds",   "completed"
 )
 
 #' Resolve model file path transparently from systematic name, legacy name, or taxonomy coordinates

@@ -1,7 +1,14 @@
-#' @title Generate Midpoint Contrast Plots for Novel Substantive Domains & Consensus Credible Variables
+#' @title Generate Consensus Midpoint Contrast Plots with Half-Eye Distributions
 #' @description Computes category-specific cumulative contrast log-odds relative to the neutral
-#'   Likert midpoint (Category 4) for all majority-credible variables across the 4 substantive domains
-#'   (Ideology, Cultural Capital, Dining Practices, Taste Dispositions, Cosmopolitan Capital).
+#'   Likert midpoint (Category 4) using multi-model pooled posterior draws across all relaxed
+#'   category-specific specifications (10 models in the factorial taxonomy + meta models).
+#'   Renders publication-grade half-eye posterior distributions (ggdist::stat_halfeye) for all substantive domains:
+#'   - Figure 4: Plots/ideology_cs_midpoint_effects.png (Ideology)
+#'   - Figure 5: Plots/cultural_cs_midpoint_effects.png (Cultural Capital)
+#'   - Figure 6: Plots/practices_cs_midpoint_effects.png (Dining Practices)
+#'   - Figure 7: Plots/dispositions_cs_midpoint_effects.png (Taste Dispositions)
+#'   - Figure 8: Plots/cosmopolitan_cs_midpoint_effects.png (Cosmopolitan Capital)
+#'   - Master Synthesis: Plots/consensus_credible_midpoint_contrasts.png (7 Consensus Credible Variables on Common Scale)
 
 suppressPackageStartupMessages({
   library(brms)
@@ -11,85 +18,212 @@ suppressPackageStartupMessages({
   library(readr)
   library(ggplot2)
   library(tidybayes)
+  library(ggdist)
   library(here)
 })
+
+source(here("scripts", "model_registry.R"))
+
+plot_dir <- here("Plots")
+cache_dir <- here("cache")
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
+pfile <- function(name) file.path(plot_dir, paste0(name, ".png"))
 
 # -------------------------------------------------------------------------
 # 1. Styling & Plot Theme
 # -------------------------------------------------------------------------
-theme_cuisine <- function(base_size = 12) {
+theme_cuisine <- function(base_size = 11) {
   theme_minimal(base_size = base_size) +
     theme(
-      plot.title = element_text(face = "bold", size = base_size + 2, margin = margin(b = 4)),
-      plot.subtitle = element_text(color = "gray30", size = base_size, margin = margin(b = 8)),
-      plot.caption = element_text(color = "gray40", size = base_size - 3, hjust = 0, margin = margin(t = 8)),
+      plot.title = element_text(face = "bold", size = base_size * 1.15, margin = margin(b = 5)),
+      plot.subtitle = element_text(size = base_size * 0.88, color = "gray25", margin = margin(b = 10)),
+      plot.caption = element_text(size = base_size * 0.72, color = "gray40", hjust = 0, margin = margin(t = 10)),
+      axis.title.x = element_text(face = "bold", size = base_size * 0.95, margin = margin(t = 8)),
+      axis.title.y = element_text(face = "bold", size = base_size * 0.95, margin = margin(r = 8)),
+      axis.text.y = element_text(size = base_size * 0.85),
+      axis.text.x = element_text(face = "bold", size = base_size * 0.88, color = "gray15"),
       panel.grid.minor = element_blank(),
-      panel.grid.major.x = element_line(color = "gray92", linewidth = 0.5),
-      panel.grid.major.y = element_line(color = "gray92", linewidth = 0.5),
-      axis.title = element_text(face = "bold", size = base_size - 1),
-      axis.text = element_text(color = "gray20", size = base_size - 2),
-      legend.title = element_text(face = "bold", size = base_size - 1),
-      legend.text = element_text(size = base_size - 2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = 0.4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = 0.4),
+      strip.text = element_text(face = "bold", size = base_size * 0.92, color = "gray15"),
+      strip.background = element_rect(fill = "gray95", color = NA),
+      panel.spacing = unit(0.9, "lines"),
       legend.position = "bottom",
-      strip.text = element_text(face = "bold", size = base_size - 1),
-      plot.margin = margin(12, 16, 12, 12)
+      legend.title = element_text(face = "bold", size = base_size * 0.85),
+      legend.text = element_text(size = base_size * 0.8),
+      plot.margin = margin(t = 12, r = 16, b = 12, l = 12)
     )
 }
 
-plot_dir <- here("Plots")
-pfile <- function(name) file.path(plot_dir, paste0(name, ".png"))
+# -------------------------------------------------------------------------
+# 2. Extract Category-Specific Draws Across All Relaxed Models
+# -------------------------------------------------------------------------
+cat("=== Extracting Midpoint Contrast Draws Across All Relaxed Models ===\n")
 
-# -------------------------------------------------------------------------
-# 2. Midpoint Contrast Helper Function
-# -------------------------------------------------------------------------
-compute_midpoint_contrasts <- function(df, var_prefix, pred_name, domain_name) {
-  var_col <- paste0("bcs_", var_prefix)
-  w_df <- df %>%
-    select(.chain, .iteration, .draw, threshold, !!sym(var_col)) %>%
-    pivot_wider(names_from = threshold, values_from = !!sym(var_col), names_prefix = "t_")
+relaxed_models <- MODEL_REGISTRY %>% filter(threshold == "relaxed")
+
+all_mid_draws_list <- list()
+
+for (i in seq_len(nrow(relaxed_models))) {
+  row <- relaxed_models[i, ]
+  m_path <- file.path(cache_dir, row$systematic_file)
+  if (!file.exists(m_path)) {
+    m_path <- file.path(cache_dir, row$legacy_file)
+  }
+  if (!file.exists(m_path)) next
   
-  contrasts <- w_df %>%
-    mutate(
-      `Cat 1 (Elder)` = -(t_1 + t_2 + t_3),
-      `Cat 2`         = -(t_2 + t_3),
-      `Cat 3`         = -t_3,
-      `Cat 5`         = t_4,
-      `Cat 6`         = t_4 + t_5,
-      `Cat 7 (Chef)`  = t_4 + t_5 + t_6
-    ) %>%
-    select(.chain, .iteration, .draw, starts_with("Cat")) %>%
-    pivot_longer(cols = starts_with("Cat"), names_to = "Category", values_to = "contrast_log_odds") %>%
-    mutate(
-      Predictor = pred_name,
-      Domain = domain_name,
-      Category = factor(Category, levels = c("Cat 1 (Elder)", "Cat 2", "Cat 3", "Cat 5", "Cat 6", "Cat 7 (Chef)"))
-    )
-  return(contrasts)
+  cat(sprintf("Loading [%s | %s]: %s...\n", row$domain, row$re, basename(m_path)))
+  m <- readRDS(m_path)
+  
+  vars <- grep("^bcs_", variables(m), value = TRUE)
+  clean_vars <- unique(gsub("\\[[0-9]+\\]", "", gsub("^bcs_", "", vars)))
+  
+  dr <- as_draws_df(m)
+  
+  for (v in clean_vars) {
+    col_names <- paste0("bcs_", v, "[", 1:6, "]")
+    if (all(col_names %in% variables(m))) {
+      w <- dr %>%
+        as_tibble() %>%
+        select(all_of(col_names)) %>%
+        rename_with(~ paste0("t_", 1:6), all_of(col_names)) %>%
+        mutate(
+          `Cat 1 (Elder)` = -(t_1 + t_2 + t_3),
+          `Cat 2`         = -(t_2 + t_3),
+          `Cat 3`         = -t_3,
+          `Cat 5`         = t_4,
+          `Cat 6`         = t_4 + t_5,
+          `Cat 7 (Chef)`  = t_4 + t_5 + t_6
+        ) %>%
+        select(starts_with("Cat")) %>%
+        pivot_longer(cols = everything(), names_to = "Category", values_to = "contrast_log_odds") %>%
+        mutate(
+          var_name = v,
+          model_domain = row$domain,
+          model_re = row$re,
+          model_file = row$systematic_file,
+          Category = factor(Category, levels = c("Cat 1 (Elder)", "Cat 2", "Cat 3", "Cat 5", "Cat 6", "Cat 7 (Chef)"))
+        )
+      all_mid_draws_list[[length(all_mid_draws_list) + 1]] <- w
+    }
+  }
 }
 
-# -------------------------------------------------------------------------
-# 3. Load Models
-# -------------------------------------------------------------------------
-cat("Loading fitted relaxed models...\n")
-m_base_rs  <- readRDS(here("cache", "hier_base_relaxed_rs.rds"))
-m_prac_rs  <- readRDS(here("cache", "hier_practices_relaxed_rs.rds"))
-m_disp_rs  <- readRDS(here("cache", "hier_dispositions_relaxed_rs.rds"))
-m_cosmo_rs <- readRDS(here("cache", "hier_cosmopolitan_relaxed_rs.rds"))
+full_mid_df <- bind_rows(all_mid_draws_list)
+cat(sprintf("Total extracted midpoint contrast draws: %d rows across %d relaxed models\n\n", 
+            nrow(full_mid_df), n_distinct(full_mid_df$model_file)))
 
 # -------------------------------------------------------------------------
-# 4. Compute Contrasts for Novel Domains
+# 3. Domain-Specific Plots with Multi-Model Consensus Half-Eyes
 # -------------------------------------------------------------------------
 
-# 4A. Dining Practices Domain
-cat("Computing Practices Midpoint Contrasts...\n")
-draws_prac_cs <- m_prac_rs %>%
-  spread_draws(bcs_highbrow_arts_c[threshold], bcs_fancy_rest_c[threshold], bcs_fast_food_c[threshold])
+# 3A. Figure 4: Political Ideology
+cat("Generating Figure 4: Ideology Midpoint Contrasts (Consensus Half-Eyes)...\n")
+df_ideo <- full_mid_df %>%
+  filter(var_name %in% c("social_c", "economic_c")) %>%
+  mutate(
+    Predictor = factor(
+      ifelse(var_name == "social_c", "Social Conservatism", "Economic Conservatism"),
+      levels = c("Social Conservatism", "Economic Conservatism")
+    )
+  )
 
-prac_mid <- bind_rows(
-  compute_midpoint_contrasts(draws_prac_cs, "highbrow_arts_c", "Adult Highbrow Arts Attendance", "Dining & Arts Practices"),
-  compute_midpoint_contrasts(draws_prac_cs, "fancy_rest_c", "Fine Dining Frequency", "Dining & Arts Practices"),
-  compute_midpoint_contrasts(draws_prac_cs, "fast_food_c", "Fast Food Frequency", "Dining & Arts Practices")
+k_ideo_models <- n_distinct(df_ideo$model_file)
+
+p_ideo <- ggplot(df_ideo, aes(x = Category, y = contrast_log_odds, fill = Predictor, color = Predictor)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
+  stat_halfeye(
+    position = position_dodge(width = 0.65),
+    alpha = 0.60,
+    .width = c(0.80, 0.95),
+    point_interval = median_qi,
+    scale = 0.45,
+    slab_linewidth = 0.35,
+    point_size = 2.4,
+    interval_size = 1.0
+  ) +
+  scale_fill_manual(values = c("Social Conservatism" = "#0072B2", "Economic Conservatism" = "#D55E00"), name = "Ideological Dimension") +
+  scale_color_manual(values = c("Social Conservatism" = "#0072B2", "Economic Conservatism" = "#D55E00"), name = "Ideological Dimension") +
+  labs(
+    title = "Political Ideology: Consensus Category Shifts Relative to Neutral Midpoint",
+    subtitle = sprintf("Multi-model consensus posterior distributions (half-eyes) pooled across %d relaxed category-specific specifications", k_ideo_models),
+    x = "Likert Response Scale Position (Relative to Midpoint = 4)",
+    y = "Contrast Log-Odds (vs. Category 4)",
+    caption = sprintf("Synthesized across %d relaxed category-specific models (%s pooled post-warmup MCMC draws).\nThick bars: 80%% CrI; thin lines: 95%% CrI; dots: posterior medians; shaded slabs: empirical posterior densities.",
+                      k_ideo_models, format(nrow(df_ideo) / 2, big.mark = ","))
+  ) +
+  theme_cuisine(base_size = 11)
+
+ggsave(pfile("ideology_cs_midpoint_effects"), p_ideo, width = 10, height = 6.2, dpi = 300, bg = "white")
+
+
+# 3B. Figure 5: Cultural Capital & Socialization
+cat("Generating Figure 5: Cultural Capital Midpoint Contrasts (Consensus Half-Eyes)...\n")
+df_cult <- full_mid_df %>%
+  filter(var_name %in% c("educ_c", "peduc_c", "arts_c")) %>%
+  mutate(
+    Predictor = factor(
+      case_when(
+        var_name == "educ_c"  ~ "Educational Attainment",
+        var_name == "peduc_c" ~ "Parental Education",
+        var_name == "arts_c"  ~ "Childhood Arts Socialization"
+      ),
+      levels = c("Educational Attainment", "Parental Education", "Childhood Arts Socialization")
+    )
+  )
+
+k_cult_models <- n_distinct(df_cult$model_file)
+
+cult_colors <- c(
+  "Educational Attainment"        = "#0072B2", # Okabe-Ito Blue (Chef)
+  "Parental Education"           = "#E69F00", # Yellow-orange
+  "Childhood Arts Socialization" = "#D55E00"  # Vermillion (Elder)
 )
+
+p_cult <- ggplot(df_cult, aes(x = Category, y = contrast_log_odds, fill = Predictor, color = Predictor)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
+  stat_halfeye(
+    position = position_dodge(width = 0.70),
+    alpha = 0.60,
+    .width = c(0.80, 0.95),
+    point_interval = median_qi,
+    scale = 0.45,
+    slab_linewidth = 0.35,
+    point_size = 2.3,
+    interval_size = 1.0
+  ) +
+  scale_fill_manual(values = cult_colors, name = "Cultural Capital Dimension") +
+  scale_color_manual(values = cult_colors, name = "Cultural Capital Dimension") +
+  labs(
+    title = "Cultural Capital & Socialization: Consensus Shifts Relative to Neutral Midpoint",
+    subtitle = sprintf("Multi-model consensus posterior distributions (half-eyes) pooled across %d relaxed category-specific specifications", k_cult_models),
+    x = "Likert Response Scale Position (Relative to Midpoint = 4)",
+    y = "Contrast Log-Odds (vs. Category 4)",
+    caption = sprintf("Synthesized across %d relaxed category-specific models (%s pooled post-warmup MCMC draws).\nThick bars: 80%% CrI; thin lines: 95%% CrI; dots: posterior medians; shaded slabs: empirical posterior densities.",
+                      k_cult_models, format(nrow(df_cult) / 3, big.mark = ","))
+  ) +
+  theme_cuisine(base_size = 11)
+
+ggsave(pfile("cultural_cs_midpoint_effects"), p_cult, width = 10.5, height = 6.2, dpi = 300, bg = "white")
+
+
+# 3C. Figure 6: Dining Practices
+cat("Generating Figure 6: Dining Practices Midpoint Contrasts (Consensus Half-Eyes)...\n")
+df_prac <- full_mid_df %>%
+  filter(var_name %in% c("highbrow_arts_c", "fancy_rest_c", "fast_food_c")) %>%
+  mutate(
+    Predictor = factor(
+      case_when(
+        var_name == "highbrow_arts_c" ~ "Adult Highbrow Arts Attendance",
+        var_name == "fancy_rest_c"    ~ "Fine Dining Frequency",
+        var_name == "fast_food_c"     ~ "Fast Food Frequency"
+      ),
+      levels = c("Adult Highbrow Arts Attendance", "Fine Dining Frequency", "Fast Food Frequency")
+    )
+  )
+
+k_prac_models <- n_distinct(df_prac$model_file)
 
 prac_colors <- c(
   "Adult Highbrow Arts Attendance" = "#7570b3",
@@ -97,44 +231,50 @@ prac_colors <- c(
   "Fast Food Frequency"            = "#66a61e"
 )
 
-p_prac_mid <- ggplot(prac_mid, aes(x = Category, y = contrast_log_odds, color = Predictor, group = Predictor)) +
+p_prac <- ggplot(df_prac, aes(x = Category, y = contrast_log_odds, fill = Predictor, color = Predictor)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
-  stat_pointinterval(
-    point_interval = median_qi,
+  stat_halfeye(
+    position = position_dodge(width = 0.70),
+    alpha = 0.60,
     .width = c(0.80, 0.95),
-    position = position_dodge(width = 0.5),
-    point_size = 3.2,
-    interval_size = 1.1
+    point_interval = median_qi,
+    scale = 0.45,
+    slab_linewidth = 0.35,
+    point_size = 2.3,
+    interval_size = 1.0
   ) +
+  scale_fill_manual(values = prac_colors, name = "Dining & Arts Practice") +
   scale_color_manual(values = prac_colors, name = "Dining & Arts Practice") +
   labs(
-    title = "Dining & Cultural Practices: Category Shifts Relative to Neutral Midpoint",
-    subtitle = "Cumulative contrast log-odds of selecting given category vs. neutral midpoint (Cat 4) per 1 SD increase",
-    x = "Response Scale Position (Relative to Midpoint = 4)",
+    title = "Dining & Cultural Practices: Consensus Shifts Relative to Neutral Midpoint",
+    subtitle = sprintf("Multi-model consensus posterior distributions (half-eyes) pooled across %d relaxed specifications (Domain + Meta)", k_prac_models),
+    x = "Likert Response Scale Position (Relative to Midpoint = 4)",
     y = "Contrast Log-Odds (vs. Category 4)",
-    caption = "Derived from Dining Practices Relaxed CS + RS Model (4,000 MCMC draws).\nPositive values indicate increased likelihood of choosing that category relative to the midpoint."
+    caption = sprintf("Synthesized across %d relaxed models containing dining practices (%s pooled post-warmup MCMC draws).\nThick bars: 80%% CrI; thin lines: 95%% CrI; dots: posterior medians; shaded slabs: empirical posterior densities.",
+                      k_prac_models, format(nrow(df_prac) / 3, big.mark = ","))
   ) +
-  theme_cuisine(base_size = 12) +
-  theme(axis.text.x = element_text(face = "bold", size = 10))
+  theme_cuisine(base_size = 11)
 
-ggsave(pfile("practices_cs_midpoint_effects"), p_prac_mid, width = 10, height = 6.2, dpi = 300, bg = "white")
+ggsave(pfile("practices_cs_midpoint_effects"), p_prac, width = 10.5, height = 6.2, dpi = 300, bg = "white")
 
-# 4B. Taste Dispositions Domain
-cat("Computing Taste Dispositions Midpoint Contrasts...\n")
-draws_disp_cs <- m_disp_rs %>%
-  spread_draws(
-    bcs_taste_authentic_c[threshold],
-    bcs_taste_familiar_c[threshold],
-    bcs_taste_light_c[threshold],
-    bcs_taste_rich_c[threshold]
+
+# 3D. Figure 7: Taste Dispositions
+cat("Generating Figure 7: Taste Dispositions Midpoint Contrasts (Consensus Half-Eyes)...\n")
+df_disp <- full_mid_df %>%
+  filter(var_name %in% c("taste_authentic_c", "taste_familiar_c", "taste_light_c", "taste_rich_c")) %>%
+  mutate(
+    Predictor = factor(
+      case_when(
+        var_name == "taste_authentic_c" ~ "Exotic / Authentic",
+        var_name == "taste_familiar_c"  ~ "Familiar / Comfort",
+        var_name == "taste_light_c"     ~ "Light / Fresh",
+        var_name == "taste_rich_c"      ~ "Rich / Hearty"
+      ),
+      levels = c("Exotic / Authentic", "Familiar / Comfort", "Light / Fresh", "Rich / Hearty")
+    )
   )
 
-disp_mid <- bind_rows(
-  compute_midpoint_contrasts(draws_disp_cs, "taste_authentic_c", "Exotic / Authentic", "Taste Dispositions"),
-  compute_midpoint_contrasts(draws_disp_cs, "taste_familiar_c", "Familiar / Comfort", "Taste Dispositions"),
-  compute_midpoint_contrasts(draws_disp_cs, "taste_light_c", "Light / Fresh", "Taste Dispositions"),
-  compute_midpoint_contrasts(draws_disp_cs, "taste_rich_c", "Rich / Hearty", "Taste Dispositions")
-)
+k_disp_models <- n_distinct(df_disp$model_file)
 
 disp_colors <- c(
   "Exotic / Authentic" = "#D55E00",
@@ -143,88 +283,104 @@ disp_colors <- c(
   "Rich / Hearty"      = "#56B4E9"
 )
 
-p_disp_mid <- ggplot(disp_mid, aes(x = Category, y = contrast_log_odds, color = Predictor, group = Predictor)) +
+p_disp <- ggplot(df_disp, aes(x = Category, y = contrast_log_odds, fill = Predictor, color = Predictor)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
-  stat_pointinterval(
-    point_interval = median_qi,
+  stat_halfeye(
+    position = position_dodge(width = 0.75),
+    alpha = 0.60,
     .width = c(0.80, 0.95),
-    position = position_dodge(width = 0.55),
-    point_size = 3.2,
-    interval_size = 1.1
+    point_interval = median_qi,
+    scale = 0.45,
+    slab_linewidth = 0.35,
+    point_size = 2.2,
+    interval_size = 0.95
   ) +
+  scale_fill_manual(values = disp_colors, name = "Taste Disposition Dimension") +
   scale_color_manual(values = disp_colors, name = "Taste Disposition Dimension") +
   labs(
-    title = "Taste Dispositions: Category Shifts Relative to Neutral Midpoint",
-    subtitle = "Cumulative contrast log-odds of selecting given category vs. neutral midpoint (Cat 4) per 1 SD increase",
-    x = "Response Scale Position (Relative to Midpoint = 4)",
+    title = "Taste Dispositions: Consensus Shifts Relative to Neutral Midpoint",
+    subtitle = sprintf("Multi-model consensus posterior distributions (half-eyes) pooled across %d relaxed specifications (Domain + Meta)", k_disp_models),
+    x = "Likert Response Scale Position (Relative to Midpoint = 4)",
     y = "Contrast Log-Odds (vs. Category 4)",
-    caption = "Derived from Taste Dispositions Relaxed CS + RS Model (4,000 MCMC draws).\nPositive values indicate increased likelihood of choosing that category relative to the midpoint."
+    caption = sprintf("Synthesized across %d relaxed models containing taste dispositions (%s pooled post-warmup MCMC draws).\nThick bars: 80%% CrI; thin lines: 95%% CrI; dots: posterior medians; shaded slabs: empirical posterior densities.",
+                      k_disp_models, format(nrow(df_disp) / 4, big.mark = ","))
   ) +
-  theme_cuisine(base_size = 12) +
-  theme(axis.text.x = element_text(face = "bold", size = 10))
+  theme_cuisine(base_size = 11)
 
-ggsave(pfile("dispositions_cs_midpoint_effects"), p_disp_mid, width = 10.5, height = 6.2, dpi = 300, bg = "white")
+ggsave(pfile("dispositions_cs_midpoint_effects"), p_disp, width = 11, height = 6.2, dpi = 300, bg = "white")
 
-# 4C. Cosmopolitan Capital Domain
-cat("Computing Cosmopolitan Capital Midpoint Contrasts...\n")
-draws_cosmo_cs <- m_cosmo_rs %>%
-  spread_draws(bcs_network_diversity_c[threshold], bcs_cosmo_global_c[threshold])
 
-cosmo_mid <- bind_rows(
-  compute_midpoint_contrasts(draws_cosmo_cs, "network_diversity_c", "Friendship Network Diversity", "Cosmopolitan Capital"),
-  compute_midpoint_contrasts(draws_cosmo_cs, "cosmo_global_c", "Global Citizen Identity", "Cosmopolitan Capital")
-)
+# 3E. Figure 8: Cosmopolitan Capital
+cat("Generating Figure 8: Cosmopolitan Capital Midpoint Contrasts (Consensus Half-Eyes)...\n")
+df_cosmo <- full_mid_df %>%
+  filter(var_name %in% c("network_diversity_c", "cosmo_global_c")) %>%
+  mutate(
+    Predictor = factor(
+      case_when(
+        var_name == "network_diversity_c" ~ "Friendship Network Diversity",
+        var_name == "cosmo_global_c"     ~ "Global Citizen Identity"
+      ),
+      levels = c("Friendship Network Diversity", "Global Citizen Identity")
+    )
+  )
+
+k_cosmo_models <- n_distinct(df_cosmo$model_file)
 
 cosmo_colors <- c(
   "Friendship Network Diversity" = "#0072B2",
   "Global Citizen Identity"      = "#CC79A7"
 )
 
-p_cosmo_mid <- ggplot(cosmo_mid, aes(x = Category, y = contrast_log_odds, color = Predictor, group = Predictor)) +
+p_cosmo <- ggplot(df_cosmo, aes(x = Category, y = contrast_log_odds, fill = Predictor, color = Predictor)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
-  stat_pointinterval(
-    point_interval = median_qi,
+  stat_halfeye(
+    position = position_dodge(width = 0.65),
+    alpha = 0.60,
     .width = c(0.80, 0.95),
-    position = position_dodge(width = 0.45),
-    point_size = 3.5,
-    interval_size = 1.2
+    point_interval = median_qi,
+    scale = 0.45,
+    slab_linewidth = 0.35,
+    point_size = 2.4,
+    interval_size = 1.0
   ) +
+  scale_fill_manual(values = cosmo_colors, name = "Cosmopolitan Dimension") +
   scale_color_manual(values = cosmo_colors, name = "Cosmopolitan Dimension") +
   labs(
-    title = "Cosmopolitan Capital: Category Shifts Relative to Neutral Midpoint",
-    subtitle = "Cumulative contrast log-odds of selecting given category vs. neutral midpoint (Cat 4) per 1 SD increase",
-    x = "Response Scale Position (Relative to Midpoint = 4)",
+    title = "Cosmopolitan Capital: Consensus Shifts Relative to Neutral Midpoint",
+    subtitle = sprintf("Multi-model consensus posterior distributions (half-eyes) pooled across %d relaxed specifications (Domain + Meta)", k_cosmo_models),
+    x = "Likert Response Scale Position (Relative to Midpoint = 4)",
     y = "Contrast Log-Odds (vs. Category 4)",
-    caption = "Derived from Cosmopolitan Capital Relaxed CS + RS Model (4,000 MCMC draws).\nPositive values indicate increased likelihood of choosing that category relative to the midpoint."
+    caption = sprintf("Synthesized across %d relaxed models containing cosmopolitan capital (%s pooled post-warmup MCMC draws).\nThick bars: 80%% CrI; thin lines: 95%% CrI; dots: posterior medians; shaded slabs: empirical posterior densities.",
+                      k_cosmo_models, format(nrow(df_cosmo) / 2, big.mark = ","))
   ) +
-  theme_cuisine(base_size = 12) +
-  theme(axis.text.x = element_text(face = "bold", size = 10))
+  theme_cuisine(base_size = 11)
 
-ggsave(pfile("cosmopolitan_cs_midpoint_effects"), p_cosmo_mid, width = 9.5, height = 6.2, dpi = 300, bg = "white")
+ggsave(pfile("cosmopolitan_cs_midpoint_effects"), p_cosmo, width = 10, height = 6.2, dpi = 300, bg = "white")
+
 
 # -------------------------------------------------------------------------
-# 5. Consolidated Multi-Panel Consensus Credible Midpoint Contrasts Plot
+# 4. Master Multi-Panel Consensus Credible Midpoint Contrasts (Common Scale)
 # -------------------------------------------------------------------------
-cat("Compiling Master Multi-Panel Consensus Credible Midpoint Contrasts...\n")
+cat("Generating Master Multi-Panel Consensus Credible Midpoint Contrasts (Consensus Half-Eyes)...\n")
 
-# Base domain draws
-draws_base_cs <- m_base_rs %>%
-  spread_draws(bcs_social_c[threshold], bcs_economic_c[threshold], bcs_educ_c[threshold], bcs_arts_c[threshold])
-
-soc_mid    <- compute_midpoint_contrasts(draws_base_cs, "social_c", "Social Conservatism", "1. Political Ideology")
-educ_mid   <- compute_midpoint_contrasts(draws_base_cs, "educ_c", "Educational Attainment", "2. Cultural Capital")
-arts_mid   <- compute_midpoint_contrasts(draws_base_cs, "arts_c", "Childhood Arts Socialization", "2. Cultural Capital")
-high_mid   <- compute_midpoint_contrasts(draws_prac_cs, "highbrow_arts_c", "Adult Highbrow Arts Attendance", "3. Dining & Arts Practices")
-fine_mid   <- compute_midpoint_contrasts(draws_prac_cs, "fancy_rest_c", "Fine Dining Frequency", "3. Dining & Arts Practices")
-auth_mid   <- compute_midpoint_contrasts(draws_disp_cs, "taste_authentic_c", "Dispositions: Exotic / Authentic", "4. Taste Dispositions")
-net_mid    <- compute_midpoint_contrasts(draws_cosmo_cs, "network_diversity_c", "Friendship Network Diversity", "5. Cosmopolitan Capital")
-
-master_credible_mid <- bind_rows(
-  soc_mid, educ_mid, arts_mid, high_mid, fine_mid, auth_mid, net_mid
-) %>%
+df_master <- full_mid_df %>%
+  filter(var_name %in% c(
+    "social_c", "educ_c", "arts_c", 
+    "highbrow_arts_c", "fancy_rest_c", 
+    "taste_authentic_c", "network_diversity_c"
+  )) %>%
   mutate(
+    Predictor = case_when(
+      var_name == "social_c"            ~ "Social Conservatism",
+      var_name == "educ_c"              ~ "Educational Attainment",
+      var_name == "arts_c"              ~ "Childhood Arts Socialization",
+      var_name == "highbrow_arts_c"     ~ "Adult Highbrow Arts Attendance",
+      var_name == "fancy_rest_c"        ~ "Fine Dining Frequency",
+      var_name == "taste_authentic_c"   ~ "Dispositions: Exotic / Authentic",
+      var_name == "network_diversity_c" ~ "Friendship Network Diversity"
+    ),
     Direction_Type = case_when(
-      Predictor %in% c("Childhood Arts Socialization", "Dispositions: Exotic / Authentic") ~ "Elder Authenticity Anchor",
+      var_name %in% c("arts_c", "taste_authentic_c") ~ "Elder Authenticity Anchor",
       TRUE ~ "Professional Chef Anchor"
     ),
     Predictor_F = factor(Predictor, levels = c(
@@ -235,16 +391,27 @@ master_credible_mid <- bind_rows(
       "Fine Dining Frequency",
       "Dispositions: Exotic / Authentic",
       "Friendship Network Diversity"
-    ))
+    )),
+    Direction_Type = factor(Direction_Type, levels = c("Professional Chef Anchor", "Elder Authenticity Anchor"))
   )
 
-p_master_mid <- ggplot(master_credible_mid, aes(x = Category, y = contrast_log_odds, color = Direction_Type, group = Predictor_F)) +
+p_master <- ggplot(df_master, aes(x = Category, y = contrast_log_odds, fill = Direction_Type, color = Direction_Type)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.6) +
-  stat_pointinterval(
-    point_interval = median_qi,
+  stat_halfeye(
+    alpha = 0.60,
     .width = c(0.80, 0.95),
-    point_size = 2.6,
+    point_interval = median_qi,
+    scale = 0.65,
+    slab_linewidth = 0.35,
+    point_size = 2.2,
     interval_size = 0.95
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Professional Chef Anchor" = "#0072B2",
+      "Elder Authenticity Anchor" = "#D55E00"
+    ),
+    name = "Consensus Theoretical Orientation"
   ) +
   scale_color_manual(
     values = c(
@@ -259,11 +426,11 @@ p_master_mid <- ggplot(master_credible_mid, aes(x = Category, y = contrast_log_o
   coord_cartesian(ylim = c(-0.9, 1.75)) +
   facet_wrap(~ Predictor_F, ncol = 3) +
   labs(
-    title = "Consensus Credible Predictors: Cumulative Likert Category Shifts vs. Midpoint (Common Scale)",
-    subtitle = "Category-specific contrast log-odds relative to Category 4 (Neutral Midpoint) per 1 SD increase across focal mechanisms",
+    title = "Consensus Credible Predictors: Category Shifts Relative to Neutral Midpoint (Common Scale)",
+    subtitle = "Multi-model consensus posterior distributions (half-eyes) across all relaxed category-specific models in the factorial taxonomy + meta models",
     x = "Likert Response Scale Category (Elder Tradition 1 \u2190 \u2192 Chef Restaurant 7)",
     y = "Contrast Log-Odds vs. Category 4 (Shared Scale across all panels)",
-    caption = "Derived from optimal Relaxed Category-Specific + Random Slopes models (4,000 MCMC draws each).\nAll panels share a standardized vertical scale [-0.90, +1.75] to enable direct cross-domain effect size comparisons.\nBlue indicates pro-chef escalation across categories 5–7; Vermillion indicates domestic elder tradition escalation across categories 1–3."
+    caption = "Synthesized across all relevant relaxed category-specific models (16,000 to 40,000 pooled post-warmup MCMC draws per variable).\nAll panels share a standardized vertical scale [-0.90, +1.75] to enable direct cross-domain effect size comparisons.\nBlue indicates pro-chef escalation across categories 5–7; Vermillion indicates domestic elder tradition escalation across categories 1–3."
   ) +
   theme_cuisine(base_size = 11) +
   theme(
@@ -272,12 +439,14 @@ p_master_mid <- ggplot(master_credible_mid, aes(x = Category, y = contrast_log_o
     legend.position = "bottom"
   )
 
-ggsave(pfile("consensus_credible_midpoint_contrasts"), p_master_mid, width = 11.5, height = 8.5, dpi = 300, bg = "white")
+ggsave(pfile("consensus_credible_midpoint_contrasts"), p_master, width = 11.5, height = 8.5, dpi = 300, bg = "white")
 
 cat("========================================================================\n")
-cat("Novel midpoint contrast plots successfully generated and saved to Plots/:\n")
-cat("  - practices_cs_midpoint_effects.png\n")
-cat("  - dispositions_cs_midpoint_effects.png\n")
-cat("  - cosmopolitan_cs_midpoint_effects.png\n")
-cat("  - consensus_credible_midpoint_contrasts.png\n")
+cat("Consensus Half-Eye Midpoint Contrast plots successfully generated in Plots/:\n")
+cat("  - ideology_cs_midpoint_effects.png (Figure 4)\n")
+cat("  - cultural_cs_midpoint_effects.png (Figure 5)\n")
+cat("  - practices_cs_midpoint_effects.png (Figure 6)\n")
+cat("  - dispositions_cs_midpoint_effects.png (Figure 7)\n")
+cat("  - cosmopolitan_cs_midpoint_effects.png (Figure 8)\n")
+cat("  - consensus_credible_midpoint_contrasts.png (Master Synthesis)\n")
 cat("========================================================================\n")

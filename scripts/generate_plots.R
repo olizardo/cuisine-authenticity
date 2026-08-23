@@ -92,9 +92,9 @@ m3 <- load_model("3_rs")
 m6 <- load_model("6_relaxed_rs")
 
 # -------------------------------------------------------------
-# 2. WAIC Model Fit Comparison across all 16 Taxonomy Models
+# 2. WAIC Model Fit Comparison across all 18 Taxonomy Models
 # -------------------------------------------------------------
-cat("\n1. Generating WAIC Model Fit Comparison across all 16 taxonomy models...\n")
+cat("\n1. Generating WAIC Model Fit Comparison across all 18 taxonomy models...\n")
 
 fit_comp_path <- here("cache", "full_model_fit_comparison.rds")
 if (file.exists(fit_comp_path)) {
@@ -150,16 +150,16 @@ if (file.exists(fit_comp_path)) {
       show.legend = FALSE
     ) +
     scale_color_manual(values = domain_colors, name = "Substantive Domain") +
-    coord_cartesian(xlim = c(-1080, 120)) +
+    coord_cartesian(xlim = c(-1480, 120)) +
     scale_x_continuous(
-      breaks = seq(-1000, 0, by = 200)
+      breaks = seq(-1400, 0, by = 200)
     ) +
     labs(
       title = "Bayesian Model Fit Comparison Relative to Baseline Model 1",
       subtitle = expression(bold(Delta * "WAIC relative to Cultural Capital Strict RI") ~ " (N = 18,180 ratings across 1,212 respondents)"),
       x = expression(Delta * "WAIC vs. Reference Baseline (Negative = Predictive Improvement; Positive = Fit Degradation)"),
       y = NULL,
-      caption = "Reference Baseline (0.0): Cultural Capital (Strict Proportional Odds, Random Intercepts; WAIC = 55,310.59).\nNegative values indicate out-of-sample predictive gain over baseline; models ordered from largest gain (top) to baseline (bottom)."
+      caption = "Reference Baseline (0.0): Cultural Capital (Strict Proportional Odds, Random Intercepts; WAIC = 55,310.59).\nNegative values indicate out-of-sample predictive gain over baseline; all 18 models ordered from largest gain (top) to baseline (bottom)."
     ) +
     theme_cuisine(base_size = 11) +
     theme(
@@ -299,7 +299,7 @@ if (!is.null(m6)) {
 # 4. Baseline Cuisine Random Intercepts (Model 6)
 # -------------------------------------------------------------
 if (!is.null(m6)) {
-  cat("3. Generating Baseline Cuisine Random Intercepts Consensus Plot across all 16 models...\n")
+  cat("3. Generating Baseline Cuisine Random Intercepts Consensus Plot across all 18 models...\n")
   
   source(here("scripts", "model_registry.R"))
   
@@ -457,10 +457,10 @@ if (!is.null(m6)) {
     coord_cartesian(xlim = c(-0.65, 1.05)) +
     labs(
       title = "Baseline Cuisine Authenticity Hierarchy: Cross-Specification Consensus",
-      subtitle = "Posterior distributions (half-eyes) for cuisine random intercepts across all 17 completed models, ordered by mean effect size\nTick marks (+) represent individual model posterior medians demonstrating specification stability",
+      subtitle = "Posterior distributions (half-eyes) for cuisine random intercepts across all 18 completed models, ordered by mean effect size\nTick marks (+) represent individual model posterior medians demonstrating specification stability",
       x = "Cuisine Random Intercept Shift (Log-Odds Deviation vs. Average Cuisine)",
       y = NULL,
-      caption = "Half-eye density slabs, posterior medians, and 80%/95% CrIs synthesized across 17 completed Bayesian model specifications (N = 18,180 ratings).\nTick marks (+) indicate individual model posterior medians (k = 17 models per cuisine).\nCuisines ordered strictly along the y-axis by posterior mean effect size. Blue = Credibly Pro-Chef; Vermillion = Credibly Domestic Elder; Gray = Spans Zero."
+      caption = "Half-eye density slabs, posterior medians, and 80%/95% CrIs synthesized across all 18 completed Bayesian model specifications (N = 18,180 ratings).\nTick marks (+) indicate individual model posterior medians (k = 18 models per cuisine).\nCuisines ordered strictly along the y-axis by posterior mean effect size. Blue = Credibly Pro-Chef; Vermillion = Credibly Domestic Elder; Gray = Spans Zero."
     ) +
     theme_cuisine(base_size = 11) +
     theme(
@@ -484,105 +484,11 @@ cat("4. Generating Cuisine Random Slopes Consensus Plots (Ideology & Cultural Ca
 source(here("scripts", "extract_random_slopes_stability.R"))
 
 # -------------------------------------------------------------
-# 6. Midpoint Contrast Effects (Model 2)
+# 6. Midpoint Contrast Effects: Multi-Model Consensus Half-Eyes
 # -------------------------------------------------------------
-if (!is.null(m2)) {
-  cat("5. Generating Midpoint Contrast Plots for Ideology and Cultural Capital (Model 2)...\n")
-  
-  compute_midpoint_contrasts <- function(df, var_prefix, pred_name) {
-    var_col <- paste0("bcs_", var_prefix)
-    w_df <- df %>%
-      select(.chain, .iteration, .draw, threshold, !!sym(var_col)) %>%
-      pivot_wider(names_from = threshold, values_from = !!sym(var_col), names_prefix = "t_")
-    
-    contrasts <- w_df %>%
-      mutate(
-        `Cat 1 (Elder)` = -(t_1 + t_2 + t_3),
-        `Cat 2`         = -(t_2 + t_3),
-        `Cat 3`         = -t_3,
-        `Cat 5`         = t_4,
-        `Cat 6`         = t_4 + t_5,
-        `Cat 7 (Chef)`  = t_4 + t_5 + t_6
-      ) %>%
-      select(.chain, .iteration, .draw, starts_with("Cat")) %>%
-      pivot_longer(cols = starts_with("Cat"), names_to = "Category", values_to = "contrast_log_odds") %>%
-      mutate(
-        Predictor = pred_name,
-        Category = factor(Category, levels = c("Cat 1 (Elder)", "Cat 2", "Cat 3", "Cat 5", "Cat 6", "Cat 7 (Chef)"))
-      )
-    return(contrasts)
-  }
-  
-  # 6A. Ideology Midpoint Contrast Effects
-  draws_cs_wide <- m2 %>%
-    spread_draws(bcs_social_c[threshold], bcs_economic_c[threshold])
-  
-  ideology_midpoint <- bind_rows(
-    compute_midpoint_contrasts(draws_cs_wide, "social_c", "Social Conservatism"),
-    compute_midpoint_contrasts(draws_cs_wide, "economic_c", "Economic Conservatism")
-  )
-  
-  p_ideology_mid <- ggplot(ideology_midpoint, aes(x = Category, y = contrast_log_odds, color = Predictor, group = Predictor)) +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
-    stat_pointinterval(
-      point_interval = median_qi,
-      .width = c(0.80, 0.95),
-      position = position_dodge(width = 0.45),
-      point_size = 3.5,
-      interval_size = 1.2
-    ) +
-    scale_color_manual(values = c("Social Conservatism" = "#1b9e77", "Economic Conservatism" = "#d95f02"), name = "Ideological Dimension") +
-    labs(
-      title = "Ideological Effects Relative to Neutral Scale Midpoint (Category 4)",
-      subtitle = "Cumulative contrast log-odds of selecting given category vs. neutral midpoint per 1 SD increase in ideology",
-      x = "Response Scale Position (Relative to Midpoint = 4)",
-      y = "Contrast Log-Odds (vs. Category 4)",
-      caption = "Derived from Relaxed CS Model (Model 2; 4,000 MCMC draws).\nPositive values indicate increased likelihood of choosing that category relative to the midpoint."
-    ) +
-    theme_cuisine(base_size = 12) +
-    theme(
-      axis.text.x = element_text(face = "bold", size = 10),
-      legend.position = "bottom"
-    )
-  ggsave(pfile("ideology_cs_midpoint_effects"), p_ideology_mid, width = 9.5, height = 6, dpi = 300, bg = "white")
-  
-  # 6B. Cultural Capital Midpoint Contrast Effects
-  draws_cs_cult_wide <- m2 %>%
-    spread_draws(bcs_educ_c[threshold], bcs_peduc_c[threshold], bcs_arts_c[threshold])
-  
-  cult_colors <- c("Educational Attainment" = "#7570b3", "Parental Education" = "#e7298a", "Childhood Arts Exposure" = "#66a61e")
-  
-  cult_midpoint <- bind_rows(
-    compute_midpoint_contrasts(draws_cs_cult_wide, "educ_c", "Educational Attainment"),
-    compute_midpoint_contrasts(draws_cs_cult_wide, "peduc_c", "Parental Education"),
-    compute_midpoint_contrasts(draws_cs_cult_wide, "arts_c", "Childhood Arts Exposure")
-  )
-  
-  p_cult_mid <- ggplot(cult_midpoint, aes(x = Category, y = contrast_log_odds, color = Predictor, group = Predictor)) +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "gray45", linewidth = 0.75) +
-    stat_pointinterval(
-      point_interval = median_qi,
-      .width = c(0.80, 0.95),
-      position = position_dodge(width = 0.45),
-      point_size = 3.5,
-      interval_size = 1.2
-    ) +
-    scale_color_manual(values = cult_colors, name = "Cultural Capital Indicator") +
-    labs(
-      title = "Cultural Capital Effects Relative to Neutral Scale Midpoint (Category 4)",
-      subtitle = "Cumulative contrast log-odds of selecting given category vs. neutral midpoint per 1 SD increase in predictor",
-      x = "Response Scale Position (Relative to Midpoint = 4)",
-      y = "Contrast Log-Odds (vs. Category 4)",
-      caption = "Derived from Relaxed CS Model (Model 2; 4,000 MCMC draws).\nPositive values indicate increased likelihood of choosing that category relative to the midpoint."
-    ) +
-    theme_cuisine(base_size = 12) +
-    theme(
-      axis.text.x = element_text(face = "bold", size = 10),
-      legend.position = "bottom"
-    )
-  ggsave(pfile("cultural_cs_midpoint_effects"), p_cult_mid, width = 9.5, height = 6, dpi = 300, bg = "white")
-}
+cat("5. Generating Midpoint Contrast Consensus Plots with Half-Eyes...\n")
+source(here("scripts", "generate_novel_midpoint_contrasts.R"))
 
 cat("========================================================================\n")
-cat("All figures generated successfully!\n")
+cat("All figures generated successfully across all 18 models!\n")
 cat("========================================================================\n")

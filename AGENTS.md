@@ -47,9 +47,9 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_cosmopolitan_strict_rs.rds` |
 | | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_cosmopolitan_relaxed_rs.rds` |
 | **Omnibus Meta** | Meta Relaxed RI (Model 17) | Relaxed CS (All 14 Vars) | Random Intercepts | **Completed (Local & Cluster)** | `hier_meta_relaxed_ri.rds` |
-| | Meta-Meta Relaxed RS | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Running (Hoffman2 Array 14512323 Task 2, 80% Sampling)** | `hier_meta_relaxed_rs.rds` |
+| | Meta-Meta Relaxed RS (Model 18) | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_meta_relaxed_rs.rds` |
 
-### Consolidated WAIC Fit Table (All 17 Completed Models, Ordered by Complexity)
+### Consolidated WAIC Fit Table (All 18 Completed Models, Ordered by Complexity)
 
 | Domain | Model Specification | Threshold Constraint | Random Effects | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. Baseline}}$ | Substantive Predictive Fit |
 |:---|:---|:---:|:---:|:---|:---:|:---:|:---:|:---|
@@ -60,7 +60,7 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | **Dining Practices** | **Practices Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_practices_strict_ri.rds` | 55,312.28 (241.61) | 1,138.4 | **+1.69** | Indistinguishable from Baseline |
 | | **Practices Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_practices_relaxed_ri.rds` | 54,818.51 (247.60) | 1,185.9 | **-492.08** | Decisive Improvement |
 | | **Practices Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_practices_strict_rs.rds` | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
-| | **Practices Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_practices_relaxed_rs.rds` | **54,447.28 (250.65)** | 1,254.4 | **-863.31** | Decisive Improvement |
+| | **Practices Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_practices_relaxed_rs.rds` | **54,447.28 (250.65)** | 1,254.3 | **-863.31** | Decisive Improvement |
 | **Taste Dispositions** | **Dispositions Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_dispositions_strict_ri.rds` | 55,311.35 (242.25) | 1,143.1 | **+0.76** | Indistinguishable from Baseline |
 | | **Dispositions Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_dispositions_relaxed_ri.rds` | 54,586.18 (245.60) | 1,187.5 | **-724.41** | Decisive Improvement |
 | | **Dispositions Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_dispositions_strict_rs.rds` | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
@@ -69,7 +69,8 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | | **Cosmopolitan Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_cosmopolitan_relaxed_ri.rds` | 55,069.70 (243.43) | 1,176.9 | **-240.89** | Substantial Improvement |
 | | **Cosmopolitan Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_cosmopolitan_strict_rs.rds` | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
 | | **Cosmopolitan Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_cosmopolitan_relaxed_rs.rds` | **54,804.97 (245.00)** | 1,235.7 | **-505.62** | Decisive Improvement |
-| **Omnibus Meta** | **Omnibus Meta Relaxed RI (Model 17)** | Relaxed (`cs`, All 14 Vars) | Random Intercepts | `hier_meta_relaxed_ri.rds` | **54,311.35 (249.03)** | **1,213.3** | **-999.24** | **Decisive Improvement (Top Overall Model)** |
+| **Omnibus Meta** | **Omnibus Meta Relaxed RI (Model 17)** | Relaxed (`cs`, All 14 Vars) | Random Intercepts | `hier_meta_relaxed_ri.rds` | 54,311.35 (249.03) | 1,213.3 | **-999.24** | Decisive Improvement |
+| | **Omnibus Meta Relaxed RS (Model 18)** | Relaxed (`cs`, All 14 Vars) | Crossed Random Slopes | `hier_meta_relaxed_rs.rds` | **53,934.59 (252.15)** | **1,322.6** | **-1,375.99** | **Decisive Improvement (Top Overall Model)** |
 
 ### WAIC Computation Protocol
 * **Cluster-Side Computation:** Compute WAIC directly on Hoffman2 via `scripts/submit_hoffman_waic.sh` and `scripts/compute_taxonomy_waic.R` using sequential 1-core execution with 16GB memory.
