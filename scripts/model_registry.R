@@ -41,7 +41,11 @@ MODEL_REGISTRY <- tribble(
   "cosmopolitan",  "Cosmo & Networks", "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_cosmopolitan_strict_ri.rds","hier_ext_cosmopolitan_strict_ri.rds", "queued_hoffman",
   "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_cosmopolitan_relaxed_ri.rds","hier_ext_cosmopolitan_relaxed_ri.rds","queued_hoffman",
   "cosmopolitan",  "Cosmo & Networks", "strict",   "Strict (Equal Slopes)", "rs",  "Crossed Random Slopes", 3,     "hier_cosmopolitan_strict_rs.rds","hier_ext_cosmopolitan.rds",  "completed",
-  "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_cosmopolitan_relaxed_rs.rds","hier_ext_cosmopolitan_relaxed.rds",  "running_hoffman"
+  "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_cosmopolitan_relaxed_rs.rds","hier_ext_cosmopolitan_relaxed.rds",  "running_hoffman",
+
+  # Meta Omnibus Domain
+  "meta",          "Omnibus Meta",     "relaxed",  "Relaxed CS (All Vars)", "ri",  "Random Intercepts",    2,     "hier_meta_relaxed_ri.rds",       "hier_meta_relaxed_ri.rds",   "queued_hoffman",
+  "meta",          "Omnibus Meta-Meta","relaxed",  "Relaxed CS (All Vars)", "rs",  "Crossed Random Slopes", 4,     "hier_meta_relaxed_rs.rds",       "hier_meta_relaxed_rs.rds",   "queued_hoffman"
 )
 
 #' Resolve model file path transparently from systematic name, legacy name, or taxonomy coordinates
