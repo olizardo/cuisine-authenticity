@@ -139,38 +139,38 @@ The information criterion comparisons across the full sixteen specifications rev
 
 ## 5. Baseline Cuisine Authenticity and Demographic Fixed Effects
 
-### 5.1 Baseline Authenticity by Cuisine: Optimal Baseline Estimates
+### 5.1 Baseline Authenticity by Cuisine: Cross-Specification Consensus
 
-To establish the baseline culinary hierarchy, cuisine-specific random intercepts were estimated in the optimal baseline model (Model 4: Relaxed CS + Crossed Random Slopes), evaluating the net authenticity orientation for each culinary tradition when demographic characteristics and theoretical predictors are held at sample means. 
+To establish the baseline culinary hierarchy, cuisine-specific random intercepts were estimated across all specifications, evaluating the net authenticity orientation for each culinary tradition when demographic characteristics and theoretical predictors are held at sample means. 
 
-Table 2 presents the posterior medians, 95% credible intervals, and directional classifications for the fifteen culinary traditions, and Figure 2 displays the baseline posterior distributions.
+Table 2 presents the cross-specification stability metrics across all sixteen completed models, and Figure 2 displays the consensus posterior distributions.
 
 ![](Plots/cuisine_random_effects.png){fig-align="center" width="100%"}
 
-Table 2: Baseline Cuisine Authenticity Hierarchy (Optimal Model: Relaxed CS + Random Slopes)
+Table 2: Baseline Cuisine Authenticity Hierarchy: Cross-Specification Consensus Across All 16 Models
 
-| Culinary Tradition | Posterior Median | 95% Credible Interval | $P(\text{Intercept} > 0)$ | Directional Classification |
+| Culinary Tradition | Models ($k$) | Baseline Intercept Range $[\min, \max]$ | 95% Credible Envelope | Directional Consensus Classification |
 |:---|:---:|:---:|:---:|:---|
-| **French** | **+0.70** | $[+0.56, +0.84]$ | $100\%$ | **Credibly Pro-Chef** |
-| **Japanese** | **+0.30** | $[+0.16, +0.44]$ | $100\%$ | **Credibly Pro-Chef** |
-| **Swedish** | **+0.20** | $[+0.06, +0.34]$ | $99.6\%$ | **Credibly Pro-Chef** |
-| **Korean** | +0.08 | $[-0.07, +0.21]$ | $86.4\%$ | Spans Zero / Neutral |
-| **Italian** | +0.07 | $[-0.07, +0.21]$ | $83.9\%$ | Spans Zero / Neutral |
-| **Vietnamese** | -0.05 | $[-0.19, +0.09]$ | $25.5\%$ | Spans Zero / Neutral |
-| **Peruvian** | -0.07 | $[-0.21, +0.07]$ | $15.0\%$ | Spans Zero / Neutral |
-| **Moroccan** | -0.08 | $[-0.22, +0.06]$ | $11.9\%$ | Spans Zero / Neutral |
-| **Lebanese** | -0.09 | $[-0.23, +0.04]$ | $9.0\%$ | Spans Zero / Neutral |
-| **Pakistani** | **-0.15** | $[-0.29, -0.01]$ | $1.7\%$ | **Credibly Domestic Elder ($P < 0 = 98.3\%$)** |
-| **Mexican** | **-0.16** | $[-0.30, -0.02]$ | $1.6\%$ | **Credibly Domestic Elder ($P < 0 = 98.4\%$)** |
-| **Ethiopian** | **-0.17** | $[-0.31, -0.03]$ | $0.9\%$ | **Credibly Domestic Elder ($P < 0 = 99.1\%$)** |
-| **Jamaican** | **-0.23** | $[-0.37, -0.10]$ | $0.1\%$ | **Credibly Domestic Elder ($P < 0 = 99.9\%$)** |
-| **Nigerian** | **-0.25** | $[-0.39, -0.11]$ | $<0.1\%$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
-| **Native American** | **-0.29** | $[-0.43, -0.16]$ | $0\%$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+| **French** | 16 | $[+0.676, +0.718]$ | $[+0.514, +0.859]$ | **Credibly Pro-Chef ($P > 0 = 100\%$)** |
+| **Japanese** | 16 | $[+0.280, +0.312]$ | $[+0.122, +0.450]$ | **Credibly Pro-Chef ($P > 0 = 100\%$)** |
+| **Swedish** | 16 | $[+0.191, +0.211]$ | $[+0.034, +0.355]$ | **Credibly Pro-Chef ($P > 0 \ge 99.6\%$)** |
+| **Korean** | 16 | $[+0.073, +0.091]$ | $[-0.084, +0.237]$ | **Spans Zero / Neutral** |
+| **Italian** | 16 | $[+0.070, +0.081]$ | $[-0.090, +0.232]$ | **Spans Zero / Neutral** |
+| **Vietnamese** | 16 | $[-0.047, -0.033]$ | $[-0.204, +0.116]$ | **Spans Zero / Neutral** |
+| **Peruvian** | 16 | $[-0.069, -0.052]$ | $[-0.222, +0.099]$ | **Spans Zero / Neutral** |
+| **Moroccan** | 16 | $[-0.080, -0.066]$ | $[-0.240, +0.081]$ | **Spans Zero / Neutral** |
+| **Lebanese** | 16 | $[-0.092, -0.071]$ | $[-0.239, +0.079]$ | **Spans Zero / Neutral** |
+| **Pakistani** | 16 | $[-0.152, -0.132]$ | $[-0.304, +0.022]$ | **Credibly Domestic Elder ($P < 0 \ge 98.3\%$)** |
+| **Mexican** | 16 | $[-0.158, -0.137]$ | $[-0.306, +0.013]$ | **Credibly Domestic Elder ($P < 0 \ge 98.4\%$)** |
+| **Ethiopian** | 16 | $[-0.169, -0.157]$ | $[-0.326, -0.004]$ | **Credibly Domestic Elder ($P < 0 \ge 99.1\%$)** |
+| **Jamaican** | 16 | $[-0.232, -0.214]$ | $[-0.383, -0.060]$ | **Credibly Domestic Elder ($P < 0 \ge 99.9\%$)** |
+| **Nigerian** | 16 | $[-0.252, -0.237]$ | $[-0.409, -0.086]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+| **Native American** | 16 | $[-0.299, -0.250]$ | $[-0.435, -0.097]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
 
-The estimates confirm a three-tiered structural consecration hierarchy:
-1. **Consecrated / Haute Culinary Traditions (Blue):** French ($\mu = +0.70$), Japanese ($\mu = +0.30$), and Swedish ($\mu = +0.20$) are credibly anchored in elite professional restaurant craftsmanship at baseline.
-2. **Intermediate / Pluralistic Traditions (Gray):** Korean, Italian, Vietnamese, Peruvian, Moroccan, and Lebanese span the neutral midpoint.
-3. **Subaltern / Heritage Culinary Traditions (Vermillion):** Pakistani ($-0.15$), Mexican ($-0.16$), Ethiopian ($-0.17$), Jamaican ($-0.23$), Nigerian ($-0.25$), and Native American ($-0.29$) are credibly anchored in traditional domestic elder craftsmanship.
+The estimates confirm a three-tiered structural consecration hierarchy across all sixteen models:
+1. **Consecrated / Haute Culinary Traditions (Blue):** French ($\mu \approx +0.70$), Japanese ($\mu \approx +0.30$), and Swedish ($\mu \approx +0.20$) are credibly anchored in elite professional restaurant craftsmanship at baseline across all models.
+2. **Intermediate / Pluralistic Traditions (Gray):** Korean, Italian, Vietnamese, Peruvian, Moroccan, and Lebanese consistently span the neutral midpoint.
+3. **Subaltern / Heritage Culinary Traditions (Vermillion):** Pakistani ($-0.14$), Mexican ($-0.15$), Ethiopian ($-0.16$), Jamaican ($-0.22$), Nigerian ($-0.24$), and Native American ($-0.27$) are credibly anchored in traditional domestic elder craftsmanship.
 
 ### 5.2 Cross-Specification Consensus and Fixed Effects Stability
 
@@ -220,21 +220,11 @@ Table 3: Cross-Specification Parameter Stability Envelope Across All 16 Factoria
 Figure 3 displays the cross-specification stability forest plot, showing posterior medians and 95% credible intervals across all sixteen estimated model specifications aligned on a single gridline per predictor.
 
 ![](Plots/fixed_effects_stability_forest.png){fig-align="center" width="100%"}
-| | Household Income | 7 | $[+0.002, +0.030]$ | $[-0.060, +0.092]$ | **Consistently Spans Zero** |
-| **Ethnoracial Status** | Mixed White Identification | 7 | $[-0.284, -0.237]$ | $[-0.497, -0.065]$ | **Credibly Domestic Elder (99.1%)** |
-| | Mixed Other Race | 7 | $[-0.204, -0.172]$ | $[-0.553, +0.148]$ | **Spans Zero** |
-| | Asian Identification | 7 | $[-0.113, -0.068]$ | $[-0.359, +0.172]$ | **Spans Zero** |
-| | Hispanic / Latino Identification | 7 | $[-0.023, +0.011]$ | $[-0.263, +0.248]$ | **Consistently Spans Zero** |
-| | Black Identification | 7 | $[-0.026, +0.037]$ | $[-0.191, +0.204]$ | **Consistently Spans Zero** |
-
-Figure 3 displays the cross-specification stability forest plot, showing posterior medians and 95% credible intervals across all estimated model specifications.
-
-![](Plots/fixed_effects_stability_forest.png){fig-align="center" width="100%"}
 
 The consensus estimates demonstrate robust structural patterns:
-1. **Ideological Divergence:** Social conservatism consistently predicts endorsing professional chef preparation across all seven baseline and extension models ($\text{medians } \in [+0.109, +0.193]$, $P(\beta > 0) \ge 99.9\%$), whereas economic conservatism remains tightly centered near zero across all specifications ($\text{medians } \in [-0.043, +0.000]$, $P(\beta > 0) \approx 20\%$).
-2. **Cultural Capital and Socialization:** Educational attainment consistently elevates pro-chef evaluations ($[+0.053, +0.122]$), reinforced by adult highbrow arts participation ($+0.141$) and fine dining practices ($+0.090$). In contrast, early childhood arts socialization ($\text{medians } \in [-0.094, -0.025]$) and authenticity-seeking dispositions ($-0.085$) systematically anchor taste in traditional domestic elder execution once adult practices are accounted for.
-3. **Demographic and Ethnoracial Anchors:** Women ($\text{medians } \in [-0.178, -0.162]$, $P(\beta < 0) \ge 99.9\%$), older respondents ($\text{medians } \in [-0.064, -0.028]$), and Mixed-White identifying respondents ($\text{medians } \in [-0.284, -0.237]$, $P(\beta < 0) \ge 99.1\%$) exhibit persistent orientations toward traditional domestic elder authenticity relative to men and single-race white respondents. Other ethnoracial identifications (Black, Asian, Hispanic, Mixed Other) exhibit wide credible intervals that consistently span zero across specifications.
+1. **Ideological Divergence:** Social conservatism consistently predicts endorsing professional chef preparation across all sixteen models ($\text{medians } \in [+0.107, +0.193]$, $P(\beta > 0) \ge 99.1\%$), whereas economic conservatism remains tightly centered near zero across all specifications ($\text{medians } \in [-0.043, +0.003]$, $P(\beta > 0) \approx 20\%$).
+2. **Cultural Capital and Socialization:** Educational attainment consistently elevates pro-chef evaluations ($[+0.053, +0.123]$), reinforced by adult highbrow arts participation ($[+0.102, +0.142]$) and fine dining practices ($[+0.087, +0.125]$). In contrast, early childhood arts socialization ($\text{medians } \in [-0.094, -0.022]$) and authenticity-seeking dispositions ($\text{medians } \in [-0.090, -0.085]$) systematically anchor taste in traditional domestic elder execution once adult practices are accounted for.
+3. **Demographic and Ethnoracial Anchors:** Women ($\text{medians } \in [-0.190, -0.155]$, $P(\beta < 0) = 100\%$), older respondents ($\text{medians } \in [-0.068, -0.027]$), and Other-identifying respondents ($\text{medians } \in [-0.291, -0.223]$, $P(\beta < 0) = 99.9\%$) exhibit persistent orientations toward traditional domestic elder authenticity relative to men and single-race white respondents. Other ethnoracial identifications (Black, Asian, Hispanic, Native American) exhibit wide credible intervals that consistently span zero across specifications.
 
 ### 5.3 Ideological Effects: Polarization and Moderation
 
@@ -272,31 +262,9 @@ Figure 7 displays cuisine-specific net slopes for respondent education, parental
 
 Respondent education demonstrates positive slopes across cuisines, with traditions such as Italian, French, Japanese, and Mexican showing robust positive shifts toward chef craftsmanship. Parental education and childhood arts exposure remain centered near zero across all fifteen traditions, indicating minimal cuisine-specific variation.
 
-## 7. Theoretical Extensions: Nested Taxonomy & Substantive Hypotheses
+## 7. Theoretical Extensions and Hypotheses Tests
 
-To investigate specialized theoretical questions regarding behavioral practices, Bourdieu taste dispositions, and cosmopolitan network diversity, we extend the statistical architecture into three dedicated domains. Each domain introduces a vector of theoretical covariates $\mathbf{z}_D$ estimated across the full $2 \times 2$ nested taxonomy (Strict RI, Relaxed RI, Strict RS, Relaxed RS).
-
-Table 4 details the full taxonomy of nested extension model specifications across all three domains.
-
-Table 4: Factorial Registry and Model Status Across the Three Substantive Extension Domains
-
-| Domain & Model Cell | Threshold Constraint | Cuisine Random Effects | Model Formula & Specification | Status / Output File |
-|:---|:---|:---|:---|:---|
-| **Domain 1: Practices** | | | | |
-| Cell 1: Practices Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_practices_strict_ri.rds`)** |
-| Cell 2: Practices Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(fancy_rest_c) + cs(fast_food_c) + cs(highbrow_arts_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_practices_relaxed_ri.rds`)** |
-| Cell 3: Practices Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + fancy_rest_c + fast_food_c \| cuisine)` | **Completed (`hier_practices_strict_rs.rds`)** |
-| Cell 4: Practices Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(fancy_rest_c) + cs(fast_food_c) + cs(highbrow_arts_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c \| cuisine)` | **Completed (`hier_practices_relaxed_rs.rds`)** |
-| **Domain 2: Dispositions** | | | | |
-| Cell 1: Dispositions Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c + taste_light_c + taste_rich_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_dispositions_strict_ri.rds`)** |
-| Cell 2: Dispositions Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(taste_authentic_c) + cs(taste_familiar_c) + cs(taste_light_c) + cs(taste_rich_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_dispositions_relaxed_ri.rds`)** |
-| Cell 3: Dispositions Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c + taste_light_c + taste_rich_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + taste_authentic_c + taste_familiar_c \| cuisine)` | **Completed (`hier_dispositions_strict_rs.rds`)** |
-| Cell 4: Dispositions Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(taste_authentic_c) + cs(taste_familiar_c) + cs(taste_light_c) + cs(taste_rich_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c \| cuisine)` | **Completed (`hier_dispositions_relaxed_rs.rds`)** |
-| **Domain 3: Cosmopolitan** | | | | |
-| Cell 1: Cosmo Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_cosmopolitan_strict_ri.rds`)** |
-| Cell 2: Cosmo Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(cosmo_global_c) + cs(network_diversity_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_cosmopolitan_relaxed_ri.rds`)** |
-| Cell 3: Cosmo Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + cosmo_global_c \| cuisine)` | **Completed (`hier_cosmopolitan_strict_rs.rds`)** |
-| Cell 4: Cosmo Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(cosmo_global_c) + cs(network_diversity_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c \| cuisine)` | **Completed (`hier_cosmopolitan_relaxed_rs.rds`)** |
+To investigate specialized theoretical questions regarding political asymmetry, cuisine consecration hierarchies, behavioral practices, Bourdieu taste dispositions, and cosmopolitan network diversity, we evaluate the substantive extension models alongside the core baseline architecture.
 
 ### 7.1 Hypotheses H1–H3: Political Ideology Asymmetry
 

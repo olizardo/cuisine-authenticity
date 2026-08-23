@@ -294,9 +294,9 @@ generate_stability_plot <- function(primary_estimates, stability_summary) {
       domain_group = factor(domain_group, levels = domain_levels),
       spec_label = sprintf("%s (%s, %s)", domain_label, threshold, toupper(re)),
       color_cat = case_when(
-        p_gt_0 >= 0.95 ~ "Credibly Positive (Pro-Chef)",
-        p_lt_0 >= 0.95 ~ "Credibly Negative (Pro-Elder)",
-        TRUE ~ "Spans Zero (< 95% Mass)"
+        p_gt_0 >= 0.95 ~ "Pro-Chef Anchor",
+        p_lt_0 >= 0.95 ~ "Domestic Elder Anchor",
+        TRUE ~ "Spans Zero / Neutral"
       )
     )
   
@@ -312,9 +312,9 @@ generate_stability_plot <- function(primary_estimates, stability_summary) {
     mutate(
       label = factor(label, levels = term_order),
       color_cat = factor(color_cat, levels = c(
-        "Credibly Positive (Pro-Chef)",
-        "Credibly Negative (Pro-Elder)",
-        "Spans Zero (< 95% Mass)"
+        "Pro-Chef Anchor",
+        "Domestic Elder Anchor",
+        "Spans Zero / Neutral"
       ))
     )
   
@@ -328,11 +328,11 @@ generate_stability_plot <- function(primary_estimates, stability_summary) {
     ) +
     scale_color_manual(
       values = c(
-        "Credibly Positive (Pro-Chef)" = "#0072B2",
-        "Credibly Negative (Pro-Elder)" = "#D55E00",
-        "Spans Zero (< 95% Mass)" = "gray60"
+        "Pro-Chef Anchor"          = "#0072B2",
+        "Domestic Elder Anchor"    = "#D55E00",
+        "Spans Zero / Neutral"     = "gray55"
       ),
-      name = "Directional Credibility (>= 95% Posterior Mass)"
+      name = "Consensus Credibility (≥ 95% Mass):"
     ) +
     scale_x_continuous(
       breaks = seq(-0.5, 0.4, by = 0.1),
@@ -344,20 +344,23 @@ generate_stability_plot <- function(primary_estimates, stability_summary) {
       subtitle = "Posterior medians and 95% credible intervals across estimated Bayesian model specifications\nAll specifications overlaid along the single horizontal gridline for each predictor",
       x = "Estimated Shift in Log-Odds (Toward Professional Chef)",
       y = NULL,
-      caption = "Points represent posterior medians across estimated models; error bars indicate 95% credible intervals.\nEstimates for relaxed models reflect transition-averaged category-specific parameters."
+      caption = "Points represent posterior medians across estimated models (k = 16 for core predictors, k = 4 for domain extensions).\nEstimates for relaxed models reflect transition-averaged category-specific parameters."
     ) +
     theme_minimal(base_family = "sans", base_size = 11) +
     theme(
-      plot.title = element_text(face = "bold", size = 13),
-      plot.subtitle = element_text(color = "gray30", size = 9.5, margin = margin(b = 8)),
-      plot.caption = element_text(color = "gray40", size = 8.5, margin = margin(t = 8)),
-      axis.text.y = element_text(face = "bold", size = 9.5),
+      plot.title = element_text(face = "bold", size = 12.5),
+      plot.subtitle = element_text(color = "gray30", size = 9.5, margin = margin(b = 6)),
+      plot.caption = element_text(color = "gray40", size = 8.5, margin = margin(t = 6)),
+      axis.text.y = element_text(face = "bold", size = 9.2),
       legend.position = "bottom",
-      legend.title = element_text(size = 9, face = "bold"),
-      legend.text = element_text(size = 8.5),
+      legend.title = element_text(size = 9.5, face = "bold"),
+      legend.text = element_text(size = 9),
+      legend.box = "horizontal",
+      legend.margin = margin(t = 2, b = 2),
       panel.grid.minor = element_blank(),
       panel.grid.major.y = element_line(color = "gray90", linewidth = 0.5)
-    )
+    ) +
+    guides(color = guide_legend(nrow = 1))
   
   plot_path <- here("Plots/fixed_effects_stability_forest.png")
   dir.create(dirname(plot_path), recursive = TRUE, showWarnings = FALSE)

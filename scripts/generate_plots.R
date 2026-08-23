@@ -297,71 +297,169 @@ if (!is.null(m6)) {
 # 4. Baseline Cuisine Random Intercepts (Model 6)
 # -------------------------------------------------------------
 if (!is.null(m6)) {
-  cat("3. Generating Cuisine Random Intercepts Plot (Model 6: ≥ 95% Posterior Mass Criterion)...\n")
-  cuisine_re <- m6 %>%
-    spread_draws(r_cuisine[cuisine, term]) %>%
-    filter(term == "Intercept") %>%
-    mutate(cuisine_label = str_to_title(str_replace_all(cuisine, "_", " ")))
+  cat("3. Generating Baseline Cuisine Random Intercepts Consensus Plot across all 16 models...\n")
   
-  cuisine_summary <- cuisine_re %>%
-    group_by(cuisine_label) %>%
-    summarize(
+  source(here("scripts", "model_registry.R"))
+  
+  cuisines_list <- c("japanese", "french", "italian", "mexican", "moroccan", 
+                     "korean", "peruvian", "native_american", "swedish", 
+                     "pakistani", "ethiopian", "vietnamese", "nigerian", 
+                     "jamaican", "lebanese")
+  
+  cuisine_labels <- c(
+    "japanese" = "Japanese", "french" = "French", "italian" = "Italian",
+    "mexican" = "Mexican", "moroccan" = "Moroccan", "korean" = "Korean",
+    "peruvian" = "Peruvian", "native_american" = "Native American", "swedish" = "Swedish",
+    "pakistani" = "Pakistani", "ethiopian" = "Ethiopian", "vietnamese" = "Vietnamese",
+    "nigerian" = "Nigerian", "jamaican" = "Jamaican", "lebanese" = "Lebanese"
+  )
+  
+  cache_dir <- here("cache")
+  all_cuisine_draws <- list()
+  
+  for (i in seq_len(nrow(MODEL_REGISTRY))) {
+    row <- MODEL_REGISTRY[i, ]
+    sys_path <- file.path(cache_dir, row$systematic_file)
+    leg_path <- file.path(cache_dir, row$legacy_file)
+    
+    target_path <- NULL
+    if (file.exists(sys_path)) target_path <- sys_path
+    else if (file.exists(leg_path)) target_path <- leg_path
+    
+    if (!is.null(target_path)) {
+      m <- tryCatch(readRDS(target_path), error = function(e) NULL)
+      if (!is.null(m) && inherits(m, "brmsfit")) {
+        dr <- tryCatch({
+          m %>%
+            spread_draws(r_cuisine[cuisine, term]) %>%
+            filter(term == "Intercept") %>%
+            mutate(
+              model_key = row$systematic_file,
+              domain = row$domain,
+              domain_label = row$domain_label,
+              threshold = row$threshold,
+              re = row$re,
+              model_label = sprintf("%s [%s, %s]", row$domain_label, ifelse(row$threshold=="relaxed","CS","PO"), toupper(row$re))
+            )
+        }, error = function(e) NULL)
+        
+        if (!is.null(dr)) {
+          all_cuisine_draws[[length(all_cuisine_draws) + 1]] <- dr
+        }
+      }
+    }
+  }
+  
+  full_cuisine_df <- bind_rows(all_cuisine_draws) %>%
+    mutate(cuisine_label = cuisine_labels[as.character(cuisine)])
+  
+  cuisine_model_summary <- full_cuisine_df %>%
+    group_by(cuisine_label, model_key, model_label) %>%
+    summarise(
       median = median(r_cuisine),
-      q2.5 = quantile(r_cuisine, 0.025),
-      q97.5 = quantile(r_cuisine, 0.975),
-      p_pos = mean(r_cuisine > 0),
-      p_neg = mean(r_cuisine < 0),
-      cred_status = case_when(
-        p_pos >= 0.95 ~ "Credibly Pro Chef (≥ 95% Mass)",
-        p_neg >= 0.95 ~ "Credibly Domestic Elder (≥ 95% Mass)",
-        TRUE ~ "Spans Zero (< 95% Mass)"
-      ),
+      q025 = quantile(r_cuisine, 0.025),
+      q975 = quantile(r_cuisine, 0.975),
+      p_gt_0 = mean(r_cuisine > 0),
+      p_lt_0 = mean(r_cuisine < 0),
       .groups = "drop"
     )
   
-  cuisine_order <- cuisine_summary %>% arrange(median) %>% pull(cuisine_label)
+  cuisine_stability <- cuisine_model_summary %>%
+    group_by(cuisine_label) %>%
+    summarise(
+      k_models = n_distinct(model_key),
+      grand_median = mean(median),
+      min_median = min(median),
+      max_median = max(median),
+      min_q025 = min(q025),
+      max_q975 = max(q975),
+      min_p_gt_0 = min(p_gt_0),
+      max_p_gt_0 = max(p_gt_0),
+      min_p_lt_0 = min(p_lt_0),
+      max_p_lt_0 = max(p_lt_0),
+      .groups = "drop"
+    ) %>%
+    mutate(
+      cred_short = case_when(
+        min_p_gt_0 >= 0.95 ~ "Pro-Chef Anchor",
+        min_p_lt_0 >= 0.95 ~ "Elder Authenticity Anchor",
+        TRUE ~ "Spans Zero / Neutral"
+      )
+    ) %>%
+    arrange(grand_median)
   
-  cuisine_plot_df <- cuisine_re %>%
-    left_join(cuisine_summary %>% select(cuisine_label, cred_status), by = "cuisine_label") %>%
+  cuisine_order <- cuisine_stability %>% pull(cuisine_label)
+  
+  cuisine_model_summary <- cuisine_model_summary %>%
+    left_join(cuisine_stability %>% select(cuisine_label, cred_short), by = "cuisine_label") %>%
     mutate(
       cuisine_label = factor(cuisine_label, levels = cuisine_order),
-      cred_status = factor(cred_status, levels = c("Credibly Pro Chef (≥ 95% Mass)", "Credibly Domestic Elder (≥ 95% Mass)", "Spans Zero (< 95% Mass)"))
+      cred_short = factor(cred_short, levels = c("Pro-Chef Anchor", "Elder Authenticity Anchor", "Spans Zero / Neutral"))
     )
   
-  cuisine_summary$cuisine_label <- factor(cuisine_summary$cuisine_label, levels = cuisine_order)
+  color_cred_short <- c(
+    "Pro-Chef Anchor"           = "#0072B2",
+    "Elder Authenticity Anchor" = "#D55E00",
+    "Spans Zero / Neutral"      = "gray55"
+  )
   
-  p_re <- ggplot(cuisine_plot_df, aes(x = r_cuisine, y = cuisine_label, fill = cred_status, color = cred_status)) +
+  p_re <- ggplot(cuisine_model_summary, aes(x = median, y = cuisine_label, color = cred_short)) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray40", linewidth = 0.75) +
-    stat_halfeye(
-      point_interval = median_qi,
-      .width = c(0.80, 0.95),
-      point_size = 3.5,
-      interval_size = 1.2,
-      slab_alpha = 0.40,
-      scale = 0.65
+    geom_linerange(
+      data = cuisine_stability,
+      aes(xmin = min_q025, xmax = max_q975, y = cuisine_label, color = cred_short),
+      linewidth = 0.5,
+      alpha = 0.35,
+      inherit.aes = FALSE
     ) +
-    scale_fill_manual(values = color_credibility, name = "Baseline Orientation (≥ 95% Posterior Mass)") +
-    scale_color_manual(values = color_credibility, name = "Baseline Orientation (≥ 95% Posterior Mass)") +
+    geom_linerange(
+      aes(xmin = q025, xmax = q975, group = model_key),
+      position = position_identity(),
+      linewidth = 0.75,
+      alpha = 0.45
+    ) +
+    geom_point(
+      aes(group = model_key),
+      position = position_identity(),
+      size = 2.4,
+      alpha = 0.65
+    ) +
+    geom_point(
+      data = cuisine_stability,
+      aes(x = grand_median, y = cuisine_label, color = cred_short),
+      size = 3.6,
+      shape = 18,
+      inherit.aes = FALSE
+    ) +
+    scale_color_manual(
+      values = color_cred_short,
+      name = "Consensus Baseline Orientation:"
+    ) +
     scale_x_continuous(
       breaks = seq(-0.6, 1.0, by = 0.2),
       labels = function(x) sprintf("%+.1f", x)
     ) +
     coord_cartesian(xlim = c(-0.65, 1.05)) +
     labs(
-      title = "Baseline Cuisine Authenticity Orientations (Random Intercepts)",
-      subtitle = "Tradition-specific deviations (u0) from average rating when holding demographic covariates at sample means",
-      x = "Cuisine Random Intercept Deviation (Log-Odds Shift)",
+      title = "Baseline Cuisine Authenticity Hierarchy: Cross-Specification Consensus",
+      subtitle = "Posterior medians and 95% credible intervals for cuisine random intercepts across all 16 factorial models",
+      x = "Cuisine Random Intercept Shift (Log-Odds Deviation vs. Average Cuisine)",
       y = NULL,
-      caption = "Bayesian crossed random effects ACAT model (Model 6; 4,000 post-warmup draws across 15 cuisines).\nColor classified by ≥ 95% posterior probability mass: Blue = P(u0 > 0) ≥ 0.95 (Chef); Vermillion = P(u0 < 0) ≥ 0.95 (Elder)."
+      caption = "Synthesized across 16 Bayesian model specifications (Base, Practices, Dispositions, Cosmopolitan; 4,000 MCMC draws per model).\nSemi-transparent points and lines display individual model specifications (k = 16); solid diamonds indicate grand consensus medians.\nBlue = Credibly Pro-Chef; Vermillion = Credibly Domestic Elder; Gray = Spans Zero across specifications."
     ) +
-    theme_cuisine(base_size = 12) +
+    theme_cuisine(base_size = 11) +
     theme(
-      axis.text.y = element_text(face = "bold", size = 10.5, color = "gray15"),
-      panel.grid.major.y = element_line(color = "gray92", linewidth = 0.4),
-      legend.position = "bottom"
-    )
+      axis.text.y = element_text(face = "bold", size = 10, color = "gray15"),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = 0.5),
+      legend.position = "bottom",
+      legend.title = element_text(face = "bold", size = 10),
+      legend.text = element_text(size = 9.5),
+      legend.box = "horizontal",
+      legend.margin = margin(t = 2, b = 2)
+    ) +
+    guides(color = guide_legend(nrow = 1))
   
-  ggsave(pfile("cuisine_random_effects"), p_re, width = 10.0, height = 7.5, dpi = 300, bg = "white")
+  ggsave(pfile("cuisine_random_effects"), p_re, width = 10.0, height = 7.0, dpi = 300, bg = "white")
 }
 
 # -------------------------------------------------------------
