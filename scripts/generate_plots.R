@@ -108,14 +108,16 @@ if (file.exists(fit_comp_path)) {
     "base"         = "Cultural Capital (Base)",
     "practices"    = "Dining Practices",
     "dispositions" = "Taste Dispositions",
-    "cosmopolitan" = "Cosmopolitan Capital"
+    "cosmopolitan" = "Cosmopolitan Capital",
+    "meta"         = "Omnibus Meta"
   )
   
   domain_colors <- c(
     "Cultural Capital (Base)" = "#7570b3",
     "Dining Practices"        = "#d95f02",
     "Taste Dispositions"      = "#1b9e77",
-    "Cosmopolitan Capital"    = "#0072B2"
+    "Cosmopolitan Capital"    = "#0072B2",
+    "Omnibus Meta"            = "#E7298A"
   )
   
   full_plot_df <- full_fit_df %>%
@@ -356,6 +358,7 @@ if (!is.null(m6)) {
   cuisine_model_summary <- full_cuisine_df %>%
     group_by(cuisine_label, model_key, model_label) %>%
     summarise(
+      mean = mean(r_cuisine),
       median = median(r_cuisine),
       q025 = quantile(r_cuisine, 0.025),
       q975 = quantile(r_cuisine, 0.975),
@@ -364,19 +367,20 @@ if (!is.null(m6)) {
       .groups = "drop"
     )
   
-  cuisine_stability <- cuisine_model_summary %>%
+  cuisine_stability <- full_cuisine_df %>%
     group_by(cuisine_label) %>%
     summarise(
       k_models = n_distinct(model_key),
-      grand_median = mean(median),
-      min_median = min(median),
-      max_median = max(median),
-      min_q025 = min(q025),
-      max_q975 = max(q975),
-      min_p_gt_0 = min(p_gt_0),
-      max_p_gt_0 = max(p_gt_0),
-      min_p_lt_0 = min(p_lt_0),
-      max_p_lt_0 = max(p_lt_0),
+      mean_effect = mean(r_cuisine),
+      grand_median = median(r_cuisine),
+      min_median = min(tapply(r_cuisine, model_key, median)),
+      max_median = max(tapply(r_cuisine, model_key, median)),
+      min_q025 = min(tapply(r_cuisine, model_key, function(x) quantile(x, 0.025))),
+      max_q975 = max(tapply(r_cuisine, model_key, function(x) quantile(x, 0.975))),
+      min_p_gt_0 = min(tapply(r_cuisine, model_key, function(x) mean(x > 0))),
+      max_p_gt_0 = max(tapply(r_cuisine, model_key, function(x) mean(x > 0))),
+      min_p_lt_0 = min(tapply(r_cuisine, model_key, function(x) mean(x < 0))),
+      max_p_lt_0 = max(tapply(r_cuisine, model_key, function(x) mean(x < 0))),
       .groups = "drop"
     ) %>%
     mutate(
@@ -386,12 +390,28 @@ if (!is.null(m6)) {
         TRUE ~ "Spans Zero / Neutral"
       )
     ) %>%
-    arrange(grand_median)
+    arrange(mean_effect)
+  
+  saveRDS(cuisine_stability, here("cache", "cuisine_stability_summary.rds"))
+  readr::write_csv(cuisine_stability, here("cache", "cuisine_stability_summary.csv"))
   
   cuisine_order <- cuisine_stability %>% pull(cuisine_label)
   
+  cuisine_stability <- cuisine_stability %>%
+    mutate(
+      cuisine_label = factor(cuisine_label, levels = cuisine_order),
+      cred_short = factor(cred_short, levels = c("Pro-Chef Anchor", "Elder Authenticity Anchor", "Spans Zero / Neutral"))
+    )
+  
   cuisine_model_summary <- cuisine_model_summary %>%
-    left_join(cuisine_stability %>% select(cuisine_label, cred_short), by = "cuisine_label") %>%
+    left_join(cuisine_stability %>% select(cuisine_label, cred_short) %>% mutate(cuisine_label = as.character(cuisine_label)), by = "cuisine_label") %>%
+    mutate(
+      cuisine_label = factor(cuisine_label, levels = cuisine_order),
+      cred_short = factor(cred_short, levels = c("Pro-Chef Anchor", "Elder Authenticity Anchor", "Spans Zero / Neutral"))
+    )
+  
+  plot_cuisine_draws <- full_cuisine_df %>%
+    left_join(cuisine_stability %>% select(cuisine_label, cred_short) %>% mutate(cuisine_label = as.character(cuisine_label)), by = "cuisine_label") %>%
     mutate(
       cuisine_label = factor(cuisine_label, levels = cuisine_order),
       cred_short = factor(cred_short, levels = c("Pro-Chef Anchor", "Elder Authenticity Anchor", "Spans Zero / Neutral"))
@@ -400,36 +420,31 @@ if (!is.null(m6)) {
   color_cred_short <- c(
     "Pro-Chef Anchor"           = "#0072B2",
     "Elder Authenticity Anchor" = "#D55E00",
-    "Spans Zero / Neutral"      = "gray55"
+    "Spans Zero / Neutral"      = "gray60"
   )
   
-  p_re <- ggplot(cuisine_model_summary, aes(x = median, y = cuisine_label, color = cred_short)) +
+  p_re <- ggplot(plot_cuisine_draws, aes(x = r_cuisine, y = cuisine_label, fill = cred_short, color = cred_short)) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray40", linewidth = 0.75) +
-    geom_linerange(
-      data = cuisine_stability,
-      aes(xmin = min_q025, xmax = max_q975, y = cuisine_label, color = cred_short),
-      linewidth = 0.5,
-      alpha = 0.35,
-      inherit.aes = FALSE
-    ) +
-    geom_linerange(
-      aes(xmin = q025, xmax = q975, group = model_key),
-      position = position_identity(),
-      linewidth = 0.75,
-      alpha = 0.45
+    stat_halfeye(
+      point_interval = median_qi,
+      .width = c(0.80, 0.95),
+      point_size = 2.8,
+      interval_size = 1.0,
+      slab_alpha = 0.45,
+      scale = 0.65
     ) +
     geom_point(
-      aes(group = model_key),
-      position = position_identity(),
-      size = 2.4,
-      alpha = 0.65
-    ) +
-    geom_point(
-      data = cuisine_stability,
-      aes(x = grand_median, y = cuisine_label, color = cred_short),
-      size = 3.6,
-      shape = 18,
+      data = cuisine_model_summary,
+      aes(x = median, y = cuisine_label),
+      color = "gray15",
+      size = 1.5,
+      alpha = 0.50,
+      shape = 3,
       inherit.aes = FALSE
+    ) +
+    scale_fill_manual(
+      values = color_cred_short,
+      name = "Consensus Baseline Orientation:"
     ) +
     scale_color_manual(
       values = color_cred_short,
@@ -442,10 +457,10 @@ if (!is.null(m6)) {
     coord_cartesian(xlim = c(-0.65, 1.05)) +
     labs(
       title = "Baseline Cuisine Authenticity Hierarchy: Cross-Specification Consensus",
-      subtitle = "Posterior medians and 95% credible intervals for cuisine random intercepts across all 16 factorial models",
+      subtitle = "Posterior distributions (half-eyes) for cuisine random intercepts across all 17 completed models, ordered by mean effect size\nTick marks (+) represent individual model posterior medians demonstrating specification stability",
       x = "Cuisine Random Intercept Shift (Log-Odds Deviation vs. Average Cuisine)",
       y = NULL,
-      caption = "Synthesized across 16 Bayesian model specifications (Base, Practices, Dispositions, Cosmopolitan; 4,000 MCMC draws per model).\nSemi-transparent points and lines display individual model specifications (k = 16); solid diamonds indicate grand consensus medians.\nBlue = Credibly Pro-Chef; Vermillion = Credibly Domestic Elder; Gray = Spans Zero across specifications."
+      caption = "Half-eye density slabs, posterior medians, and 80%/95% CrIs synthesized across 17 completed Bayesian model specifications (N = 18,180 ratings).\nTick marks (+) indicate individual model posterior medians (k = 17 models per cuisine).\nCuisines ordered strictly along the y-axis by posterior mean effect size. Blue = Credibly Pro-Chef; Vermillion = Credibly Domestic Elder; Gray = Spans Zero."
     ) +
     theme_cuisine(base_size = 11) +
     theme(
@@ -457,141 +472,16 @@ if (!is.null(m6)) {
       legend.box = "horizontal",
       legend.margin = margin(t = 2, b = 2)
     ) +
-    guides(color = guide_legend(nrow = 1))
+    guides(fill = guide_legend(nrow = 1), color = guide_legend(nrow = 1))
   
   ggsave(pfile("cuisine_random_effects"), p_re, width = 10.0, height = 7.0, dpi = 300, bg = "white")
 }
 
 # -------------------------------------------------------------
-# 5. Cuisine Random Slopes: Location (Ideology & Cultural Capital - Model 3/6)
+# 5. Cuisine Random Slopes: Cross-Model Consensus (Ideology & Cultural Capital)
 # -------------------------------------------------------------
-model_rs <- if (!is.null(m6)) m6 else m3
-if (!is.null(model_rs)) {
-  cat("4. Generating Cuisine Random Slopes for Location (Model 6/3)...\n")
-  
-  plot_cuisine_location_slopes <- function(model, vars, var_labels, title, filename, order_by_var = NULL) {
-    tb_list <- list()
-    for (v in vars) {
-      cs_param <- paste0("bcs_", v)
-      if (cs_param %in% variables(model) || paste0("bcs_", v, "[1]") %in% variables(model)) {
-        # Model 6 category-specific: average fixed effect across thresholds
-        cs_sym <- rlang::sym(cs_param)
-        fe_draws <- model %>% 
-          spread_draws((!!cs_sym)[threshold]) %>% 
-          group_by(.chain, .iteration, .draw) %>% 
-          summarize(fe_val = mean(!!cs_sym), .groups = "drop")
-        
-        re_draws <- model %>%
-          spread_draws(r_cuisine[cuisine, term]) %>%
-          filter(term == v) %>%
-          left_join(fe_draws, by = c(".chain", ".iteration", ".draw")) %>%
-          mutate(
-            cuisine_label = str_to_title(str_replace_all(cuisine, "_", " ")),
-            total_slope = fe_val + r_cuisine,
-            predictor_label = var_labels[v]
-          )
-      } else {
-        fixed_var <- paste0("b_", v)
-        re_draws <- model %>%
-          spread_draws(r_cuisine[cuisine, term], !!sym(fixed_var)) %>%
-          filter(term == v) %>%
-          mutate(
-            cuisine_label = str_to_title(str_replace_all(cuisine, "_", " ")),
-            total_slope = !!sym(fixed_var) + r_cuisine,
-            predictor_label = var_labels[v]
-          )
-      }
-      tb_list[[v]] <- re_draws
-    }
-    
-    all_slopes <- bind_rows(tb_list)
-    
-    slope_summary <- all_slopes %>%
-      group_by(predictor_label, cuisine_label) %>%
-      summarize(
-        median = median(total_slope),
-        p_pos = mean(total_slope > 0),
-        p_neg = mean(total_slope < 0),
-        cred_status = case_when(
-          p_pos >= 0.95 ~ "Credibly Positive (≥ 95% Mass)",
-          p_neg >= 0.95 ~ "Credibly Negative (≥ 95% Mass)",
-          TRUE ~ "Spans Zero (< 95% Mass)"
-        ),
-        .groups = "drop"
-      )
-    
-    if (!is.null(order_by_var) && order_by_var %in% names(var_labels)) {
-      target_label <- var_labels[order_by_var]
-      cuis_order <- slope_summary %>%
-        filter(predictor_label == target_label) %>%
-        arrange(median) %>%
-        pull(cuisine_label)
-    } else {
-      cuis_order <- slope_summary %>%
-        group_by(cuisine_label) %>%
-        summarize(mean_med = mean(median), .groups = "drop") %>%
-        arrange(mean_med) %>%
-        pull(cuisine_label)
-    }
-    
-    all_slopes <- all_slopes %>%
-      left_join(slope_summary %>% select(predictor_label, cuisine_label, cred_status), by = c("predictor_label", "cuisine_label")) %>%
-      mutate(
-        cuisine_label = factor(cuisine_label, levels = cuis_order),
-        cred_status = factor(cred_status, levels = c("Credibly Positive (≥ 95% Mass)", "Credibly Negative (≥ 95% Mass)", "Spans Zero (< 95% Mass)"))
-      )
-    
-    p <- ggplot(all_slopes, aes(x = total_slope, y = cuisine_label, fill = cred_status, color = cred_status)) +
-      geom_vline(xintercept = 0, linetype = "dashed", color = "gray40", linewidth = 0.7) +
-      stat_halfeye(
-        point_interval = median_qi,
-        .width = c(0.80, 0.95),
-        point_size = 3.0,
-        interval_size = 1.0,
-        slab_alpha = 0.35,
-        scale = 0.65
-      ) +
-      scale_fill_manual(values = color_credibility, name = "Slope Credibility (≥ 95% Posterior Mass)") +
-      scale_color_manual(values = color_credibility, name = "Slope Credibility (≥ 95% Posterior Mass)") +
-      facet_wrap(~ predictor_label, scales = "free_x") +
-      labs(
-        title = title,
-        subtitle = "Net slope estimates (Global Fixed Effect + Cuisine-Specific Random Deviation u1)\nPositive slopes increase professional chef endorsement per 1 SD increase in predictor",
-        x = "Net Effect (Log-Odds Shift per 1 SD Increase)",
-        y = NULL,
-        caption = "Hierarchical ACAT model with cuisine random slopes (Model 6; 4,000 MCMC draws).\nColor classified by ≥ 95% posterior probability mass on either side of zero."
-      ) +
-      theme_cuisine(base_size = 11) +
-      theme(
-        strip.text = element_text(face = "bold", size = 11),
-        strip.background = element_rect(fill = "gray95", color = NA),
-        axis.text.y = element_text(face = "bold", size = 9.5, color = "gray15"),
-        panel.spacing = unit(1.2, "lines"),
-        legend.position = "bottom"
-      )
-    
-    ggsave(filename, p, width = 11.5, height = 7.5, dpi = 300, bg = "white")
-    return(p)
-  }
-  
-  vars_ideo <- c("social_c", "economic_c")
-  var_labels_ideo <- c("social_c" = "Social Conservatism", "economic_c" = "Economic Conservatism")
-  plot_cuisine_location_slopes(
-    model_rs, vars_ideo, var_labels_ideo,
-    "Cuisine-Specific Ideological Effects on Authenticity Orientation",
-    pfile("rs_cuisine_slopes_ideology"),
-    order_by_var = "social_c"
-  )
-  
-  vars_cult <- c("educ_c", "peduc_c", "arts_c")
-  var_labels_cult <- c("educ_c" = "Educational Attainment", "peduc_c" = "Parental Education", "arts_c" = "Childhood Arts Exposure")
-  plot_cuisine_location_slopes(
-    model_rs, vars_cult, var_labels_cult,
-    "Cuisine-Specific Cultural Capital Effects on Authenticity Orientation",
-    pfile("rs_cuisine_slopes_cultural"),
-    order_by_var = "educ_c"
-  )
-}
+cat("4. Generating Cuisine Random Slopes Consensus Plots (Ideology & Cultural Capital)...\n")
+source(here("scripts", "extract_random_slopes_stability.R"))
 
 # -------------------------------------------------------------
 # 6. Midpoint Contrast Effects (Model 2)

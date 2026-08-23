@@ -26,26 +26,26 @@ MODEL_REGISTRY <- tribble(
   "base",          "Core Baseline",    "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_base_relaxed_rs.rds",       "hier_6_relaxed_rs.rds",      "completed",
 
   # Practices Domain
-  "practices",     "Dining Practices", "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_practices_strict_ri.rds",   "hier_ext_practices_strict_ri.rds", "queued_hoffman",
-  "practices",     "Dining Practices", "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_practices_relaxed_ri.rds",  "hier_ext_practices_relaxed_ri.rds","queued_hoffman",
+  "practices",     "Dining Practices", "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_practices_strict_ri.rds",   "hier_ext_practices_strict_ri.rds", "completed",
+  "practices",     "Dining Practices", "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_practices_relaxed_ri.rds",  "hier_ext_practices_relaxed_ri.rds","completed",
   "practices",     "Dining Practices", "strict",   "Strict (Equal Slopes)", "rs",  "Crossed Random Slopes", 3,     "hier_practices_strict_rs.rds",   "hier_ext_practices.rds",     "completed",
-  "practices",     "Dining Practices", "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_practices_relaxed_rs.rds",  "hier_ext_practices_relaxed.rds",  "running_hoffman",
+  "practices",     "Dining Practices", "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_practices_relaxed_rs.rds",  "hier_ext_practices_relaxed.rds",  "completed",
 
   # Dispositions Domain
-  "dispositions",  "Food Taste Disp",  "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_dispositions_strict_ri.rds","hier_ext_dispositions_strict_ri.rds", "queued_hoffman",
-  "dispositions",  "Food Taste Disp",  "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_dispositions_relaxed_ri.rds","hier_ext_dispositions_relaxed_ri.rds","queued_hoffman",
+  "dispositions",  "Food Taste Disp",  "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_dispositions_strict_ri.rds","hier_ext_dispositions_strict_ri.rds", "completed",
+  "dispositions",  "Food Taste Disp",  "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_dispositions_relaxed_ri.rds","hier_ext_dispositions_relaxed_ri.rds","completed",
   "dispositions",  "Food Taste Disp",  "strict",   "Strict (Equal Slopes)", "rs",  "Crossed Random Slopes", 3,     "hier_dispositions_strict_rs.rds","hier_ext_dispositions.rds",  "completed",
-  "dispositions",  "Food Taste Disp",  "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_dispositions_relaxed_rs.rds","hier_ext_dispositions_relaxed.rds",  "running_hoffman",
+  "dispositions",  "Food Taste Disp",  "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_dispositions_relaxed_rs.rds","hier_ext_dispositions_relaxed.rds",  "completed",
 
   # Cosmopolitan Domain
-  "cosmopolitan",  "Cosmo & Networks", "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_cosmopolitan_strict_ri.rds","hier_ext_cosmopolitan_strict_ri.rds", "queued_hoffman",
-  "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_cosmopolitan_relaxed_ri.rds","hier_ext_cosmopolitan_relaxed_ri.rds","queued_hoffman",
+  "cosmopolitan",  "Cosmo & Networks", "strict",   "Strict (Equal Slopes)", "ri",  "Random Intercepts",    1,     "hier_cosmopolitan_strict_ri.rds","hier_ext_cosmopolitan_strict_ri.rds", "completed",
+  "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "ri",  "Random Intercepts",    2,     "hier_cosmopolitan_relaxed_ri.rds","hier_ext_cosmopolitan_relaxed_ri.rds","completed",
   "cosmopolitan",  "Cosmo & Networks", "strict",   "Strict (Equal Slopes)", "rs",  "Crossed Random Slopes", 3,     "hier_cosmopolitan_strict_rs.rds","hier_ext_cosmopolitan.rds",  "completed",
-  "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_cosmopolitan_relaxed_rs.rds","hier_ext_cosmopolitan_relaxed.rds",  "running_hoffman",
+  "cosmopolitan",  "Cosmo & Networks", "relaxed",  "Relaxed CS",            "rs",  "Crossed Random Slopes", 4,     "hier_cosmopolitan_relaxed_rs.rds","hier_ext_cosmopolitan_relaxed.rds",  "completed",
 
   # Meta Omnibus Domain
-  "meta",          "Omnibus Meta",     "relaxed",  "Relaxed CS (All Vars)", "ri",  "Random Intercepts",    2,     "hier_meta_relaxed_ri.rds",       "hier_meta_relaxed_ri.rds",   "queued_hoffman",
-  "meta",          "Omnibus Meta-Meta","relaxed",  "Relaxed CS (All Vars)", "rs",  "Crossed Random Slopes", 4,     "hier_meta_relaxed_rs.rds",       "hier_meta_relaxed_rs.rds",   "queued_hoffman"
+  "meta",          "Omnibus Meta",     "relaxed",  "Relaxed CS (All Vars)", "ri",  "Random Intercepts",    2,     "hier_meta_relaxed_ri.rds",       "hier_meta_relaxed_ri.rds",   "completed",
+  "meta",          "Omnibus Meta-Meta","relaxed",  "Relaxed CS (All Vars)", "rs",  "Crossed Random Slopes", 4,     "hier_meta_relaxed_rs.rds",       "hier_meta_relaxed_rs.rds",   "running_hoffman"
 )
 
 #' Resolve model file path transparently from systematic name, legacy name, or taxonomy coordinates
