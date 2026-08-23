@@ -12,238 +12,129 @@ format:
 
 ## 1. Introduction
 
-This report outlines the full data analysis pipeline for analyzing how respondents perceive the authenticity and ideal preparation of various cuisines. The core dependent variable asks respondents to rate 15 different cuisines on a 1-to-7 ordinal scale mapping onto concepts of authenticity and professionalization:
-
-*   **1** = A Traditional Recipe by an Elder at Home
-*   **4** = Neutral / Midpoint
-*   **7** = A Developed Recipe by a Professional Chef at a High-End Restaurant
-
-The primary analytical goal is to evaluate how sociodemographic factors and ideological leanings (e.g., Social Conservatism) influence these perceptions across the rating scale.
-
----
+This report details the data processing pipeline and empirical findings investigating how individuals evaluate culinary authenticity and professionalization across diverse cuisines. The primary dependent variable is measured on a seven-point ordinal scale assessing whether the ideal preparation of a given cuisine is grounded in domestic tradition or elite professional craftsmanship. Scale anchors range from 1, representing "a traditional recipe prepared by an elder at home," to 4, representing a neutral midpoint, up to 7, representing "a developed recipe prepared by a professional chef at a high-end restaurant." The substantive objective is to estimate how sociodemographic characteristics, cultural capital, and ideological orientations shape these authenticity ratings across fifteen distinct national and regional culinary traditions.
 
 ## 2. Data Preparation and Reshaping
 
-The data pipeline begins with raw survey data combining Qualtrics and Prolific samples. 
+The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples. Data preprocessing, implemented in `data/recode.dat.R`, cleans and standardizes demographic indicators including respondent age, educational attainment, household income, gender, and ethnoracial identification. Key continuous predictors, such as social conservatism and economic conservatism indices, are mean-centered prior to estimation so that model intercepts reflect the predicted response for an average sample participant.
 
-1.  **Recoding and Cleaning (`recode.dat.R`)**: 
-    *   Demographic variables (age, education, income, gender, race) are cleaned and transformed into ordered/unordered factors (e.g., `educ.f`, `inc.f`) to act as fixed effects controls.
-    *   Ideological indices are constructed. Crucially, continuous predictors like **Social Conservatism (`social`)** are mean-centered (`social_c`). Centering ensures that the model intercepts represent the "average" survey respondent, which aids in convergence and interpretation.
-2.  **Long-Format Reshaping**: 
-    *   To leverage multilevel modeling, the 15 separate cuisine rating columns are pivoted into a "long" dataset. Each row represents a single respondent's rating of a single cuisine. 
-    *   This structure allows the model to treat both `respondent_id` and `cuisine` as grouping variables (random effects), controlling for individual response tendencies and baseline differences between cuisines.
+To accommodate crossed hierarchical modeling, the survey structure is converted from wide format into a stacked longitudinal panel. In this configuration, each observation corresponds to an individual respondent rating a specific cuisine. Structuring the data in this long format enables the simultaneous specification of random intercepts and slopes for both respondents and cuisines, accounting for individual-level response styles as well as baseline variations inherent to each culinary tradition.
 
----
+## 3. Modeling Strategy: Bayesian Adjacent Category Models
 
-## 3. Modeling Strategy: Bayesian Adjacent Category (ACAT) Models
+Given the bounded, seven-point ordinal structure of the outcome variable, standard linear models are ill-suited because they impose equal spacing assumptions across discrete response categories. We therefore employ Bayesian multilevel ordinal regression via the `brms` package, specifying an adjacent category (ACAT) link function. Unlike cumulative models that estimate the probability of reaching or exceeding a given threshold, adjacent category models estimate the conditional log-odds of selecting category $k+1$ relative to category $k$. This formulation aligns directly with how survey respondents navigate step-wise alternatives along an ordered Likert scale.
 
-Because the outcome is a 1-to-7 ordinal scale, standard linear regression is inappropriate (it assumes the conceptual "distance" between a 1 and 2 is identical to a 6 and 7). Instead, we utilize **Bayesian Multilevel Ordinal Models** via the `brms` package.
+To identify the most parsimonious and accurate representation of the data, six hierarchical model architectures were estimated and compared. The baseline strict model assumes invariant linear effects across all scale thresholds and culinary categories. The relaxed category-specific specification frees the proportional odds constraint by allowing predictor slopes to vary across each threshold transition via category-specific parameters. The random slopes specification incorporates cuisine-level random coefficients to capture tradition-specific demographic sensitivity. The relaxed random slopes model integrates both threshold variation and cuisine-level heterogeneity. Finally, distributional location-scale formulations introduce an explicit submodel predicting the discrimination parameter (`disc`), evaluating whether sociodemographic covariates systematically predict consensus or dispersion in authenticity assessments, both with and without cuisine-level random slopes.
 
-We selected the **Adjacent Category (ACAT)** family. Unlike cumulative ordinal models (which predict the probability of rating *at least* a category), ACAT models predict the probability of choosing category $k+1$ rather than category $k$. This aligns conceptually with how survey respondents make step-by-step decisions on a Likert scale.
-
-### Structural Model Hierarchy
-To identify the optimal mathematical architecture for evaluating the data, we systematically fitted a hierarchy of six competing model specifications:
-
-1.  **Baseline Strict:** Assumes that continuous predictors (like mean-centered education and ideology) exert a uniform, linear push across all thresholds of the scale, identical for all cuisines.
-2.  **Relaxed Category-Specific (CS):** Relaxes the proportional odds assumption using the `cs()` specification (e.g., `cs(social_c)`). This allows the slope of predictors to vary across each step of the rating scale, capturing non-linear "centrist" or "polarizing" effects.
-3.  **Random Slopes (RS) Strict:** Returns to the strict linear structure but allows the effect of demographic predictors to vary independently for every cuisine.
-4.  **Relaxed CS + Random Slopes:** Combines both CS and RS structures.
-5.  **Variance Strict (Distributional):** Introduces a second equation predicting the `disc` parameter (inverse variance/consensus) using the same demographics, testing if groups differ in how much they agree on authenticity.
-6.  **Variance + Random Slopes:** The ultimate hybrid, applying cuisine-specific random slopes to both the location and the variance equations.
-
-### Computational Optimizations
-Given the massive complexity of these models (particularly ACAT location-scale formulations with random slopes), they require extreme computational efficiency to avoid Out-Of-Memory (OOM) crashes and endless sampling times. The pipeline utilizes:
-*   **Fully Standardized Predictors:** All continuous predictors are centered and scaled (Mean = 0, SD = 1) to provide frictionless, "spherical" geometry for the NUTS sampler.
-*   **`cmdstanr` Backend:** Completely bypasses R's internal memory limits by executing the C++ binaries in an isolated background process.
-*   **Within-Chain Threading (`reduce_sum`):** Uses `threads = threading(3)` to chunk the dataset and run likelihood calculations in parallel *within* each chain, fully saturating the server's 12 CPU cores.
-*   **Efficient Sampling:** The above optimizations allow convergence within a lean 2,000 iterations (1,000 warmup) while maintaining pristine Effective Sample Sizes (ESS).
-
----
+Model estimation employs several computational optimizations implemented through the `cmdstanr` backend. Continuous predictors are standardized to unit variance to facilitate efficient Hamiltonian Monte Carlo exploration with the No-U-Turn Sampler (NUTS). Within-chain parallelization utilizes `reduce_sum` threading across central processing units. Posterior distributions are sampled across 2,000 iterations per chain, including 1,000 warmup iterations, yielding satisfactory effective sample sizes and diagnostic convergence without memory exhaustion.
 
 ## 4. Model Comparison
 
-To determine which mathematical architecture is empirically justified, we compared their predictive performance using the **Watanabe-Akaike Information Criterion (WAIC)** subsetted to 1,000 random posterior draws (as standard LOO cross-validation matrices exceed available RAM). 
+Model performance was evaluated using the Watanabe-Akaike Information Criterion (WAIC) computed across 1,000 posterior draws. Table 1 reports the resulting fit statistics, standard errors, and differences relative to the strict baseline model.
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "model_fit_comparison.png"))
-```
+![](Plots/model_fit_comparison.png){fig-align="center" width="100%"}
 
-**Results:**
+| Rank | Model Description | WAIC | SE | $\Delta$ WAIC |
+|:---|:---|:---:|:---:|:---:|
+| 1 | Variance + Random Slopes | 53,432.63 | 249.41 | -1,877.96 |
+| 2 | Variance Strict | 53,653.40 | 249.42 | -1,657.19 |
+| 3 | Relaxed CS + Random Slopes | 54,961.97 | 244.84 | -348.62 |
+| 4 | Random Slopes Strict | 55,171.37 | 243.27 | -139.22 |
+| 5 | Relaxed CS | 55,177.51 | 243.10 | -133.08 |
+| 6 | Baseline Strict | 55,310.59 | 241.69 | 0.00 |
 
-| Rank | Model Description | WAIC | SE | $\Delta$ WAIC (vs Baseline) |
-|------|-------------------|------|----|---------------|
-| **1** | **Variance + Random Slopes** | **53432.63** | 249.41 | **- 1877.96** |
-| 2 | Variance Strict | 53653.40 | 249.42 | - 1657.19 |
-| 3 | Relaxed CS + Random Slopes | 54961.97 | 244.84 | - 348.62 |
-| 4 | Random Slopes Strict | 55171.37 | 243.27 | - 139.22 |
-| 5 | Relaxed CS | 55177.51 | 243.10 | - 133.08 |
-| 6 | Baseline Strict | 55310.59 | 241.69 | 0.00 |
-
-*   **Conclusion**: 
-    1. The **Distributional Variance models (5 & 6)** provide a massively superior fit ($\Delta$ WAIC > 1,600) over all standard location models, indicating that formally modeling the *variance* (consensus) of authenticity ratings is by far the most crucial architectural choice for this data.
-    2. Among standard location models, adding **Random Slopes** (to allow cuisine-specific demographic effects) and **Category-Specific (CS) thresholds** yield moderate but meaningful improvements (-130 to -350 WAIC points) over the Strict Baseline. 
-    3. The best-fitting model overall combines Variance prediction with Random Slopes (`6_var_rs`).
-
-
----
+The comparison indicates that incorporating a distributional variance component yields substantial improvements in predictive accuracy over location-only specifications, with $\Delta$ WAIC exceeding 1,600 points. Allowing for cuisine-specific random slopes and category-specific thresholds also provides measurable improvements over the strict baseline. The hybrid model integrating distributional variance with cuisine-specific random slopes demonstrates the strongest overall empirical fit.
 
 ## 5. Preliminary Findings: Baseline and Fixed Effects
 
 ### 5.1 Global Demographic Fixed Effects
 
-Before looking at specific cuisines or non-linear effects, we can extract the global fixed effects from the best-fitting model (Model 5: Variance + Random Slopes). These coefficients represent the average structural "push" of demographic and ideological traits across all cuisines.
+Figure 1 displays the global fixed effects estimated from the top-performing location-scale specification, capturing the average influence of demographic and ideological predictors across culinary categories.
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "demographic_fixed_effects.png"))
-```
+![](Plots/demographic_fixed_effects.png){fig-align="center" width="100%"}
 
-**Key Baseline Drivers:**
-*   **Ideology and Capital**: Social Conservatism and Education are the strongest positive structural forces, pushing respondents to associate authenticity with high-end "Professional Chefs" (Rating 7).
-*   **Gender and Race**: Women and respondents identifying as Mixed White or Mixed Other exert a negative push relative to men and white respondents, leaning slightly more toward the "Traditional Elder at Home" (Rating 1) definition globally.
+The parameter estimates suggest that social conservatism and educational attainment are the primary positive predictors of associating authenticity with professional culinary preparation. Conversely, female respondents and individuals identifying as multiracial tend to lean toward the domestic elder anchor relative to male and white respondents, holding other covariates constant.
 
 ### 5.2 Baseline Authenticity by Cuisine
 
-In addition to fixed effects like ideology, the model estimates a random intercept for each of the 15 cuisines. This shows us the baseline public consensus for where each cuisine "belongs" on the authenticity-to-professionalization spectrum, holding demographic and ideological differences constant.
+The hierarchical model estimates cuisine-specific random intercepts that reflect baseline perceptions of authenticity when holding demographic characteristics at their sample means.
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-# Embed the pre-generated cuisine random effects plot
-knitr::include_graphics(here::here("Plots", "cuisine_random_effects.png"))
-```
+![](Plots/cuisine_random_effects.png){fig-align="center" width="100%"}
 
-**Key Baseline Findings:**
-*   **Most "Elder at Home"**: Native American, Nigerian, Jamaican, and Ethiopian cuisines have statistically credible negative intercepts, meaning the average respondent views them as most authentically prepared by a traditional elder at home.
-*   **Most "Professional Chef"**: French, Japanese, and Swedish cuisines have strong positive intercepts, firmly rooting them in the high-end professional/chef domain in the public eye. (French cuisine is the most extreme outlier in this direction).
+Culinary traditions exhibit substantial baseline differentiation. Native American, Nigerian, Jamaican, and Ethiopian cuisines display negative intercept estimates, indicating a prevailing tendency to associate these traditions with home-based elder preparation. In contrast, French, Japanese, and Swedish cuisines exhibit positive intercepts, aligning them more closely with formal restaurant professionalization.
 
-To interpret the non-linear Category-Specific (CS) effects from Model 2, we extracted the posterior draws for each threshold step (1|2, 2|3, ..., 6|7) and mathematically recombined them into **contrasts against the neutral midpoint (4)**. 
+### 5.3 Ideological Effects: Polarization and Moderation
 
-This allows us to visualize how a 1-standard-deviation increase in a given demographic trait shifts the probability of choosing an extreme rating relative to staying neutral.
+To examine threshold-specific variations in ideological orientation, posterior draws from the category-specific model were evaluated as contrast probabilities against the neutral scale midpoint.
 
-### 5.3 Ideological Effects: Polarization vs. Centrism
+![](Plots/ideology_cs_midpoint_effects.png){fig-align="center" width="100%"}
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-# Embed the pre-generated plot to ensure lightning-fast rendering
-knitr::include_graphics(here::here("Plots", "ideology_cs_midpoint_effects.png"))
-```
+The contrast estimates indicate divergent patterns across ideological dimensions. Social conservatism is associated with an elevated probability of selecting the highest professional chef category relative to the midpoint. In contrast, economic conservatism appears to exert a moderating influence, reducing the probability of selecting extreme ratings on either end of the scale and concentrating responses around the neutral midpoint.
 
-**Key Ideological Divergence:**
-*   **Social Conservatism (Polarization)**: As social conservatism increases, respondents are wildly more likely to abandon the neutral midpoint for "7 - Professional Chef." They are decisively drawn to the high-end, professional definition of authenticity.
-*   **Economic Conservatism (Centrism)**: Economic conservatism exerts an anti-polarizing gravitational pull. Higher economic conservatism mathematically decreases the likelihood of choosing the extremes ("Professional Chef" or "Elder") relative to the baseline. They pull inward toward the neutral baseline (4), avoiding extreme categorizations of cultural goods altogether.
+![](Plots/ideology_cs_effects.png){fig-align="center" width="100%"}
 
-To understand the mathematical mechanics driving these patterns, we can visualize the raw Category-Specific (CS) thresholds in the ACAT model. These represent the log-odds "push" across each internal boundary (e.g., the jump from Rating 6 to 7).
-
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "ideology_cs_effects.png"))
-```
-
-*   **The Social Slingshot**: At the lower thresholds, the effect of Social Conservatism is muted. But at the final threshold (6 vs 7), it applies an enormous positive push (+0.51 log-odds), throwing respondents aggressively into the absolute extreme "Professional Chef" category.
-*   **The Economic Wall**: Economic conservatism weakly pushes people rightward away from 1 (+0.09). But crucially, at the upper thresholds (5 vs 6, and 6 vs 7), the coefficients flip negative (-0.10 and -0.30). This acts as a mathematical wall—blocking respondents from choosing extreme "Chef" ratings and trapping them in the middle of the scale.
+Examination of the raw threshold transitions confirms this mechanism. Social conservatism exhibits modest coefficients at lower scale boundaries but exerts a pronounced positive shift at the final threshold transition between categories 6 and 7. Economic conservatism displays negative coefficients across the upper thresholds, constraining respondents from advancing into the highest professionalization categories.
 
 ### 5.4 Cultural Capital Effects
 
-Concepts of "authenticity" and preference for "high-end chefs" versus "traditional elders" are heavily theorized as class-based (cultural capital).
+The relationship between cultural capital and authenticity assessments was examined across measures of respondent education, parental education, and childhood arts socialization.
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "cultural_cs_midpoint_effects.png"))
-```
+![](Plots/cultural_cs_midpoint_effects.png){fig-align="center" width="100%"}
 
-*   **Education**: Higher education acts as a structural force pushing respondents away from the "Traditional Elder" side of the scale, increasing the log-odds that they define authenticity through professionalization (Ratings 5, 6, and 7).
-*   **Parental Education**: Interestingly, while a respondent's *own* education pushes them toward the professional chef extreme, *parental* education exerts a much more muted, slightly centrist pull (similar to economic conservatism), suppressing the likelihood of choosing the absolute extremes (1 and 7).
-*   **Childhood Arts Exposure**: Childhood arts exposure exhibits a wide, overlapping posterior distribution across the thresholds, indicating that once we control for education and ideology, early arts socialization does not have a mathematically confident directional pull on culinary authenticity.
+Respondent educational attainment systematically increases the likelihood of rating cuisines toward the professional chef anchor. Conversely, parental education exhibits a pattern consistent with moderation, dampening the probability of choosing extreme categories. Childhood arts exposure shows credible intervals spanning zero across thresholds, indicating limited directional influence once formal education and political ideology are controlled.
 
-Again, looking at the raw internal category thresholds clarifies exactly how these two forms of capital diverge mathematically.
+![](Plots/cultural_cs_effects.png){fig-align="center" width="100%"}
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "cultural_cs_effects.png"))
-```
-
-*   **The Structural Plow**: A respondent's own education applies a positive push at *every single threshold*. It functions like a snowplow, consistently shoving the respondent away from "Elder" and cleanly through the neutral midpoint toward the "Professional Chef" side of the scale.
-*   **The Restrained Centrist**: Inherited cultural capital (parental education) behaves almost exactly like Economic Conservatism. It exerts negative pressure at the upper thresholds (-0.12 at Threshold 5; -0.10 at Threshold 6). This prevents respondents from selecting extreme professionalization, suppressing extreme opinions in favor of a more restrained, moderate rating style.
-
----
+The threshold-specific estimates further illustrate these dynamics. Respondent education maintains consistent positive coefficients across successive thresholds, moving responses step-wise away from domestic tradition toward professionalization. In contrast, parental education displays negative coefficients at the upper threshold boundaries, dampening extreme endorsements of professionalization in favor of moderate scale positions.
 
 ## 6. Random Slopes: Demographic and Ideological Effects by Cuisine
 
-We estimated a random slopes model (Model 3) allowing the continuous effects of Education, Parental Education, Social and Economic Conservatism, and Arts Exposure to vary independently for each cuisine. WAIC comparisons indicated this provided a statistically significant improvement in model fit, confirming that demographic and ideological factors interact with specific cuisines differently.
+To determine whether demographic and ideological associations vary across culinary traditions, random slope coefficients were estimated for each continuous predictor. Combining global fixed effects with cuisine-level random adjustments reveals the net effect for each culinary category.
 
-The following plots combine the global fixed effects with the cuisine-specific deviations (random slopes) to show the total structural push of each variable on each cuisine. 
+### 6.1 Ideological Effects by Cuisine
 
-*   A **negative slope** means that higher values of the variable pull that specific cuisine toward the "Traditional Elder at Home" (1) rating.
-*   A **positive slope** pushes it toward the "Professional Chef" (7) rating.
+![](Plots/rs_cuisine_slopes_ideology.png){fig-align="center" width="100%"}
 
-### 6.1 Ideological Effects
+Social conservatism consistently exhibits positive associations across culinary traditions, with the strongest adjustments observed for French and Japanese cuisines. Economic conservatism remains tightly clustered around zero across all cuisines, corroborating its global tendency toward neutrality rather than tradition-specific directional divergence.
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-# Embed the ideology random slopes plot
-knitr::include_graphics(here::here("Plots", "rs_cuisine_slopes_ideology.png"))
-```
+### 6.2 Cultural Capital Effects by Cuisine
 
-*   **Social Conservatism**: Social Conservatism universally exerts a strong pull toward the professional end of the spectrum across virtually all cuisines, with French and Japanese showing the highest susceptibility to this ideological framing.
-*   **Economic Conservatism**: Hovers around zero across almost all cuisines, reinforcing its global role as a neutral or centrist pull that lacks a strong directional push toward either authenticity extreme.
+![](Plots/rs_cuisine_slopes_cultural.png){fig-align="center" width="100%"}
 
-### 6.2 Cultural Capital Effects
+Respondent education demonstrates positive slopes across all cuisines, although the magnitude of this association is notably larger for French, Japanese, and Italian cuisines than for Nigerian or Jamaican cuisines. Parental education and childhood arts exposure remain centered near zero across all fifteen traditions, indicating minimal cuisine-specific variation.
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-# Embed the cultural capital random slopes plot
-knitr::include_graphics(here::here("Plots", "rs_cuisine_slopes_cultural.png"))
-```
+## 7. Cultural Consensus and Dispersion
 
-*   **Education**: While Education has a globally positive pull (toward Professional Chef), the magnitude varies considerably. Education acts as a massive upward force for cuisines like Japanese, French, and Italian, but has a noticeably weaker effect on Nigerian or Jamaican cuisines.
-*   **Parental Education & Arts Exposure**: Similar to economic conservatism, these factors largely hover around zero across all cuisines, showing little to no directional influence regardless of the cuisine in question.
+To assess public consensus and contestation surrounding authenticity definitions, a distributional location-scale ACAT model was estimated. This specification simultaneously models the location intercept alongside the discrimination parameter (`disc`), where higher discrimination values correspond to higher agreement (lower residual variance).
 
----
+### 7.1 Baseline Consensus Across Cuisines
 
-## 7. Cultural Consensus and Variance (Distributional Model)
+Figure 8 maps culinary traditions along two dimensions: baseline authenticity orientation on the horizontal axis and public consensus on the vertical axis.
 
-To answer the question of whether there is widespread public agreement (consensus) vs. contestation (high variance) on these authenticity ratings, we fit a **Distributional (Location-Scale) ACAT Model**. This model simultaneously predicts both the core rating choice (location) and the precision or consensus of the responses (the `disc` parameter, which is the inverse of variance).
+![](Plots/cuisine_2d_consensus.png){fig-align="center" width="100%"}
 
-### 7.1 Baseline Variance by Cuisine
+The resulting distribution identifies distinct culinary clusters. Traditions such as Ethiopian, Pakistani, and Lebanese exhibit high discrimination parameters alongside traditional orientation intercepts, indicating strong public consensus around home elder preparation. In contrast, Italian, French, and Japanese cuisines exhibit lower discrimination parameters, indicating greater dispersion in public perceptions regarding whether their authentic expression resides in domestic kitchens or haute cuisine establishments.
 
-By extracting both the location intercept and the `disc` parameter intercept, we can map the entire authenticity landscape in two dimensions: where the cuisine sits, and how much the public agrees on it.
+### 7.2 Demographic Predictors of Consensus
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "cuisine_2d_consensus.png"))
-```
+Figure 9 presents posterior parameter distributions for demographic effects on the global discrimination parameter.
 
-*   **High Consensus / High Traditional (Top-Left)**: Cuisines like Ethiopian, Pakistani, and Lebanese are highly agreed upon by the public (they have very high `disc` parameters / low variance) and are firmly mapped to the "Traditional Elder" side of the scale.
-*   **Low Consensus / Chaos (Bottom)**: Italian, French, and Japanese cuisines produce massive rating variance (negative `disc` parameters). Because these cuisines exist simultaneously as everyday domestic food and highly formalized, elite professional cuisine in the US, respondents exhibit fundamental disagreement about where their "authenticity" lies.
+![](Plots/demographic_variance_effects_forest.png){fig-align="center" width="100%"}
 
-### 7.2 Demographic Effects on Global Consensus
+The posterior estimates indicate that higher educational attainment is associated with lower discrimination parameters, suggesting that educated respondents exhibit wider internal variance and less consensus in authenticity evaluations. Similarly, higher social conservatism is associated with decreased discrimination parameters relative to liberal respondents. Childhood arts exposure displays posterior distributions overlapping zero, showing no credible relationship with overall consensus.
 
-Do certain demographic groups have stronger consensus than others? The following Bayesian "half-eye" forest plot visualizes the probability distribution of the demographic effects on the global `disc` (consensus) parameter.
+## 8. Cuisine-Specific Heterogeneity in Consensus
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-knitr::include_graphics(here::here("Plots", "demographic_variance_effects_forest.png"))
-```
-
-**Key Insights into Consensus:**
-*   **Education Drives Dissensus:** Higher education levels firmly drop the discrimination parameter, meaning higher education results in wider variance (less consensus) on what constitutes authenticity globally.
-*   **Ideological Chaos:** As social conservatism increases, the discrimination parameter also drops. Conservatives exhibit significantly higher variance (less consensus) in their authenticity ratings compared to liberals.
-*   **Arts Exposure:** Childhood exposure to the arts does not have a statistically credible effect on variance, as its distribution widely crosses zero.
-
----
-
-## 8. Random Slopes for Consensus: How Demographic Effects on Variance Change by Cuisine
-
-Just as demographic pulls on the rating itself differ by cuisine, we also evaluated whether demographic impacts on *variance* differ by cuisine using Model 6 (Variance + Random Slopes).
-
-*   A **negative value** means the trait lowers consensus (increases variance/chaos) for that specific cuisine.
-*   A **positive value** means the trait increases consensus (decreases variance).
+Using the full distributional random slopes specification, we evaluated whether demographic impacts on rating dispersion vary across culinary traditions. Negative parameter values denote a decrease in consensus (higher variance), whereas positive values indicate heightened consensus.
 
 ### 8.1 Ideological Effects on Consensus
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-# Embed the ideology variance random slopes plot
-knitr::include_graphics(here::here("Plots", "rs_variance_ideology.png"))
-```
+![](Plots/rs_variance_ideology.png){fig-align="center" width="100%"}
 
-*   **Social Conservatism**: While Social Conservatism generally creates more chaos (variance) in ratings globally, its effect is deeply dependent on the cuisine. For Mexican and Italian food, Social Conservatism powerfully decreases consensus. However, for Nigerian and Ethiopian cuisines, the effect hovers near zero, indicating conservatives are just as unified on their authenticity ratings for these cuisines as liberals.
+The association between social conservatism and rating dispersion varies by cuisine. Social conservatism substantially reduces consensus for Mexican and Italian foods, whereas its effect is negligible for Nigerian and Ethiopian cuisines, where respondents across ideological categories remain similarly aligned.
 
 ### 8.2 Cultural Capital Effects on Consensus
 
-```{r, echo=FALSE, fig.align='center', out.width='100%'}
-# Embed the cultural capital variance random slopes plot
-knitr::include_graphics(here::here("Plots", "rs_variance_cultural.png"))
-```
+![](Plots/rs_variance_cultural.png){fig-align="center" width="100%"}
 
-*   **Education**: Education universally decreases consensus (negative shifts across the board), but the chaos it introduces is especially intense for Mexican, Italian, and Native American cuisines. 
-*   **Parental Education & Arts Exposure**: As seen in the location models, early cultural capital markers (parental education and arts exposure) remain largely non-directional and do not significantly alter public consensus for any given cuisine.
+Educational attainment consistently reduces consensus across traditions, with the most pronounced dispersion observed in evaluations of Mexican, Italian, and Native American cuisines. In contrast, parental education and childhood arts exposure maintain narrow distributions centered near zero, indicating that inherited cultural capital plays a minimal role in structuring rating consensus across specific cuisines.
