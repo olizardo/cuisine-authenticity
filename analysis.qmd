@@ -257,7 +257,11 @@ To evaluate how behavioral dining practices shape authenticity schemas alongside
 
 ![](Plots/ext_practices_forest.png){fig-align="center" width="100%"}
 
-The estimates uncover a striking dual mechanism within cultural capital. Frequent participation in highbrow arts activities, such as attending museums, theaters, and operas, is a credibly positive predictor of endorsing professional chef craftsmanship ($\text{median} = +0.14$, $95\%\text{ CrI } [0.07, 0.21]$, $P(\beta > 0) = 99.98\%$). Frequent patronage of fine dining restaurants similarly shifts respondents toward the professional chef pole ($\text{median} = +0.09$, $95\%\text{ CrI } [0.01, 0.17]$, $P(\beta > 0) = 98.2\%$). In contrast, mass consumption via fast food frequency exhibits an attenuated estimate centered near zero ($\text{median} = +0.03$, $95\%\text{ CrI } [-0.03, 0.09]$, $P(\beta > 0) = 83.6\%$).
+To evaluate how behavioral dining practices shift responses across individual scale thresholds relative to the neutral midpoint (Category 4), Figure 12 displays category-specific contrast log-odds.
+
+![](Plots/practices_cs_midpoint_effects.png){fig-align="center" width="100%"}
+
+The contrast distributions illustrate distinct threshold dynamics across dining practices. Adult highbrow arts participation sharply suppresses ratings for domestic elder categories (Cat 1: $\text{median} = -0.42$, Cat 2: $\text{median} = -0.45$) while strongly elevating the upper restaurant categories (Cat 5: $+0.47$, Cat 6: $+0.34$). In contrast, fine dining frequency exhibits an escalating monotonic trajectory across the upper scale, reaching its maximum contrast at the extreme professional chef pole (Cat 7 vs 4: $\text{median} = +0.69$, $95\%\text{ CrI } [0.45, 0.95]$, $P > 0 = 100\%$).
 
 Crucially, when active highbrow arts participation and fine dining practices are held constant, embodied childhood arts socialization reveals a credibly negative association with professionalization ($\text{median} = -0.09$, $95\%\text{ CrI } [-0.16, -0.03]$, $P(\beta < 0) = 99.92\%$). This finding suggests that early embodied aesthetic socialization anchors culinary taste in heritage, tradition, and domestic craftsmanship, whereas adult institutionalized cultural consumption actively reinforces the valorization of elite restaurant technique.
 
@@ -271,7 +275,11 @@ Model EXT-Dispositions tested whether general food taste dispositions—specific
 
 ![](Plots/ext_dispositions_forest.png){fig-align="center" width="100%"}
 
-The parameter estimates provide direct construct validation for the authenticity scale. Respondents who report higher liking for "exotic and authentic" food systematically evaluate culinary traditions toward the domestic elder anchor ($\text{median} = -0.09$, $95\%\text{ CrI } [-0.15, -0.02]$, $P(\beta < 0) = 99.43\%$). This indicates that cultural consumers who actively seek authentic culinary experiences conceptualize authenticity as rooted in ancestral domestic heritage rather than professionalized restaurant gastronomy. Preference for conventional and familiar food exhibits no directional association with the scale ($\text{median} = -0.01$, $P(\beta > 0) = 43.9\%$), while preferences for light and rich food textures maintain slight negative shifts that span the credibility boundary.
+Figure 15 displays the midpoint contrast shifts across taste disposition dimensions relative to Category 4.
+
+![](Plots/dispositions_cs_midpoint_effects.png){fig-align="center" width="100%"}
+
+Evaluating these category-specific contrast log-odds validates the authenticity construct: respondents who prioritize exotic and authentic flavors exhibit an escalating elevation across all domestic elder categories relative to the midpoint (Cat 1: $\text{median} = +0.39$, $95\%\text{ CrI } [0.20, 0.59]$; Cat 2: $\text{median} = +0.27$; Cat 3: $\text{median} = +0.20$), while depressing the extreme chef category (Cat 7: $-0.15$). In contrast, preferences for familiar comfort foods, light textures, and rich dishes remain largely centered near zero across all threshold comparisons.
 
 ![](Plots/rs_cuisine_slopes_dispositions.png){fig-align="center" width="100%"}
 
@@ -283,11 +291,24 @@ Model EXT-Cosmopolitan evaluated whether self-identification as a global citizen
 
 ![](Plots/ext_cosmopolitan_forest.png){fig-align="center" width="100%"}
 
-The results indicate that possessing a diverse, inter-ethnic close friendship network is a credibly positive predictor of endorsing professional chef mastery ($\text{median} = +0.06$, $95\%\text{ CrI } [0.00, 0.12]$, $P(\beta > 0) = 97.85\%$). Identifying strongly as a citizen of the world exhibits a positive point estimate ($\text{median} = +0.04$, $P(\beta > 0) = 88.8\%$) with credible intervals spanning zero globally. Across all models, social conservatism maintains an invariant and credibly positive association with professional chef technique ($\text{median} = +0.14$, $P(\beta > 0) = 99.5\%$), confirming the robustness of political sorting across diverse model specifications.
+Figure 18 presents the midpoint contrast shifts for friendship network diversity and global citizen identity.
+
+![](Plots/cosmopolitan_cs_midpoint_effects.png){fig-align="center" width="100%"}
+
+The contrast distributions confirm that friendship network diversity credibly increases the log-odds of selecting professional chef categories relative to the neutral midpoint (Cat 5: $+0.21$, Cat 6: $+0.28$, Cat 7: $+0.31$), while depressing domestic elder categories (Cat 2: $-0.17$, Cat 3: $-0.11$).
 
 ![](Plots/rs_cuisine_slopes_cosmopolitan.png){fig-align="center" width="100%"}
 
-Cuisine-specific slope estimation reveals meaningful variation for cosmopolitan identity: identifying as a global citizen credibly pulls ratings toward professional chef mastery for Native American ($+0.09$) and Mexican cuisines ($+0.06$), while exerting a slight negative pull on French cuisine ($-0.02$), reflecting a cosmopolitan schema that seeks to elevate historically marginalized culinary traditions into fine dining legitimacy while de-centering Western haute culinary hegemony.
+### 7.7 Consensus Synthesis: Midpoint Contrasts for All Majority-Credible Mechanisms
+
+To provide a comprehensive comparative synthesis across all substantive domains, Figure 20 gathers the category-specific midpoint contrast distributions for every predictor demonstrating majority credibility in the cross-specification stability analysis.
+
+![](Plots/consensus_credible_midpoint_contrasts.png){fig-align="center" width="100%"}
+
+This consolidated visualization illustrates the structural divergence between the two primary evaluative schemas:
+
+1. **Professional Chef Mastery Orientation (Blue)**: Social Conservatism, Educational Attainment, Adult Highbrow Arts Attendance, Fine Dining Frequency, and Friendship Network Diversity all exhibit strong positive contrast trajectories across categories 5, 6, and 7 relative to the neutral midpoint, with Social Conservatism and Fine Dining Frequency exhibiting the sharpest spikes at Category 7 (Chef).
+2. **Domestic Elder Authenticity Orientation (Vermillion)**: Childhood Arts Socialization and Dispositions for Exotic & Authentic Food exhibit systematic positive contrast trajectories across categories 1, 2, and 3 relative to the neutral midpoint, anchoring culinary excellence firmly in ancestral tradition and domestic heritage.
 
 ## 8. Substantive Discussion and Conclusion
 

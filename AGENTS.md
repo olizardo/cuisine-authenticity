@@ -146,11 +146,16 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
   - Figure 10: `Plots/ext_cultural_capital_mechanisms.png` (Cultural Capital Disaggregation)
 * `scripts/generate_novel_extension_plots.R`:
   - Figure 11: `Plots/ext_practices_forest.png` (Practices Global Forest)
-  - Figure 12: `Plots/rs_cuisine_slopes_practices.png` (Practices Cuisine Slopes)
-  - Figure 13: `Plots/ext_dispositions_forest.png` (Dispositions Global Forest)
-  - Figure 14: `Plots/rs_cuisine_slopes_dispositions.png` (Dispositions Cuisine Slopes)
-  - Figure 15: `Plots/ext_cosmopolitan_forest.png` (Cosmopolitan Global Forest)
-  - Figure 16: `Plots/rs_cuisine_slopes_cosmopolitan.png` (Cosmopolitan Cuisine Slopes)
+  - Figure 12: `Plots/practices_cs_midpoint_effects.png` (Practices Midpoint Contrasts)
+  - Figure 13: `Plots/rs_cuisine_slopes_practices.png` (Practices Cuisine Slopes)
+  - Figure 14: `Plots/ext_dispositions_forest.png` (Dispositions Global Forest)
+  - Figure 15: `Plots/dispositions_cs_midpoint_effects.png` (Dispositions Midpoint Contrasts)
+  - Figure 16: `Plots/rs_cuisine_slopes_dispositions.png` (Dispositions Cuisine Slopes)
+  - Figure 17: `Plots/ext_cosmopolitan_forest.png` (Cosmopolitan Global Forest)
+  - Figure 18: `Plots/cosmopolitan_cs_midpoint_effects.png` (Cosmopolitan Midpoint Contrasts)
+  - Figure 19: `Plots/rs_cuisine_slopes_cosmopolitan.png` (Cosmopolitan Cuisine Slopes)
+* `scripts/generate_novel_midpoint_contrasts.R`:
+  - Figure 20: `Plots/consensus_credible_midpoint_contrasts.png` (Master Consensus Midpoint Contrasts for All Majority-Credible Mechanisms)
 * Render pipeline: `quarto render analysis.qmd`.
 
 ---
