@@ -3,13 +3,15 @@
 #'   from "Authenticity vs. Conventional Highbrow Restaurant Preferences" (Childress & Lizardo):
 #'   1. H1–H3: Political Ideology Asymmetry (Social vs. Economic Conservatism).
 #'   2. H4: Cuisine Consecration Hierarchies and Ideological Polarization Slopes.
-#'   3. Cultural Capital Disaggregation: Childhood Socialization vs. Education vs. Dining Practices.
-#'   4. Dispositional Congruence: Bourdieu Food Tastes & Authenticity Orientation.
-#'   5. Cosmopolitan Capital & Social Network Heterophily.
+#'   3. Cultural Capital Disaggregation: Childhood Socialization vs. Education vs. Income.
 #' @author Cuisine Authenticity Project
 
 suppressPackageStartupMessages({
-  library(tidyverse)
+  library(dplyr)
+  library(tidyr)
+  library(tibble)
+  library(purrr)
+  library(ggplot2)
   library(brms)
   library(tidybayes)
   library(ggdist)
@@ -49,13 +51,15 @@ theme_cuisine <- function(base_size = 12) {
 # -------------------------------------------------------------
 # 1. Load Fitted Models & Data
 # -------------------------------------------------------------
-m5 <- readRDS(here("cache", "hier_5_var_rs.rds"))
 m6 <- readRDS(here("cache", "hier_6_relaxed_rs.rds"))
-m2 <- readRDS(here("cache", "hier_2_relaxed.rds"))
-
-draws_m5 <- as_draws_df(m5)
 draws_m6 <- as_draws_df(m6)
-draws_m2 <- as_draws_df(m2)
+
+soc_mean <- rowMeans(draws_m6[, paste0("bcs_social_c[", 1:6, "]")])
+econ_mean <- rowMeans(draws_m6[, paste0("bcs_economic_c[", 1:6, "]")])
+educ_mean <- rowMeans(draws_m6[, paste0("bcs_educ_c[", 1:6, "]")])
+peduc_mean <- rowMeans(draws_m6[, paste0("bcs_peduc_c[", 1:6, "]")])
+arts_mean <- rowMeans(draws_m6[, paste0("bcs_arts_c[", 1:6, "]")])
+income_val <- draws_m6$b_income_c
 
 # -------------------------------------------------------------
 # 2. Figure EXT-1: Political Ideology Asymmetry (H1, H2, H3)
@@ -63,10 +67,10 @@ draws_m2 <- as_draws_df(m2)
 cat("Generating Figure EXT-1: Political Ideology Asymmetry...\n")
 
 df_h1_h3 <- tibble(
-  draw = seq_len(nrow(draws_m5)),
-  `Social Conservatism` = draws_m5$b_social_c,
-  `Economic Conservatism` = draws_m5$b_economic_c,
-  `Asymmetry Contrast (Social - Economic)` = draws_m5$b_social_c - draws_m5$b_economic_c
+  draw = seq_along(soc_mean),
+  `Social Conservatism` = soc_mean,
+  `Economic Conservatism` = econ_mean,
+  `Asymmetry Contrast (Social - Economic)` = soc_mean - econ_mean
 ) |>
   pivot_longer(cols = -draw, names_to = "parameter", values_to = "value") |>
   group_by(parameter) |>
@@ -109,7 +113,7 @@ p_ext1 <- ggplot(df_h1_h3, aes(x = value, y = parameter, fill = credibility)) +
   ) +
   geom_text(
     data = labels_h1_h3,
-    aes(x = 1.25, y = parameter, label = label, color = credibility),
+    aes(x = 0.55, y = parameter, label = label, color = credibility),
     hjust = 0,
     size = 3.3,
     fontface = "bold",
@@ -118,13 +122,13 @@ p_ext1 <- ggplot(df_h1_h3, aes(x = value, y = parameter, fill = credibility)) +
   scale_fill_manual(values = color_map, name = "Credibility Status") +
   scale_color_manual(values = color_map, guide = "none") +
   scale_x_continuous(
-    limits = c(-1.1, 2.3),
-    breaks = seq(-1.0, 2.0, by = 0.5),
+    limits = c(-0.5, 1.2),
+    breaks = seq(-0.4, 1.0, by = 0.2),
     labels = function(x) sprintf("%+.1f", x)
   ) +
   labs(
     title = "Hypotheses H1–H3: Political Ideology Asymmetry and Cultural Polarization",
-    subtitle = "Posterior distributions of standardized location coefficients and asymmetry contrast from Model 5 (Location-Scale)",
+    subtitle = "Posterior distributions of standardized location coefficients and asymmetry contrast from Model 6 (Relaxed CS + RS)",
     x = "Posterior Log-Odds Ratio (β) [Negative = Domestic Elder | Positive = Professional Chef]",
     y = "Ideological Construct",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nThick inner bar = 80% CrI; thin outer bar = 95% CrI; point = posterior median. Model estimated with brms/CmdStan."
@@ -161,7 +165,7 @@ consecration_tiers <- c(
 )
 
 df_h4 <- map_dfr(cuisines_list, function(c_name) {
-  tot_slope <- draws_m5$b_social_c + draws_m5[[paste0("r_cuisine[", c_name, ",social_c]")]]
+  tot_slope <- soc_mean + draws_m6[[paste0("r_cuisine[", c_name, ",social_c]")]]
   tibble(
     cuisine = cuisine_labels[c_name],
     tier = consecration_tiers[c_name],
@@ -207,7 +211,7 @@ p_ext2 <- ggplot(df_h4, aes(x = value, y = cuisine, fill = credibility)) +
   ) +
   geom_text(
     data = labels_h4,
-    aes(x = 1.15, y = cuisine, label = label, color = credibility),
+    aes(x = 0.55, y = cuisine, label = label, color = credibility),
     hjust = 0,
     size = 2.9,
     fontface = "bold",
@@ -216,16 +220,16 @@ p_ext2 <- ggplot(df_h4, aes(x = value, y = cuisine, fill = credibility)) +
   scale_fill_manual(values = color_map, name = "Credibility Status") +
   scale_color_manual(values = color_map, guide = "none") +
   scale_x_continuous(
-    limits = c(-0.4, 2.1),
-    breaks = seq(-0.4, 2.0, by = 0.4),
+    limits = c(-0.25, 0.95),
+    breaks = seq(-0.2, 0.8, by = 0.2),
     labels = function(x) sprintf("%+.1f", x)
   ) +
   labs(
     title = "Hypothesis H4: Cuisine Consecration Hierarchy & Social Ideology Slopes",
-    subtitle = "Posterior total slopes (Global Fixed Effect + Random Slope) for Social Conservatism across Consecration Tiers (Model 5)",
+    subtitle = "Posterior total slopes (Global Fixed Effect + Random Slope) for Social Conservatism across Consecration Tiers (Model 6)",
     x = "Posterior Total Slope (β + v_cuisine) [Shift toward Chef per 1 SD Social Conservatism]",
     y = "Cuisine Category",
-    caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nFitted via Location-Scale Bayesian Adjacent Category Ordinal Regression."
+    caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nFitted via Bayesian Adjacent Category Ordinal Regression (Model 6: Relaxed CS + Random Slopes)."
   ) +
   theme_cuisine(base_size = 11) +
   theme(strip.text = element_text(face = "bold", size = 10, color = "gray15"))
@@ -239,11 +243,11 @@ cat("Saved ext_h4_cuisine_consecration_slopes.png\n")
 cat("Generating Figure EXT-3: Cultural Capital Disaggregation...\n")
 
 df_cc <- tibble(
-  draw = seq_len(nrow(draws_m5)),
-  `Educational Attainment (Institutionalized CC)` = draws_m5$b_educ_c,
-  `Parental Education (Inherited CC)` = draws_m5$b_peduc_c,
-  `Childhood Arts Socialization (Embodied CC)` = draws_m5$b_arts_c,
-  `Household Income (Economic Capital)` = draws_m5$b_income_c
+  draw = seq_along(educ_mean),
+  `Educational Attainment (Institutionalized CC)` = educ_mean,
+  `Parental Education (Inherited CC)` = peduc_mean,
+  `Childhood Arts Socialization (Embodied CC)` = arts_mean,
+  `Household Income (Economic Capital)` = income_val
 ) |>
   pivot_longer(cols = -draw, names_to = "dimension", values_to = "value") |>
   group_by(dimension) |>
@@ -284,7 +288,7 @@ p_ext3 <- ggplot(df_cc, aes(x = value, y = dimension, fill = credibility)) +
   ) +
   geom_text(
     data = labels_cc,
-    aes(x = 1.05, y = dimension, label = label, color = credibility),
+    aes(x = 0.35, y = dimension, label = label, color = credibility),
     hjust = 0,
     size = 3.2,
     fontface = "bold",
@@ -293,13 +297,13 @@ p_ext3 <- ggplot(df_cc, aes(x = value, y = dimension, fill = credibility)) +
   scale_fill_manual(values = color_map, name = "Credibility Status") +
   scale_color_manual(values = color_map, guide = "none") +
   scale_x_continuous(
-    limits = c(-0.8, 2.0),
-    breaks = seq(-0.8, 1.8, by = 0.4),
+    limits = c(-0.4, 0.9),
+    breaks = seq(-0.4, 0.8, by = 0.2),
     labels = function(x) sprintf("%+.1f", x)
   ) +
   labs(
     title = "Cultural Capital Disaggregation: Socialization, Institutional Capital, and Economic Capital",
-    subtitle = "Posterior distributions of standardized location coefficients from Model 5 (Location-Scale)",
+    subtitle = "Posterior distributions of standardized location coefficients from Model 6 (Relaxed CS + RS)",
     x = "Posterior Log-Odds Ratio (β) [Negative = Domestic Elder | Positive = Professional Chef]",
     y = "Capital Dimension",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nEvaluates independent mechanisms of embodied socialization vs. institutional educational distinction."

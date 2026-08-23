@@ -24,3 +24,4 @@ renv/cellar/
 # Model RDS Objects (>200MB total)
 cache/*.rds
 !cache/cuisine_waic_comparison.rds
+!cache/full_model_fit_comparison.rds

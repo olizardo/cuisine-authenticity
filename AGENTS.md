@@ -1,114 +1,130 @@
 # Global & Project Agent Guidelines
 
-**Global Location:** `~/.config/agents/AGENTS.md`  
 **Project:** Cuisine Authenticity and Taste (`cuisine-authenticity`)
 
 ---
 
-## 1. Cuisine Authenticity Project Architecture & Core Empirical Findings
+## 1. Project Architecture & Statistical Framework
 
 ### Analytical Framework
 * **Dependent Variable:** 7-point ordinal Likert scale evaluating whether the ideal preparation of a given cuisine is grounded in domestic tradition ($1 = \text{"traditional recipe prepared by an elder at home"}$) versus elite professional craftsmanship ($7 = \text{"developed recipe prepared by a professional chef at a high-end restaurant"}$), with $4$ as the neutral midpoint.
 * **Data Structure:** Stacked longitudinal panel of $N = 18,180$ ratings across $1,212$ unique respondents evaluating 15 distinct national and regional cuisines.
 * **Model Class:** Bayesian Adjacent Category Ordinal Regression (`family = acat("logit")`) with crossed random intercepts and random slopes for respondents and cuisines (`(1 | respondent_id) + (1 + ... | cuisine)`), estimated using `brms` with the `cmdstanr` backend.
 
-### Primary Baseline Model Configurations & WAIC Performance
-1. **Model 1: Baseline Strict** (`cache/hier_1_baseline.rds`): $\text{WAIC} = 55,310.59$ ($\Delta = +1,878.0$).
-2. **Model 2: Relaxed CS** (`cache/hier_2_relaxed.rds`): Category-specific transition slopes. $\text{WAIC} = 55,177.51$.
-3. **Model 3: Random Slopes Strict** (`cache/hier_3_rs.rds`): Cuisine random slopes on location. $\text{WAIC} = 55,171.37$.
-4. **Model 4: Variance Strict** (`cache/hier_4_var.rds`): Location-scale model with discrimination submodel (`disc`). $\text{WAIC} = 53,653.40$.
-5. **Model 5: Variance + Random Slopes** (`cache/hier_5_var_rs.rds`): Full location-scale model with random slopes on both location and discrimination. **Top-performing model overall ($\text{WAIC} = 53,432.63$)**.
-6. **Model 6: Relaxed CS + Random Slopes** (`cache/hier_6_relaxed_rs.rds`): Category-specific threshold transitions + cuisine random slopes. **Top non-distributional model ($\text{WAIC} = 54,961.97$)**.
-
-### Novel Extension Models (Hoffman2 HPC Deployments)
-7. **Model EXT-Practices** (`cache/hier_ext_practices.rds`): Disaggregates dining frequencies (`fancy_restaurant`, `fast_food`) and highbrow arts participation (`highbrow_arts_freq`) with crossed random slopes across cuisines.
-8. **Model EXT-Dispositions** (`cache/hier_ext_dispositions.rds`): Tests Bourdieu taste dispositions (`taste_authentic`, `taste_familiar`, `taste_light`, `taste_rich`) to validate construct congruence.
-9. **Model EXT-Cosmopolitan** (`cache/hier_ext_cosmopolitan.rds`): Tests cosmopolitan world-citizen identity (`cosmo_global`) and inter-ethnic friendship network diversity (`network_diversity`).
+*(Note: All variance, location-scale, and cultural consensus modeling has been separated into the companion project: `/home/omarlizardo/projects/cuisine-authenticity-consensus`)*.
 
 ---
 
-## 2. Key Empirical Findings & Hypothesis Tests
+## 2. Complete $4 \times 2 \times 2$ Nested Factorial Taxonomy & Model Fit
+
+Every model in the project is organized into a deterministic $4 \times 2 \times 2$ factorial space crossing 4 Domains $\times$ 2 Threshold Structures $\times$ 2 Random Effect Levels.
+
+### Systematic Naming Formula
+$$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds}}$$
+
+* **`{domain}`:** `base` | `practices` | `dispositions` | `cosmopolitan`
+* **`{threshold}`:** `strict` (Proportional Odds $\beta_k = \beta$) | `relaxed` (Category-Specific Transitions `cs()`)
+* **`{re}`:** `ri` (Random Intercepts Only) | `rs` (Crossed Random Slopes on Cuisines)
+
+### Consolidated WAIC Fit Table Across Completed Models
+
+| Rank | Model Identifier | Specification | Cache File | WAIC | SE | $p_{\text{WAIC}}$ | $\Delta$ WAIC |
+|:---:|:---|:---|:---|:---:|:---:|:---:|:---:|
+| 1 | **Model 4 (Base Relaxed RS)** | Relaxed CS + Random Slopes | `hier_base_relaxed_rs.rds` | **54,961.97** | 244.84 | 1,217.7 | 0.00 |
+| 2 | **Model 3 (Base Strict RS)** | Strict + Random Slopes | `hier_base_strict_rs.rds` | **55,171.37** | 243.27 | 1,185.3 | +209.40 |
+| 3 | **Model 5 (Practices Strict RS)** | Dining Practices + Random Slopes | `hier_practices_strict_rs.rds` | **55,176.81** | 242.61 | 1,160.9 | +214.84 |
+| 4 | **Model 2 (Base Relaxed RI)** | Relaxed CS + Random Intercepts | `hier_base_relaxed_ri.rds` | **55,177.51** | 243.10 | 1,173.0 | +215.54 |
+| 5 | **Model 6 (Dispositions Strict RS)** | Taste Dispositions + Random Slopes | `hier_dispositions_strict_rs.rds` | **55,248.60** | 242.35 | 1,163.0 | +286.63 |
+| 6 | **Model 7 (Cosmo Strict RS)** | Cosmopolitanism + Random Slopes | `hier_cosmopolitan_strict_rs.rds` | **55,296.93** | 242.10 | 1,152.4 | +334.96 |
+| 7 | **Model 1 (Base Strict RI)** | Strict Baseline + Random Intercepts | `hier_base_strict_ri.rds` | **55,310.59** | 241.69 | 1,142.1 | +348.62 |
+
+*Full fit comparison cache: `cache/full_model_fit_comparison.rds` and `.csv`.*
+
+### WAIC Computation Protocol
+* **Memory Safety:** Always compute WAIC with `cores = 1` sequentially in `add_criterion()`. Spawning multiple processes causes memory usage to exceed system limits ($N = 18,180 \times 4,000$ draws) leading to Linux OOM-killer termination.
+* **Cluster Path Clearance:** Clear `m$file <- NULL` before calling `add_criterion()` to prevent write attempts to UCLA Hoffman2 paths.
+
+---
+
+## 3. Key Empirical Findings & Hypothesis Tests
 
 ### Core Theoretical Hypotheses (Childress & Lizardo)
 * **H1 & H2: Ideological Sorting into Highbrow Modes**:
-  - *Social Conservatism*: Credibly pro-chef ($+0.43$, $95\%\text{ CrI } [0.08, 0.84]$, $P(\beta > 0) = 99.1\%$ in Model 5; $+0.19$, $P = 100\%$ in Model 6).
+  - *Social Conservatism*: Credibly pro-chef ($+0.19$, $95\%\text{ CrI } [0.09, 0.31]$, $P(\beta > 0) = 100\%$).
   - *Progressive / Social Liberalism*: Credibly domestic elder authenticity.
 * **H3: Social vs. Economic Ideological Asymmetry**:
-  - *Economic Conservatism*: Attenuated and centered near zero ($+0.01$, $95\%\text{ CrI } [-0.34, 0.42]$, $P(\beta > 0) = 52.9\%$).
-  - *Posterior Contrast Test*: $P(|\beta_{\text{social}}| > |\beta_{\text{economic}}| \mid \text{Data}) = 88.0\%$. Culinary distinction is fundamentally organized around symbolic and cultural boundaries rather than fiscal/market preferences.
+  - *Economic Conservatism*: Attenuated and centered near zero ($-0.04$, $95\%\text{ CrI } [-0.15, 0.06]$, $P(\beta > 0) = 20.0\%$).
+  - *Posterior Contrast Test*: $P(\beta_{\text{social}} - \beta_{\text{economic}} > 0 \mid \text{Data}) = 99.3\%$. Culinary distinction is fundamentally organized around symbolic and cultural boundaries rather than fiscal/market preferences.
 * **H4: Cuisine Consecration Hierarchies & Ideological Slopes**:
-  - *Consecrated / Haute Cuisines* (French $\mu = +3.06$, Japanese $\mu = +0.72$): Firmly chef-anchored at baseline.
-  - *Subaltern / Peripheral Cuisines* (Native American $\mu = -1.87$, Mexican $\mu = -1.33$, Nigerian $\mu = -1.12$, Jamaican $\mu = -1.10$, Ethiopian $\mu = -0.82$, Pakistani $\mu = -0.77$, Italian $\mu = -0.70$): Strongly elder-anchored at baseline.
-  - *Ideological Tension*: Social conservatism acts as a powerful countervailing force on subaltern cuisines ($\beta_{\text{slope}} \approx +0.47\text{ to }+0.53$), pulling peripheral traditions toward professionalization.
+  - *Consecrated / Haute Cuisines* (French $\mu = +0.70$, Japanese $\mu = +0.29$, Swedish $\mu = +0.20$): Firmly chef-anchored at baseline.
+  - *Subaltern / Peripheral Cuisines* (Native American $\mu = -0.29$, Nigerian $\mu = -0.25$, Jamaican $\mu = -0.23$, Ethiopian $\mu = -0.17$, Mexican $\mu = -0.16$, Pakistani $\mu = -0.15$): Strongly elder-anchored at baseline.
+  - *Ideological Tension*: Social conservatism acts as a countervailing force across subaltern cuisines (Native American $+0.34$, Pakistani $+0.25$, Mexican $+0.24$, Jamaican $+0.24$), pulling peripheral traditions toward professionalization.
 
 ### Cultural Capital & Socialization Mechanisms
 * **Cultural Capital Dual Mechanism (Model EXT-Practices)**:
   - *Adult Highbrow Arts Participation*: Credibly pro-chef ($+0.14$, $P > 0 = 99.98\%$).
-  - *Fine Dining Frequency*: Credibly pro-chef ($+0.09$, $P > 0 = 98.2\%$).
-  - *Childhood Arts Socialization*: Once adult cultural consumption is controlled, early childhood arts exposure credibly shifts ratings toward **domestic elder authenticity** ($-0.094$, $P(\beta < 0) = 99.92\%$). Early embodied socialization roots taste in heritage and tradition, whereas adult institutionalized consumption valorizes professional restaurant gastronomy.
-  - *Educational Attainment*: Credibly pro-chef ($+0.43$, $P > 0 = 99.9\%$).
-  - *Household Income*: Centered near zero ($-0.01$, $P = 42.1\%$), demonstrating detachment of cultural schemas from sheer economic wealth.
+  - *Fine Dining Frequency*: Credibly pro-chef ($+0.09$, $P > 0 = 98.2\%$), with strongest pulls on subaltern cuisines (Native American $+0.24$, Mexican $+0.20$, Italian $+0.18$).
+  - *Childhood Arts Socialization*: Once adult cultural consumption is controlled, early childhood arts exposure credibly shifts ratings toward **domestic elder authenticity** ($-0.09$, $P(\beta < 0) = 99.92\%$). Early embodied socialization roots taste in heritage and tradition, whereas adult institutionalized consumption valorizes professional restaurant gastronomy.
+  - *Educational Attainment*: Credibly pro-chef ($+0.12$, $P > 0 = 100\%$).
+  - *Household Income*: Centered near zero ($+0.02$, $P = 74.8\%$), demonstrating detachment of cultural schemas from sheer economic wealth.
 
 ### Construct Validation & Network Diversity
 * **Bourdieu Taste Dispositions (Model EXT-Dispositions)**:
-  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($-0.085$, $P(\beta < 0) = 99.43\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking.
-* **Social Networks (Model EXT-Cosmopolitan)**:
-  - Inter-ethnic close friendship network diversity credibly increases appreciation for professional chef execution ($+0.061$, $P > 0 = 97.85\%$).
-
-### Consensus vs. Contestation (Discrimination Submodel)
-* **2D Consensus vs. Orientation Space**:
-  - *Elder Consensus (High Agreement)*: Ethiopian ($+0.54$), Pakistani ($+0.50$), Lebanese ($+0.47$), Nigerian ($+0.47$), Peruvian ($+0.38$), Moroccan ($+0.34$), Vietnamese ($+0.31$), Jamaican ($+0.29$).
-  - *Elder Contested (High Disagreement)*: Native American ($-0.49$), Mexican ($-0.47$), Italian ($-1.10$), Korean ($-0.10$).
-  - *Chef Contested (High Disagreement)*: French ($-0.98$), Japanese ($-0.58$), Swedish ($-0.22$).
-* **Demographic Predictors of Consensus**:
-  - Social Conservatism ($-0.30$, $P < 0 = 100\%$) and Education ($-0.09$, $P < 0 = 99.6\%$) credibly decrease consensus (increase evaluation contestation).
-  - Economic Conservatism ($+0.16$, $P > 0 = 100\%$) credibly increases consensus (concentrates ratings toward center).
+  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($-0.09$, $P(\beta < 0) = 99.43\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking.
+  - *Cuisine Heterogeneity*: This effect holds across all subaltern cuisines (Nigerian $-0.14$, Peruvian $-0.13$, Moroccan $-0.12$, Ethiopian $-0.12$, Pakistani $-0.11$, Jamaican $-0.11$, Lebanese $-0.10$).
+* **Social Networks & Cosmopolitan Capital (Model EXT-Cosmopolitan)**:
+  - Inter-ethnic close friendship network diversity credibly increases appreciation for professional chef execution ($+0.06$, $P > 0 = 97.85\%$).
+  - *Global Citizen Identity*: Elevates marginalized cuisines into fine dining legitimacy (Native American $+0.09$, Mexican $+0.06$) while de-centering Western haute culinary hegemony (French $-0.02$).
 
 ---
 
-## 3. Directional Credibility Standard (≥ 95% Posterior Probability Mass)
+## 4. Directional Credibility Standard (≥ 95% Posterior Probability Mass)
 
-In this project, Bayesian credibility is strictly evaluated based on the **directional posterior probability mass on either side of zero**:
-$$\text{Credibly Positive: } P(\theta > 0 \mid \text{Data}) = \frac{1}{S}\sum_{s=1}^S \mathbb{I}(\theta^{(s)} > 0) \ge 0.95 \quad (\#0072B2 \text{ Okabe-Ito Blue})$$
-$$\text{Credibly Negative: } P(\theta < 0 \mid \text{Data}) = \frac{1}{S}\sum_{s=1}^S \mathbb{I}(\theta^{(s)} < 0) \ge 0.95 \quad (\#D55E00 \text{ Okabe-Ito Vermillion})$$
+Bayesian credibility is evaluated based on directional posterior probability mass on either side of zero:
+$$\text{Credibly Positive: } P(\theta > 0 \mid \text{Data}) \ge 0.95 \quad (\#0072B2 \text{ Okabe-Ito Blue})$$
+$$\text{Credibly Negative: } P(\theta < 0 \mid \text{Data}) \ge 0.95 \quad (\#D55E00 \text{ Okabe-Ito Vermillion})$$
 $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \quad (\text{gray60})$$
 
-* Always annotate forest/half-eye plots with directional probability percentages and median [95% CrI] intervals.
+---
+
+## 5. Visual Standards, Ordering Rules & Quarto Pipeline
+
+### Plot Conventions & Guidelines
+* **No Redundant Text Labels:** Do not overlay text annotations with point estimates / CI bounds on forest plots when the visual halfeyes and interval bars already convey them.
+* **Tightened Axis Framing:** Adjust `coord_cartesian()` and `scale_x_continuous()` tightly to empirical distribution spans (e.g. `[-0.65, +1.05]` for cuisine random intercepts; `[-0.52, +0.35]` for demographic fixed effects).
+* **Category Grouping & Ordering:**
+  - *Demographic Fixed Effects (Figure 3):* Order y-axis predictors by substantive domain from bottom to top: Ethnoracial Identification $\to$ Demographics $\to$ Cultural & Socioeconomic Capital $\to$ Political Ideology. Exclude sparse categories with unstable bounds (*Nonbinary / Other Gender*).
+  - *Cuisine Random Slopes (Figures 6, 7, 12, 14, 16):* Order cuisines along the y-axis strictly by the target focal predictor's median net slope (e.g. Social Conservatism for Ideology; Educational Attainment for Cultural Capital; Fine Dining for Practices; Exotic & Authentic Taste for Dispositions; Global Citizen Identity for Cosmopolitanism).
+  - *Midpoint Contrasts:* Prefer midpoint contrast plots (vs. Category 4) over raw threshold transition steps.
+
+### Complete Figure Registry & Quarto Workflow
+* `scripts/generate_plots.R`:
+  - Figure 1: `Plots/model_fit_comparison.png` (WAIC Model Fit Comparison)
+  - Figure 2: `Plots/cuisine_random_effects.png` (Baseline Cuisine Random Intercepts)
+  - Figure 3: `Plots/demographic_fixed_effects.png` (Global Demographic Fixed Effects)
+  - Figure 4: `Plots/ideology_cs_midpoint_effects.png` (Ideology Midpoint Contrast Shifts)
+  - Figure 5: `Plots/cultural_cs_midpoint_effects.png` (Cultural Capital Midpoint Contrast Shifts)
+  - Figure 6: `Plots/rs_cuisine_slopes_ideology.png` (Cuisine Random Slopes: Ideology, ordered by Social Conservatism)
+  - Figure 7: `Plots/rs_cuisine_slopes_cultural.png` (Cuisine Random Slopes: Cultural Capital, ordered by Education)
+* `scripts/generate_extension_plots.R`:
+  - Figure 8: `Plots/ext_h1_h3_ideology_forest.png` (H1–H3 Ideological Asymmetry & Contrast Test)
+  - Figure 9: `Plots/ext_h4_cuisine_consecration_slopes.png` (H4 Consecration Tiers & Slopes)
+  - Figure 10: `Plots/ext_cultural_capital_mechanisms.png` (Cultural Capital Disaggregation)
+* `scripts/generate_novel_extension_plots.R`:
+  - Figure 11: `Plots/ext_practices_forest.png` (Practices Global Forest)
+  - Figure 12: `Plots/rs_cuisine_slopes_practices.png` (Practices Cuisine Slopes)
+  - Figure 13: `Plots/ext_dispositions_forest.png` (Dispositions Global Forest)
+  - Figure 14: `Plots/rs_cuisine_slopes_dispositions.png` (Dispositions Cuisine Slopes)
+  - Figure 15: `Plots/ext_cosmopolitan_forest.png` (Cosmopolitan Global Forest)
+  - Figure 16: `Plots/rs_cuisine_slopes_cosmopolitan.png` (Cosmopolitan Cuisine Slopes)
+* Render pipeline: `quarto render analysis.qmd`.
 
 ---
 
-## 4. Visualization & Plotting Strategy (Childress & Lizardo Visual Guidelines)
+## 6. Supercomputing & HPC Standards (UCLA Hoffman2)
 
-All project visualizations are maintained in `scripts/generate_plots.R`, `scripts/generate_extension_plots.R`, and `scripts/generate_novel_extension_plots.R`, exported to `Plots/*.png`.
-
-### Aesthetic Conventions
-* **Theme**: Custom `theme_cuisine()` built on `theme_minimal(base_size = 12)`:
-  - Bold titles (`face = "bold"`), muted subtitles (`gray25`), subtle major gridlines (`gray92`), stripped minor gridlines, bold y-axis category labels (`gray15`), and bottom-placed legends.
-* **Distribution Density & Intervals (`tidybayes` + `ggdist`)**:
-  - `stat_halfeye(point_interval = median_qi, .width = c(0.80, 0.95), point_size = 3.5, interval_size = 1.2, slab_alpha = 0.35, scale = 0.65)`
-  - Thick inner bar = 80% CrI; thin outer bar = 95% CrI; point = posterior median.
-* **2D Joint Space Plotting**:
-  - Expand `coord_cartesian` to accommodate full 95% CrI bounds on both axes (`xlim = c(-3.3, 4.4), ylim = c(-1.6, 1.05)`).
-  - Use `ggrepel::geom_label_repel` with `box.padding = 0.4`, `point.padding = 0.3`, and `seed = 42`.
-* **Rendering Specifications**:
-  - Standard resolution: `dpi = 300`, `bg = "white"`.
-  - Dimensions: 9.5" to 11.5" width, 5.5" to 8.5" height.
-
----
-
-## 5. Quarto Reporting & Academic Writing Standards
-
-* Write in **full paragraphs**; avoid numbered lists or bullet points in narrative results sections.
-* Avoid hyperbole (e.g., "massive", "gigantic"); always use qualified empirical prose (e.g., "suggest", "indicates", "corroborates").
-* Avoid `size` on line layers in `ggplot2` (`geom_line`, `geom_vline`, `geom_errorbar`); always use `linewidth`.
-* Re-render Quarto reports with `quarto render analysis.qmd` after updating figures or script outputs.
-
----
-
-## 6. Supercomputing & HPC Integration (UCLA Hoffman2)
-
-* Deploy heavy NUTS Bayesian jobs via Grid Engine (`qsub`).
-* Use `h_rt=23:50:00` and `h_data=4G` per core.
-* Preload `gcc/10.2.0` before `R` module in SGE submit scripts.
-* Prevent package conflicts by importing individual required packages (`dplyr`, `tidyr`, `tibble`, `readr`, `purrr`, `haven`, `brms`, `cmdstanr`) rather than the `tidyverse` bundle.
-* Always use atomic serialization with `file = "..."` inside `brm()` to safeguard posterior draws before computing post-processing fit statistics.
+* **Resource Footprint:** `#$ -pe shared 4`, `#$ -l h_data=4G` ($4 \text{ cores} \times 4\text{ GB} = 16\text{ GB}$ total memory request per job).
+* **Walltime Bound:** `#$ -l h_rt=23:50:00` (always bound to just under 24 hours).
+* **Module Loading:** Source `/u/local/Modules/default/init/bash`, load `gcc/10.2.0` before `R`.
+* **Array Staggering:** Always stagger array task startups by at least 5 to 15 minutes (`sleep $(( (SGE_TASK_ID - 1) * 300 ))`) to prevent parallel compilation clashes.
+* **Threaded MCMC:** Use `threads = threading(threads_per_chain)` in `brm()`.
