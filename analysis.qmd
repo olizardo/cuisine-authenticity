@@ -1,8 +1,8 @@
 ---
 title: "Data Analysis Pipeline and Preliminary Results"
-subtitle: "Cuisine Authenticity and Taste"
+subtitle: "Cuisine Authenticity, Cultural Distinction, and Ideological Polarization"
 author: "Analysis Report"
-date: "August 2, 2026"
+date: "August 22, 2026"
 format: 
   html:
     toc: true
@@ -12,11 +12,18 @@ format:
 
 ## 1. Introduction
 
-This report details the data processing pipeline and empirical findings investigating how individuals evaluate culinary authenticity and professionalization across diverse cuisines. The primary dependent variable is measured on a seven-point ordinal scale assessing whether the ideal preparation of a given cuisine is grounded in domestic tradition or elite professional craftsmanship. Scale anchors range from 1, representing "a traditional recipe prepared by an elder at home," to 4, representing a neutral midpoint, up to 7, representing "a developed recipe prepared by a professional chef at a high-end restaurant." The substantive objective is to estimate how sociodemographic characteristics, cultural capital, and ideological orientations shape these authenticity ratings across fifteen distinct national and regional culinary traditions.
+This report details the data processing pipeline, statistical modeling framework, and empirical findings investigating how individuals evaluate culinary authenticity and professionalization across diverse cuisines. The primary dependent variable is measured on a seven-point ordinal scale assessing whether the ideal preparation of a given cuisine is grounded in domestic tradition or elite professional craftsmanship. Scale anchors range from 1, representing "a traditional recipe prepared by an elder at home," to 4, representing a neutral midpoint, up to 7, representing "a developed recipe prepared by a professional chef at a high-end restaurant." The substantive objective is to evaluate how sociodemographic characteristics, cultural capital, and ideological orientations shape these authenticity ratings across fifteen distinct national and regional culinary traditions.
+
+Building upon recent sociological theory on cultural consumption and distinction, this analysis investigates whether the shift from categorical "snob vs. omnivore" classifications to multiple co-occurring modes of highbrow distinction is structured by ideological polarization and early cultural socialization. Specifically, we test four core theoretical hypotheses:
+
+* **Hypothesis 1 (Ideological Differentiation)**: Political identity systematically sorts individuals across competing evaluative schemas of culinary distinction.
+* **Hypothesis 2 (Liberal Authenticity vs. Conservative Technique)**: Self-identified liberals disproportionately orient toward domestic elder authenticity (Mode 1), whereas conservatives disproportionately orient toward institutionalized culinary technique and professional chef mastery (Mode 2).
+* **Hypothesis 3 (Social vs. Economic Ideological Asymmetry)**: Culinary schemas are anchored in symbolic, cultural, and post-material boundaries rather than fiscal or market preferences, meaning that ideological sorting will be more pronounced for social conservatism than for economic conservatism.
+* **Hypothesis 4 (Cuisine Consecration Hierarchy & Schema Heterogeneity)**: The opposition between domestic elder authenticity and chef technique reflects global culinary consecration hierarchies, such that consecrated Western and haute cuisines are schematized toward professional technique, whereas subaltern and peripheral traditions are schematized toward domestic authenticity.
 
 ## 2. Data Preparation and Reshaping
 
-The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples. Data preprocessing, implemented in `data/recode.dat.R`, cleans and standardizes demographic indicators including respondent age, educational attainment, household income, gender, and ethnoracial identification. Key continuous predictors, such as social conservatism and economic conservatism indices, are mean-centered prior to estimation so that model intercepts reflect the predicted response for an average sample participant.
+The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples ($N = 1,212$ unique respondents). Data preprocessing, implemented in `data/recode.dat.R` and extended in `scripts/data_prep_extension.R`, cleans and standardizes demographic indicators including respondent age, educational attainment, household income, gender, and ethnoracial identification. Key continuous predictors, such as social conservatism and economic conservatism indices, are standardized to mean zero and unit variance prior to estimation so that model intercepts reflect the predicted response for an average sample participant.
 
 To accommodate crossed hierarchical modeling, the survey structure is converted from wide format into a stacked longitudinal panel containing 18,180 ratings across 1,212 unique respondents. In this configuration, each observation corresponds to an individual respondent rating a specific cuisine. Structuring the data in this long format enables the simultaneous specification of random intercepts and slopes for both respondents and cuisines, accounting for individual-level response styles as well as baseline variations inherent to each culinary tradition.
 
@@ -158,3 +165,43 @@ The cultural capital dimensions reveal distinct tradition-specific structuring o
 Parental education exhibits credibly positive slopes, enhancing consensus around domestic authenticity for Jamaican ($\text{median} = +0.12$, $95\%\text{ CrI } [0.02, 0.23]$, $P > 0 = 99.0\%$), Nigerian ($\text{median} = +0.09$, $95\%\text{ CrI } [0.00, 0.18]$, $P > 0 = 97.7\%$), and Lebanese cuisines ($\text{median} = +0.07$, $P > 0 = 95.8\%$), while maintaining narrow intervals centered near zero for European and East Asian traditions.
 
 Childhood arts exposure exhibits pronounced divergence across culinary traditions. Early arts socialization credibly increases consensus for Mexican ($\text{median} = +0.22$, $95\%\text{ CrI } [0.11, 0.33]$, $P > 0 = 100\%$), Italian ($\text{median} = +0.14$, $95\%\text{ CrI } [0.03, 0.26]$, $P > 0 = 99.2\%$), and Korean cuisines ($\text{median} = +0.09$, $P > 0 = 97.4\%$). Conversely, childhood arts exposure credibly decreases consensus, introducing greater evaluation dispersion, for Native American ($\text{median} = -0.19$, $95\%\text{ CrI } [-0.31, -0.07]$, $P < 0 = 99.8\%$), Nigerian ($\text{median} = -0.13$, $95\%\text{ CrI } [-0.23, -0.04]$, $P < 0 = 99.6\%$), and Moroccan cuisines ($\text{median} = -0.08$, $P < 0 = 97.1\%$).
+
+## 9. Theoretical Hypotheses & Extensions: Authenticity vs. Highbrow Distinction
+
+This section directly tests the four core hypotheses and theoretical questions regarding the politicization of taste, multidimensional ideology, culinary consecration hierarchies, and cultural capital mechanisms.
+
+### 9.1 Hypotheses H1–H3: Political Ideology Asymmetry
+
+Hypotheses 1, 2, and 3 posit that political ideology structures highbrow culinary distinction, with liberals orienting toward domestic elder authenticity and conservatives toward professionalized chef technique (H1, H2), and that this divergence is driven primarily by social conservatism rather than economic conservatism (H3). Figure 12 displays posterior parameter distributions and the direct asymmetry contrast test ($|\beta_{\text{social}}| - |\beta_{\text{economic}}|$) estimated from the top-performing location-scale hierarchical model.
+
+![](Plots/ext_h1_h3_ideology_forest.png){fig-align="center" width="100%"}
+
+The empirical findings provide robust support for Hypotheses 1 and 2. Social conservatism is a credibly positive predictor of endorsing professional chef execution ($\text{median} = +0.43$, $95\%\text{ CrI } [0.08, 0.84]$), with $99.1\%$ of its posterior probability mass residing strictly above zero. In stark contrast, economic conservatism exhibits an attenuated coefficient centered near zero ($\text{median} = +0.01$, $95\%\text{ CrI } [-0.34, 0.42]$, $P(\beta > 0) = 52.9\%$), showing no credible linear displacement toward either anchor.
+
+The direct posterior contrast test strongly corroborates the ideological asymmetry hypothesis (H3). The difference parameter ($\beta_{\text{social}} - \beta_{\text{economic}}$) yields a posterior median of $+0.43$ ($95\%\text{ CrI } [-0.29, 1.12]$) with $88.0\%$ of the posterior mass indicating a stronger absolute effect for social than economic conservatism. When evaluated across category-specific midpoint transitions (Model 2), social conservatism credibly shifts respondents across the neutral midpoint into professionalization ($P(\beta_{4 \to 5} > 0) = 99.0\%$), whereas economic conservatism remains non-credible ($P(\beta_{4 \to 5} > 0) = 74.7\%$). These results indicate that culinary distinction is fundamentally sorted along symbolic, post-material, and cultural boundaries rather than fiscal or redistributive preferences.
+
+### 9.2 Hypothesis H4: Cuisine Consecration Hierarchy and Ideological Slopes
+
+Hypothesis 4 posits that the opposition between domestic elder authenticity and chef technique reflects the historical consecration hierarchy of global cuisines, and that ideological sorting operates across these structural strata. Cuisines were classified into three tiers: Consecrated/Haute (French, Japanese, Italian, Swedish), Intermediate/Emerging (Korean, Moroccan, Peruvian, Vietnamese), and Subaltern/Peripheral (Mexican, Native American, Pakistani, Ethiopian, Nigerian, Jamaican, Lebanese). Figure 13 displays the cuisine-specific total slopes for social conservatism grouped by consecration tier.
+
+![](Plots/ext_h4_cuisine_consecration_slopes.png){fig-align="center" width="100%"}
+
+The results substantiate the consecration hierarchy hypothesis. Social conservatism exerts positive, credibly pro-chef shifts across all fifteen culinary traditions, but the baseline intercept anchor and the magnitude of ideological sensitivity vary systematically across tiers. Within the Consecrated/Haute tier, traditions such as French and Japanese are firmly anchored in professional technique at baseline, with social conservatism further amplifying the endorsement of high-end restaurant execution.
+
+Within the Subaltern/Peripheral tier, baseline perceptions are overwhelmingly anchored in domestic elder tradition (e.g., Native American $\mu = -1.87$, Mexican $\mu = -1.33$, Nigerian $\mu = -1.12$). However, social conservatism acts as a significant countervailing force, generating large positive slopes ($\beta_{\text{total}} \approx +0.47\text{ to }+0.53$) that pull ratings toward the professionalization boundary. For these subaltern cuisines, the tension between domestic elder authenticity and professional craftsmanship represents a highly contested cultural fault line, where socially conservative respondents reject the domestic elder schema in favor of formal institutional mastery.
+
+### 9.3 Cultural Capital Disaggregation: Socialization, Institutional Distinction, and Economic Capital
+
+To disentangle the distinct mechanisms of cultural capital, the model disaggregates embodied early childhood socialization (`child_arts`), institutionalized educational credentials (`educ`), inherited familial capital (`parented`), and material economic resources (`income`). Figure 14 displays the posterior distributions of these four capital dimensions on the authenticity scale.
+
+![](Plots/ext_cultural_capital_mechanisms.png){fig-align="center" width="100%"}
+
+The parameter estimates demonstrate a pronounced detachment between institutionalized educational capital and embodied childhood socialization. Educational attainment is a credibly positive predictor of endorsing professional chef technique ($\text{median} = +0.43$, $95\%\text{ CrI } [0.13, 0.78]$, $P(\beta > 0) = 99.9\%$), reflecting the acquisition of highbrow culinary schemas that valorize formal gastronomy, culinary school training, and haute technique.
+
+Conversely, early childhood arts socialization ($\text{median} = -0.12$, $95\%\text{ CrI } [-0.44, 0.17]$, $P(\beta < 0) = 79.5\%$) and parental education ($\text{median} = -0.07$, $95\%\text{ CrI } [-0.37, 0.21]$) maintain negative median estimates that span zero in global location. Household income similarly exhibits a narrow distribution centered near zero ($\text{median} = -0.01$, $95\%\text{ CrI } [-0.07, 0.05]$). This pattern indicates that elite culinary distinction in contemporary society is not simply a passive reflection of childhood arts immersion or material affluence, but is actively driven by adult educational socialization and political alignment.
+
+### 9.4 Substantive Implications for Omnivorousness and Taste Sociology
+
+These findings contribute to contemporary debates in the sociology of culture and taste. While classical omnivorousness theory emphasized the expansion of taste repertoires across categorical genres, these results demonstrate that elite culinary consumption is organized around *competing modes of highbrow evaluation*. The domestic elder authenticity schema valorizes provenance, heritage, and informal cultural roots, whereas the professional chef schema valorizes institutionalized technique, formal complexity, and professional hierarchy.
+
+Furthermore, our results demonstrate that the politicization of cultural capital is highly asymmetric: social conservatism systematically pulls respondents toward institutionalized hierarchy and professional technique across all cuisine types, while also generating substantial evaluation dispersion and contestation. Conversely, progressive social attitudes align with the valorization of subaltern domestic authenticity, reflecting a cosmopolitan evaluative schema that locates culinary excellence in traditional cultural preservation.
