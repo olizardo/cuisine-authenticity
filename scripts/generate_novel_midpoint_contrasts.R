@@ -253,13 +253,17 @@ p_master_mid <- ggplot(master_credible_mid, aes(x = Category, y = contrast_log_o
     ),
     name = "Consensus Theoretical Orientation"
   ) +
-  facet_wrap(~ Predictor_F, ncol = 3, scales = "free_y") +
+  scale_y_continuous(
+    breaks = seq(-0.8, 1.6, by = 0.4)
+  ) +
+  coord_cartesian(ylim = c(-0.9, 1.75)) +
+  facet_wrap(~ Predictor_F, ncol = 3) +
   labs(
-    title = "Consensus Credible Predictors: Cumulative Likert Category Shifts vs. Midpoint",
+    title = "Consensus Credible Predictors: Cumulative Likert Category Shifts vs. Midpoint (Common Scale)",
     subtitle = "Category-specific contrast log-odds relative to Category 4 (Neutral Midpoint) per 1 SD increase across focal mechanisms",
     x = "Likert Response Scale Category (Elder Tradition 1 \u2190 \u2192 Chef Restaurant 7)",
-    y = "Contrast Log-Odds (vs. Category 4)",
-    caption = "Derived from optimal Relaxed Category-Specific + Random Slopes models (4,000 MCMC draws each).\nBlue indicates pro-chef escalation across categories 5–7; Vermillion indicates domestic elder tradition escalation across categories 1–3."
+    y = "Contrast Log-Odds vs. Category 4 (Shared Scale across all panels)",
+    caption = "Derived from optimal Relaxed Category-Specific + Random Slopes models (4,000 MCMC draws each).\nAll panels share a standardized vertical scale [-0.90, +1.75] to enable direct cross-domain effect size comparisons.\nBlue indicates pro-chef escalation across categories 5–7; Vermillion indicates domestic elder tradition escalation across categories 1–3."
   ) +
   theme_cuisine(base_size = 11) +
   theme(
