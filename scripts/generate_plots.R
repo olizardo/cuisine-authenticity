@@ -100,6 +100,10 @@ fit_comp_path <- here("cache", "full_model_fit_comparison.rds")
 if (file.exists(fit_comp_path)) {
   full_fit_df <- readRDS(fit_comp_path)
   
+  base_strict_ri_waic <- full_fit_df %>%
+    filter(Domain == "base", Threshold == "strict", Random_Effects == "ri") %>%
+    pull(WAIC)
+  
   domain_clean_labels <- c(
     "base"         = "Cultural Capital (Base)",
     "practices"    = "Dining Practices",
@@ -120,28 +124,40 @@ if (file.exists(fit_comp_path)) {
       Thresh_Label = ifelse(Threshold == "relaxed", "Relaxed CS", "Strict PO"),
       RE_Label = ifelse(Random_Effects == "rs", "Crossed Slopes", "Random Intercepts"),
       Model_Title = sprintf("%s [%s, %s]", Domain_Clean, Thresh_Label, RE_Label),
-      Delta_Label = ifelse(Delta_WAIC == 0, "Top Fit (0.0)", sprintf("+%.1f", Delta_WAIC))
+      Delta_Base = WAIC - base_strict_ri_waic,
+      Delta_Label = case_when(
+        abs(Delta_Base) < 0.001 ~ "0.0 (Ref)",
+        Delta_Base < 0 ~ sprintf("%.1f", Delta_Base),
+        TRUE ~ sprintf("+%.1f", Delta_Base)
+      )
     ) %>%
-    arrange(WAIC)
+    arrange(Delta_Base)
   
-  p_waic <- ggplot(full_plot_df, aes(x = reorder(Model_Title, -WAIC), y = WAIC, color = Domain_Clean)) +
-    geom_pointrange(aes(ymin = WAIC - SE, ymax = WAIC + SE), linewidth = 0.85, size = 0.65) +
+  p_waic <- ggplot(full_plot_df, aes(x = Delta_Base, y = reorder(Model_Title, -Delta_Base), color = Domain_Clean)) +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "gray40", linewidth = 0.8) +
+    geom_segment(aes(x = 0, xend = Delta_Base, y = reorder(Model_Title, -Delta_Base), yend = reorder(Model_Title, -Delta_Base)), linewidth = 0.9, alpha = 0.7) +
+    geom_point(size = 3.5) +
     geom_text(
-      aes(label = Delta_Label),
-      hjust = -0.25,
-      vjust = -0.3,
-      size = 3.2,
+      aes(
+        label = Delta_Label,
+        hjust = ifelse(Delta_Base < -30, 1.2, -0.25)
+      ),
+      vjust = 0.38,
+      size = 3.3,
       fontface = "bold",
       show.legend = FALSE
     ) +
     scale_color_manual(values = domain_colors, name = "Substantive Domain") +
-    coord_flip(ylim = c(54000, 55800)) +
+    coord_cartesian(xlim = c(-1080, 120)) +
+    scale_x_continuous(
+      breaks = seq(-1000, 0, by = 200)
+    ) +
     labs(
-      title = "Bayesian Model Fit Comparison Across Full Factorial Taxonomy",
-      subtitle = "WAIC Comparison Across 16 Hierarchical Adjacent Category Models (N = 18,180 ratings across 1,212 respondents)",
-      x = NULL,
-      y = "Watanabe-Akaike Information Criterion (WAIC ± 1 SE; Lower is Better)",
-      caption = "WAIC computed across 4,000 post-warmup MCMC draws per model. Points represent posterior WAIC estimates; error bars indicate ± 1 standard error.\nΔ values reflect difference in WAIC relative to the top-performing model (Taste Dispositions [Relaxed CS, Crossed Slopes])."
+      title = "Bayesian Model Fit Comparison Relative to Baseline Model 1",
+      subtitle = expression(bold(Delta * "WAIC relative to Cultural Capital Strict RI") ~ " (N = 18,180 ratings across 1,212 respondents)"),
+      x = expression(Delta * "WAIC vs. Reference Baseline (Negative = Predictive Improvement; Positive = Fit Degradation)"),
+      y = NULL,
+      caption = "Reference Baseline (0.0): Cultural Capital (Strict Proportional Odds, Random Intercepts; WAIC = 55,310.59).\nNegative values indicate out-of-sample predictive gain over baseline; models ordered from largest gain (top) to baseline (bottom)."
     ) +
     theme_cuisine(base_size = 11) +
     theme(

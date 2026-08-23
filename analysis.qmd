@@ -38,69 +38,71 @@ Model estimation employs the `cmdstanr` backend with weakly informative priors (
 
 ## 4. Bayesian Model Fit and Comparison
 
-Model performance was evaluated using the Watanabe-Akaike Information Criterion (WAIC) computed across 4,000 post-warmup draws for all sixteen completed specifications in the factorial taxonomy. Table 1 and Figure 1 report the resulting information criteria, standard errors, effective parameters ($p_{\text{WAIC}}$), and comparative fit differences ($\Delta \text{WAIC}$) relative to the best-fitting model.
+Model performance was evaluated using the Watanabe-Akaike Information Criterion (WAIC) computed across 4,000 post-warmup draws for all sixteen completed specifications in the factorial taxonomy. Table 1 and Figure 1 report the resulting information criteria, standard errors, effective parameters ($p_{\text{WAIC}}$), and comparative fit differences ($\Delta \text{WAIC}$) evaluated relative to **Model 1: Baseline Strict RI (Cultural Capital)** as the reference anchor ($0.00$).
 
 ![](Plots/model_fit_comparison.png){fig-align="center" width="100%"}
 
-Table 1: Consolidated WAIC Model Fit Comparison across the Full Factorial Taxonomy
+Table 1: Consolidated Bayesian Model Fit Comparison Across the Full Factorial Taxonomy (Relative to Baseline Model 1)
 
-| Rank | Substantive Domain | Model Specification | Threshold Constraint | Random Effects | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}$ |
-|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|
-| **1** | **Taste Dispositions** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | **54,348.26 (247.35)** | 1,246.1 | **0.00** |
-| **2** | **Dining Practices** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | **54,446.72 (251.27)** | 1,254.4 | **+98.46** |
-| **3** | **Taste Dispositions** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **54,586.18 (245.60)** | 1,187.5 | **+237.93** |
-| **4** | **Cosmopolitan** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | **54,804.97 (245.00)** | 1,235.7 | **+456.72** |
-| **5** | **Dining Practices** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **54,818.51 (247.60)** | 1,185.9 | **+470.25** |
-| **6** | **Cultural Capital (Base)** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | **54,961.97 (244.84)** | 1,217.9 | **+613.71** |
-| **7** | **Cosmopolitan** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **55,069.70 (243.43)** | 1,176.9 | **+721.44** |
-| **8** | **Cultural Capital (Base)** | **Cell 3: Strict RS** | Strict Proportional Odds | Crossed Slopes | **55,171.37 (243.27)** | 1,185.2 | **+823.11** |
-| **9** | **Dining Practices** | **Cell 3: Strict RS** | Strict Proportional Odds | Crossed Slopes | **55,176.81 (242.61)** | 1,160.9 | **+828.55** |
-| **10** | **Cultural Capital (Base)** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | **55,177.51 (243.10)** | 1,173.3 | **+829.25** |
-| **11** | **Taste Dispositions** | **Cell 3: Strict RS** | Strict Proportional Odds | Crossed Slopes | **55,248.60 (242.35)** | 1,162.9 | **+900.34** |
-| **12** | **Cosmopolitan** | **Cell 3: Strict RS** | Strict Proportional Odds | Crossed Slopes | **55,296.93 (242.10)** | 1,151.7 | **+948.67** |
-| **13** | **Cosmopolitan** | **Cell 1: Strict RI** | Strict Proportional Odds | Random Intercepts | **55,309.75 (241.93)** | 1,141.8 | **+961.50** |
-| **14** | **Cultural Capital (Base)** | **Cell 1: Strict RI** | Strict Proportional Odds | Random Intercepts | **55,310.59 (241.69)** | 1,141.6 | **+962.33** |
-| **15** | **Taste Dispositions** | **Cell 1: Strict RI** | Strict Proportional Odds | Random Intercepts | **55,311.35 (242.25)** | 1,143.1 | **+963.10** |
-| **16** | **Dining Practices** | **Cell 1: Strict RI** | Strict Proportional Odds | Random Intercepts | **55,312.28 (241.61)** | 1,138.4 | **+964.02** |
+| Rank | Substantive Domain | Model Specification | Threshold Constraint | Random Effects | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. Baseline}}$ | Substantive Predictive Fit |
+|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
+| **1** | **Taste Dispositions** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,348.26 (247.35) | 1,246.1 | **-962.33** | Decisive Improvement (Top Model) |
+| **2** | **Dining Practices** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,446.72 (251.27) | 1,254.4 | **-863.87** | Decisive Improvement |
+| **3** | **Taste Dispositions** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 54,586.18 (245.60) | 1,187.5 | **-724.41** | Decisive Improvement |
+| **4** | **Cosmopolitan** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,804.97 (245.00) | 1,235.7 | **-505.62** | Decisive Improvement |
+| **5** | **Dining Practices** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 54,818.51 (247.60) | 1,185.9 | **-492.08** | Decisive Improvement |
+| **6** | **Cultural Capital (Base)** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Decisive Improvement |
+| **7** | **Cosmopolitan** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 55,069.70 (243.43) | 1,176.9 | **-240.89** | Substantial Improvement |
+| **8** | **Cultural Capital (Base)** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
+| **9** | **Dining Practices** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
+| **10** | **Cultural Capital (Base)** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
+| **11** | **Taste Dispositions** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
+| **12** | **Cosmopolitan** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
+| **13** | **Cosmopolitan** | Cell 1: Strict RI | Strict Proportional Odds | Random Intercepts | 55,309.75 (241.93) | 1,141.8 | **-0.84** | Indistinguishable from Baseline |
+| **14** | **Cultural Capital (Base)** | **Model 1: Strict RI** | **Strict Proportional Odds** | **Random Intercepts** | **55,310.59 (241.69)** | **1,141.6** | **0.00** | ***Reference Baseline*** |
+| **15** | **Taste Dispositions** | Cell 1: Strict RI | Strict Proportional Odds | Random Intercepts | 55,311.35 (242.25) | 1,143.1 | **+0.76** | Indistinguishable from Baseline |
+| **16** | **Dining Practices** | Cell 1: Strict RI | Strict Proportional Odds | Random Intercepts | 55,312.28 (241.61) | 1,138.4 | **+1.69** | Indistinguishable from Baseline |
 
-*Note:* "Relaxed" indicates category-specific threshold transitions (`cs()`). "Crossed Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
+*Note:* Baseline reference model is Cultural Capital Strict RI ($\text{WAIC} = 55,310.59$). Negative $\Delta \text{WAIC}$ indicates superior out-of-sample predictive fit. "Relaxed" indicates category-specific threshold transitions (`cs()`). "Crossed Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
 
 The information criterion comparisons across the full sixteen specifications reveal two clear empirical patterns:
-1. **The Primacy of Relaxed Category-Specific Thresholds:** Relaxing the proportional odds constraint yields decisive predictive gains across all theoretical domains. Models incorporating category-specific threshold transitions (`cs()`) consistently outperform their strict proportional odds counterparts. Taste Dispositions with relaxed transitions achieves the lowest WAIC overall ($\text{WAIC} = 54,348.26$), followed closely by Dining Practices with relaxed transitions ($\text{WAIC} = 54,446.72$).
+1. **The Primacy of Relaxed Category-Specific Thresholds:** Relaxing the proportional odds constraint yields massive predictive gains across all theoretical domains. Models incorporating category-specific threshold transitions (`cs()`) consistently outperform their strict proportional odds counterparts. Taste Dispositions with relaxed transitions achieves the largest predictive improvement over baseline ($\Delta \text{WAIC} = -962.33$), followed closely by Dining Practices with relaxed transitions ($\Delta \text{WAIC} = -863.87$).
 2. **Compound Predictive Superiority of Crossed Random Slopes:** Within every relaxed threshold tier, incorporating crossed random slopes on cuisines provides substantial fit improvements over random intercepts alone ($\Delta \text{WAIC} \approx -238$ points for Taste Dispositions, $-372$ points for Dining Practices, and $-265$ points for Cosmopolitan Capital), confirming that evaluative schemas vary systematically across distinct culinary traditions.
 
 ## 5. Baseline Cuisine Authenticity and Demographic Fixed Effects
 
-### 5.1 Baseline Authenticity by Cuisine: Cross-Specification Consensus
+### 5.1 Baseline Authenticity by Cuisine: Optimal Baseline Estimates
 
-To establish the baseline culinary hierarchy, cuisine-specific random intercepts were estimated across all specifications, evaluating the net authenticity orientation for each culinary tradition when demographic characteristics and theoretical predictors are held at sample means. 
+To establish the baseline culinary hierarchy, cuisine-specific random intercepts were estimated in the optimal baseline model (Model 4: Relaxed CS + Crossed Random Slopes), evaluating the net authenticity orientation for each culinary tradition when demographic characteristics and theoretical predictors are held at sample means. 
 
-Table 2 presents the cross-specification stability metrics for the fifteen culinary traditions, and Figure 2 displays the consensus posterior distributions across all estimated baseline and extension specifications.
-
-| Culinary Tradition | Models ($k$) | Baseline Intercept Range $[\min, \max]$ | 95% Credible Envelope | Directional Consensus Classification |
-|:---|:---:|:---:|:---:|:---|
-| **French** | 7 | $[+0.676, +0.689]$ | $[+0.524, +0.850]$ | **Credibly Pro-Chef ($P > 0 = 100\%$)** |
-| **Japanese** | 7 | $[+0.280, +0.290]$ | $[+0.148, +0.446]$ | **Credibly Pro-Chef ($P > 0 = 100\%$)** |
-| **Swedish** | 7 | $[+0.191, +0.200]$ | $[+0.063, +0.355]$ | **Credibly Pro-Chef ($P > 0 \ge 99.9\%$)** |
-| **Korean** | 7 | $[+0.073, +0.083]$ | $[-0.052, +0.237]$ | **Spans Zero** |
-| **Italian** | 7 | $[+0.071, +0.080]$ | $[-0.057, +0.232]$ | **Spans Zero** |
-| **Vietnamese** | 7 | $[-0.047, -0.036]$ | $[-0.204, +0.091]$ | **Spans Zero** |
-| **Peruvian** | 7 | $[-0.062, -0.052]$ | $[-0.222, +0.073]$ | **Spans Zero** |
-| **Moroccan** | 7 | $[-0.080, -0.070]$ | $[-0.239, +0.055]$ | **Spans Zero** |
-| **Lebanese** | 7 | $[-0.081, -0.071]$ | $[-0.238, +0.056]$ | **Spans Zero** |
-| **Pakistani** | 7 | $[-0.142, -0.134]$ | $[-0.303, -0.005]$ | **Credibly Domestic Elder ($P < 0 \ge 98.8\%$)** |
-| **Mexican** | 7 | $[-0.147, -0.137]$ | $[-0.304, -0.006]$ | **Credibly Domestic Elder ($P < 0 \ge 99.0\%$)** |
-| **Ethiopian** | 7 | $[-0.169, -0.157]$ | $[-0.326, -0.021]$ | **Credibly Domestic Elder ($P < 0 \ge 99.8\%$)** |
-| **Jamaican** | 7 | $[-0.223, -0.214]$ | $[-0.383, -0.082]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
-| **Nigerian** | 7 | $[-0.248, -0.238]$ | $[-0.409, -0.103]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
-| **Native American** | 7 | $[-0.260, -0.250]$ | $[-0.420, -0.118]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+Table 2 presents the posterior medians, 95% credible intervals, and directional classifications for the fifteen culinary traditions, and Figure 2 displays the baseline posterior distributions.
 
 ![](Plots/cuisine_random_effects.png){fig-align="center" width="100%"}
 
-Across all seven baseline and extension specifications, the culinary hierarchy exhibits exceptional structural stability:
-1. **Consecrated Haute Tiers:** French cuisine occupies an isolated position at the extreme professionalization pole ($\text{medians } \in [+0.676, +0.689]$, $P > 0 = 100\%$), followed by Japanese ($\text{medians } \in [+0.280, +0.290]$, $P > 0 = 100\%$) and Swedish traditions ($\text{medians } \in [+0.191, +0.200]$, $P > 0 \ge 99.9\%$). Across all model configurations, these cuisines are decisively understood as achieving authentic excellence through elite restaurant execution.
-2. **Intermediate Traditions:** Italian, Korean, Vietnamese, Peruvian, Moroccan, and Lebanese cuisines occupy an intermediate middle zone where baseline intercepts tightly center near zero, indicating broad public consensus around a balance between home and restaurant excellence.
-3. **Subaltern and Heritage Traditions:** A robust majority of non-Western and marginalized traditions are credibly anchored in domestic elder authenticity across all models: Native American ($\text{medians } \in [-0.260, -0.250]$), Nigerian ($\text{medians } \in [-0.248, -0.238]$), Jamaican ($\text{medians } \in [-0.223, -0.214]$), Ethiopian ($\text{medians } \in [-0.169, -0.157]$), Mexican ($\text{medians } \in [-0.147, -0.137]$), and Pakistani traditions ($\text{medians } \in [-0.142, -0.134]$), with $100\%$ directional consensus across specifications.
+Table 2: Baseline Cuisine Authenticity Hierarchy (Optimal Model: Relaxed CS + Random Slopes)
+
+| Culinary Tradition | Posterior Median | 95% Credible Interval | $P(\text{Intercept} > 0)$ | Directional Classification |
+|:---|:---:|:---:|:---:|:---|
+| **French** | **+0.70** | $[+0.56, +0.84]$ | $100\%$ | **Credibly Pro-Chef** |
+| **Japanese** | **+0.30** | $[+0.16, +0.44]$ | $100\%$ | **Credibly Pro-Chef** |
+| **Swedish** | **+0.20** | $[+0.06, +0.34]$ | $99.6\%$ | **Credibly Pro-Chef** |
+| **Korean** | +0.08 | $[-0.07, +0.21]$ | $86.4\%$ | Spans Zero / Neutral |
+| **Italian** | +0.07 | $[-0.07, +0.21]$ | $83.9\%$ | Spans Zero / Neutral |
+| **Vietnamese** | -0.05 | $[-0.19, +0.09]$ | $25.5\%$ | Spans Zero / Neutral |
+| **Peruvian** | -0.07 | $[-0.21, +0.07]$ | $15.0\%$ | Spans Zero / Neutral |
+| **Moroccan** | -0.08 | $[-0.22, +0.06]$ | $11.9\%$ | Spans Zero / Neutral |
+| **Lebanese** | -0.09 | $[-0.23, +0.04]$ | $9.0\%$ | Spans Zero / Neutral |
+| **Pakistani** | **-0.15** | $[-0.29, -0.01]$ | $1.7\%$ | **Credibly Domestic Elder ($P < 0 = 98.3\%$)** |
+| **Mexican** | **-0.16** | $[-0.30, -0.02]$ | $1.6\%$ | **Credibly Domestic Elder ($P < 0 = 98.4\%$)** |
+| **Ethiopian** | **-0.17** | $[-0.31, -0.03]$ | $0.9\%$ | **Credibly Domestic Elder ($P < 0 = 99.1\%$)** |
+| **Jamaican** | **-0.23** | $[-0.37, -0.10]$ | $0.1\%$ | **Credibly Domestic Elder ($P < 0 = 99.9\%$)** |
+| **Nigerian** | **-0.25** | $[-0.39, -0.11]$ | $<0.1\%$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+| **Native American** | **-0.29** | $[-0.43, -0.16]$ | $0\%$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+
+The estimates confirm a three-tiered structural consecration hierarchy:
+1. **Consecrated / Haute Culinary Traditions (Blue):** French ($\mu = +0.70$), Japanese ($\mu = +0.30$), and Swedish ($\mu = +0.20$) are credibly anchored in elite professional restaurant craftsmanship at baseline.
+2. **Intermediate / Pluralistic Traditions (Gray):** Korean, Italian, Vietnamese, Peruvian, Moroccan, and Lebanese span the neutral midpoint.
+3. **Subaltern / Heritage Culinary Traditions (Vermillion):** Pakistani ($-0.15$), Mexican ($-0.16$), Ethiopian ($-0.17$), Jamaican ($-0.23$), Nigerian ($-0.25$), and Native American ($-0.29$) are credibly anchored in traditional domestic elder craftsmanship.
 
 ### 5.2 Cross-Specification Consensus and Fixed Effects Stability
 
@@ -113,31 +115,43 @@ In ordinal adjacent category regression, model specifications vary along two str
 $$\bar{\beta}_j = \frac{1}{6}\sum_{k=1}^6 \beta_j^{(k)}$$
 2. **Hierarchical Random Effects:** Specifications vary between random-intercept-only structures (`ri`) and crossed random-slope structures (`rs`) where slopes vary across culinary traditions.
 
-Rather than conditioning substantive conclusions on a single model choice, the **cross-specification consensus framework** tracks the posterior distribution of each focal parameter across all $k$ estimated models where the variable appears. For each predictor, we compute:
+Rather than conditioning substantive conclusions on a single model choice, the **cross-specification consensus framework** tracks the posterior distribution of each focal parameter across all $k$ estimated models where the variable appears ($k = 16$ for core variables; $k = 4$ for domain extensions). For each predictor, we compute:
 * **The Specification Stability Range:** The interval spanned by posterior medians across all models, $[\min(\text{Median}), \max(\text{Median})]$.
 * **The 95% Credible Envelope:** The outer bounds spanning the lowest 2.5th percentile to the highest 97.5th percentile across specifications, $[\min(Q_{2.5\%}), \max(Q_{97.5\%})]$.
 * **Directional Consensus:** Evaluates whether directional credibility ($P(\beta > 0) \ge 0.95$ or $P(\beta < 0) \ge 0.95$) holds invariantly across all estimated model families.
 
-Table 2 presents the cross-specification stability metrics across all estimated models.
+Table 3 presents the cross-specification stability metrics across all sixteen completed models.
 
-| Substantive Domain | Predictor Variable | Models ($k$) | Posterior Median Range $[\min, \max]$ | 95% Credible Envelope | Consensus Classification |
+Table 3: Cross-Specification Parameter Stability Envelope Across All 16 Factorial Models
+
+| Substantive Domain | Predictor Variable | Models ($k$) | Posterior Median Range $[\min, \max]$ | 95% Credible Envelope | Directional Consensus |
 |:---|:---|:---:|:---:|:---:|:---|
-| **Political Ideology** | Social Conservatism | 7 | $[+0.109, +0.193]$ | $[+0.021, +0.313]$ | **Credibly Positive (Pro-Chef, 100%)** |
-| | Economic Conservatism | 7 | $[-0.043, +0.000]$ | $[-0.151, +0.063]$ | **Consistently Spans Zero** |
-| **Cultural Capital** | Educational Attainment | 7 | $[+0.053, +0.122]$ | $[-0.016, +0.191]$ | **Credibly Positive (Pro-Chef)** |
-| | Childhood Arts Socialization | 7 | $[-0.094, -0.025]$ | $[-0.155, +0.049]$ | **Credibly Domestic Elder (with Adult Controls)** |
-| | Parental Education | 7 | $[-0.040, -0.019]$ | $[-0.110, +0.051]$ | **Consistently Spans Zero** |
-| **Dining Practices** | Adult Highbrow Arts Attendance | 1 | $+0.141$ | $[+0.069, +0.213]$ | **Credibly Positive (Pro-Chef, 100%)** |
-| | Fine Dining Frequency | 1 | $+0.090$ | $[+0.005, +0.177]$ | **Credibly Positive (Pro-Chef, 98%)** |
-| | Fast Food Frequency | 1 | $+0.029$ | $[-0.031, +0.088]$ | **Spans Zero** |
-| **Taste Dispositions** | Dispositions: Exotic / Authentic | 1 | $-0.085$ | $[-0.148, -0.022]$ | **Credibly Domestic Elder (99.4%)** |
-| | Dispositions: Light / Fresh | 1 | $-0.045$ | $[-0.105, +0.017]$ | **Spans Zero** |
-| | Dispositions: Rich / Hearty | 1 | $-0.045$ | $[-0.107, +0.018]$ | **Spans Zero** |
-| | Dispositions: Familiar Comfort | 1 | $-0.005$ | $[-0.063, +0.053]$ | **Spans Zero** |
-| **Cosmopolitan Capital** | Friendship Network Diversity | 1 | $+0.061$ | $[+0.002, +0.121]$ | **Credibly Positive (Pro-Chef, 97.8%)** |
-| | Global Citizen Identity | 1 | $+0.038$ | $[-0.027, +0.103]$ | **Spans Zero** |
-| **Demographics** | Gender: Woman | 7 | $[-0.178, -0.162]$ | $[-0.298, -0.054]$ | **Credibly Domestic Elder (99.9%)** |
-| | Age | 7 | $[-0.064, -0.028]$ | $[-0.121, +0.031]$ | **Credibly Domestic Elder (in 5 of 7 models)** |
+| **Political Ideology** | Social Conservatism | 16 | $[+0.107, +0.193]$ | $[+0.020, +0.313]$ | **Credibly Pro-Chef ($P > 0 \ge 99.1\%$)** |
+| | Economic Conservatism | 16 | $[-0.043, +0.003]$ | $[-0.151, +0.063]$ | **Consistently Spans Zero** |
+| **Cultural Capital** | Educational Attainment | 16 | $[+0.053, +0.123]$ | $[-0.016, +0.203]$ | **Credibly Pro-Chef ($P > 0 \ge 93.4\%$)** |
+| | Childhood Arts Socialization | 16 | $[-0.094, -0.022]$ | $[-0.156, +0.044]$ | **Credibly Domestic Elder ($P < 0 \ge 99.9\%$)** |
+| | Parental Education | 16 | $[-0.041, -0.019]$ | $[-0.110, +0.048]$ | **Consistently Spans Zero** |
+| | Household Income | 16 | $[+0.002, +0.033]$ | $[-0.060, +0.103]$ | **Consistently Spans Zero** |
+| **Dining Practices** | Adult Highbrow Arts Attendance | 4 | $[+0.102, +0.142]$ | $[+0.010, +0.212]$ | **Credibly Pro-Chef ($P > 0 \ge 98.6\%$)** |
+| | Fine Dining Frequency | 4 | $[+0.087, +0.125]$ | $[+0.005, +0.200]$ | **Credibly Pro-Chef ($P > 0 \ge 98.2\%$)** |
+| | Fast Food Frequency | 4 | $[+0.027, +0.046]$ | $[-0.031, +0.106]$ | **Consistently Spans Zero** |
+| **Taste Dispositions** | Dispositions: Exotic / Authentic | 4 | $[-0.090, -0.085]$ | $[-0.155, -0.018]$ | **Credibly Domestic Elder ($P < 0 \ge 99.4\%$)** |
+| | Dispositions: Familiar Comfort | 4 | $[-0.046, -0.024]$ | $[-0.107, +0.046]$ | **Consistently Spans Zero** |
+| | Dispositions: Light / Fresh | 4 | $[-0.045, -0.020]$ | $[-0.105, +0.045]$ | **Consistently Spans Zero** |
+| | Dispositions: Rich / Hearty | 4 | $[-0.008, +0.045]$ | $[-0.066, +0.110]$ | **Consistently Spans Zero** |
+| **Cosmopolitan Capital** | Friendship Network Diversity | 4 | $[+0.058, +0.061]$ | $[-0.005, +0.124]$ | **Credibly Pro-Chef ($P > 0 \ge 96.6\%$)** |
+| | Global Citizen Identity | 4 | $[+0.032, +0.038]$ | $[-0.031, +0.104]$ | **Consistently Spans Zero** |
+| **Demographics** | Gender: Female | 16 | $[-0.190, -0.155]$ | $[-0.303, -0.045]$ | **Credibly Domestic Elder ($P < 0 = 100\%$)** |
+| | Age | 16 | $[-0.068, -0.027]$ | $[-0.128, +0.029]$ | **Credibly Domestic Elder ($P < 0 = 98.4\%$)** |
+| **Ethnoracial Groups** | Ethnoracial: Other Identification | 16 | $[-0.291, -0.223]$ | $[-0.499, -0.020]$ | **Credibly Domestic Elder ($P < 0 = 99.9\%$)** |
+| | Asian Identification | 16 | $[-0.215, -0.164]$ | $[-0.556, +0.159]$ | **Consistently Spans Zero** |
+| | Hispanic / Latino Identification | 16 | $[-0.125, -0.047]$ | $[-0.381, +0.212]$ | **Consistently Spans Zero** |
+| | Black Identification | 16 | $[-0.023, +0.028]$ | $[-0.263, +0.252]$ | **Consistently Spans Zero** |
+| | Native American Identification | 16 | $[-0.032, +0.066]$ | $[-0.209, +0.293]$ | **Consistently Spans Zero** |
+
+Figure 3 displays the cross-specification stability forest plot, showing posterior medians and 95% credible intervals across all sixteen estimated model specifications aligned on a single gridline per predictor.
+
+![](Plots/fixed_effects_stability_forest.png){fig-align="center" width="100%"}
 | | Household Income | 7 | $[+0.002, +0.030]$ | $[-0.060, +0.092]$ | **Consistently Spans Zero** |
 | **Ethnoracial Status** | Mixed White Identification | 7 | $[-0.284, -0.237]$ | $[-0.497, -0.065]$ | **Credibly Domestic Elder (99.1%)** |
 | | Mixed Other Race | 7 | $[-0.204, -0.172]$ | $[-0.553, +0.148]$ | **Spans Zero** |
@@ -194,25 +208,27 @@ Respondent education demonstrates positive slopes across cuisines, with traditio
 
 To investigate specialized theoretical questions regarding behavioral practices, Bourdieu taste dispositions, and cosmopolitan network diversity, we extend the statistical architecture into three dedicated domains. Each domain introduces a vector of theoretical covariates $\mathbf{z}_D$ estimated across the full $2 \times 2$ nested taxonomy (Strict RI, Relaxed RI, Strict RS, Relaxed RS).
 
-Table 3 details the full taxonomy of nested extension model specifications across all three domains.
+Table 4 details the full taxonomy of nested extension model specifications across all three domains.
+
+Table 4: Factorial Registry and Model Status Across the Three Substantive Extension Domains
 
 | Domain & Model Cell | Threshold Constraint | Cuisine Random Effects | Model Formula & Specification | Status / Output File |
 |:---|:---|:---|:---|:---|
 | **Domain 1: Practices** | | | | |
-| Cell 1: Practices Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | Estimating (`hier_ext_practices_strict_ri.rds`) |
-| Cell 2: Practices Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(fancy_rest_c) + cs(fast_food_c) + cs(highbrow_arts_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | Estimating (`hier_ext_practices_relaxed_ri.rds`) |
-| Cell 3: Practices Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + fancy_rest_c + fast_food_c \| cuisine)` | **Completed (`hier_ext_practices.rds`)** |
-| Cell 4: Practices Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(fancy_rest_c) + cs(fast_food_c) + cs(highbrow_arts_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c \| cuisine)` | Estimating (`hier_ext_practices_relaxed.rds`) |
+| Cell 1: Practices Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_practices_strict_ri.rds`)** |
+| Cell 2: Practices Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(fancy_rest_c) + cs(fast_food_c) + cs(highbrow_arts_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_practices_relaxed_ri.rds`)** |
+| Cell 3: Practices Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + fancy_rest_c + fast_food_c \| cuisine)` | **Completed (`hier_practices_strict_rs.rds`)** |
+| Cell 4: Practices Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(fancy_rest_c) + cs(fast_food_c) + cs(highbrow_arts_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + fancy_rest_c + fast_food_c + highbrow_arts_c \| cuisine)` | **Completed (`hier_practices_relaxed_rs.rds`)** |
 | **Domain 2: Dispositions** | | | | |
-| Cell 1: Dispositions Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c + taste_light_c + taste_rich_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | Estimating (`hier_ext_dispositions_strict_ri.rds`) |
-| Cell 2: Dispositions Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(taste_authentic_c) + cs(taste_familiar_c) + cs(taste_light_c) + cs(taste_rich_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | Estimating (`hier_ext_dispositions_relaxed_ri.rds`) |
-| Cell 3: Dispositions Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c + taste_light_c + taste_rich_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + taste_authentic_c + taste_familiar_c \| cuisine)` | **Completed (`hier_ext_dispositions.rds`)** |
-| Cell 4: Dispositions Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(taste_authentic_c) + cs(taste_familiar_c) + cs(taste_light_c) + cs(taste_rich_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c \| cuisine)` | Estimating (`hier_ext_dispositions_relaxed.rds`) |
+| Cell 1: Dispositions Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c + taste_light_c + taste_rich_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_dispositions_strict_ri.rds`)** |
+| Cell 2: Dispositions Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(taste_authentic_c) + cs(taste_familiar_c) + cs(taste_light_c) + cs(taste_rich_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_dispositions_relaxed_ri.rds`)** |
+| Cell 3: Dispositions Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c + taste_light_c + taste_rich_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + taste_authentic_c + taste_familiar_c \| cuisine)` | **Completed (`hier_dispositions_strict_rs.rds`)** |
+| Cell 4: Dispositions Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(taste_authentic_c) + cs(taste_familiar_c) + cs(taste_light_c) + cs(taste_rich_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + taste_authentic_c + taste_familiar_c \| cuisine)` | **Completed (`hier_dispositions_relaxed_rs.rds`)** |
 | **Domain 3: Cosmopolitan** | | | | |
-| Cell 1: Cosmo Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | Estimating (`hier_ext_cosmopolitan_strict_ri.rds`) |
-| Cell 2: Cosmo Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(cosmo_global_c) + cs(network_diversity_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | Estimating (`hier_ext_cosmopolitan_relaxed_ri.rds`) |
-| Cell 3: Cosmo Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + cosmo_global_c \| cuisine)` | **Completed (`hier_ext_cosmopolitan.rds`)** |
-| Cell 4: Cosmo Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(cosmo_global_c) + cs(network_diversity_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c \| cuisine)` | Estimating (`hier_ext_cosmopolitan_relaxed.rds`) |
+| Cell 1: Cosmo Strict RI | Strict Proportional Odds | Random Intercepts | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_cosmopolitan_strict_ri.rds`)** |
+| Cell 2: Cosmo Relaxed RI | Relaxed Category-Specific | Random Intercepts | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(cosmo_global_c) + cs(network_diversity_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 \| cuisine)` | **Completed (`hier_cosmopolitan_relaxed_ri.rds`)** |
+| Cell 3: Cosmo Strict RS | Strict Proportional Odds | Crossed Random Slopes | `rating_ord ~ 1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + cosmo_global_c \| cuisine)` | **Completed (`hier_cosmopolitan_strict_rs.rds`)** |
+| Cell 4: Cosmo Relaxed RS | Relaxed Category-Specific | Crossed Random Slopes | `rating_ord ~ 1 + cs(educ_c) + cs(peduc_c) + cs(arts_c) + cs(social_c) + cs(economic_c) + cs(cosmo_global_c) + cs(network_diversity_c) + income_c + age_c + gend.f + race.f + (1 \| respondent_id) + (1 + educ_c + peduc_c + arts_c + social_c + economic_c + cosmo_global_c + network_diversity_c \| cuisine)` | **Completed (`hier_cosmopolitan_relaxed_rs.rds`)** |
 
 ### 7.1 Hypotheses H1–H3: Political Ideology Asymmetry
 
