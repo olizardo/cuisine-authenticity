@@ -83,6 +83,16 @@ fit_ext_practices_relaxed <- function() {
     threads = threading(threads_per_chain),
     file = here("cache", "hier_ext_practices_relaxed")
   )
+  
+  # Ensure WAIC is computed and safely saved on cluster
+  fit$file <- NULL
+  if (is.null(fit$criteria$waic)) {
+    cat(sprintf("\n>>> Computing WAIC on cluster (1 core, memory-safe)...\n"))
+    fit <- add_criterion(fit, "waic", cores = 1, file = NULL)
+    out_path <- here("cache", "hier_ext_practices_relaxed.rds")
+    cat(sprintf(">>> Saving updated model with WAIC to: %s\n", out_path))
+    saveRDS(fit, file = out_path)
+  }
   return(fit)
 }
 
@@ -133,6 +143,16 @@ fit_ext_dispositions_relaxed <- function() {
     threads = threading(threads_per_chain),
     file = here("cache", "hier_ext_dispositions_relaxed")
   )
+  
+  # Ensure WAIC is computed and safely saved on cluster
+  fit$file <- NULL
+  if (is.null(fit$criteria$waic)) {
+    cat(sprintf("\n>>> Computing WAIC on cluster (1 core, memory-safe)...\n"))
+    fit <- add_criterion(fit, "waic", cores = 1, file = NULL)
+    out_path <- here("cache", "hier_ext_dispositions_relaxed.rds")
+    cat(sprintf(">>> Saving updated model with WAIC to: %s\n", out_path))
+    saveRDS(fit, file = out_path)
+  }
   return(fit)
 }
 
@@ -182,6 +202,16 @@ fit_ext_cosmopolitan_relaxed <- function() {
     threads = threading(threads_per_chain),
     file = here("cache", "hier_ext_cosmopolitan_relaxed")
   )
+  
+  # Ensure WAIC is computed and safely saved on cluster
+  fit$file <- NULL
+  if (is.null(fit$criteria$waic)) {
+    cat(sprintf("\n>>> Computing WAIC on cluster (1 core, memory-safe)...\n"))
+    fit <- add_criterion(fit, "waic", cores = 1, file = NULL)
+    out_path <- here("cache", "hier_ext_cosmopolitan_relaxed.rds")
+    cat(sprintf(">>> Saving updated model with WAIC to: %s\n", out_path))
+    saveRDS(fit, file = out_path)
+  }
   return(fit)
 }
 

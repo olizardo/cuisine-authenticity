@@ -57,6 +57,9 @@ run_brm <- function(formula, data, file_name, desc) {
   cat(sprintf(">>> Output: cache/%s.rds\n", file_name))
   cat(sprintf("========================================================================\n"))
   
+  out_path <- here("cache", file_name)
+  if (!grepl("\\.rds$", out_path)) out_path <- paste0(out_path, ".rds")
+  
   fit <- brm(
     formula = formula,
     data = data,
@@ -75,6 +78,16 @@ run_brm <- function(formula, data, file_name, desc) {
     threads = threading(threads_per_chain),
     file = here("cache", file_name)
   )
+  
+  # Ensure WAIC is computed and safely saved on cluster
+  fit$file <- NULL
+  if (is.null(fit$criteria$waic)) {
+    cat(sprintf("\n>>> Computing WAIC on cluster (1 core, memory-safe)...\n"))
+    fit <- add_criterion(fit, "waic", cores = 1, file = NULL)
+    cat(sprintf(">>> Saving updated model with WAIC to: %s\n", out_path))
+    saveRDS(fit, file = out_path)
+  }
+  
   return(fit)
 }
 
