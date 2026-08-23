@@ -42,26 +42,26 @@ Model performance was evaluated using the Watanabe-Akaike Information Criterion 
 
 ![](Plots/model_fit_comparison.png){fig-align="center" width="100%"}
 
-Table 1: Consolidated Bayesian Model Fit Comparison Across the Full Factorial Taxonomy (Relative to Baseline Model 1)
+Table 1: Consolidated Bayesian Model Fit Comparison Across the Full Factorial Taxonomy (Ordered by Complexity)
 
-| Rank | Substantive Domain | Model Specification | Threshold Constraint | Random Effects | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. Baseline}}$ | Substantive Predictive Fit |
-|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **1** | **Taste Dispositions** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,348.26 (247.35) | 1,246.1 | **-962.33** | Decisive Improvement (Top Model) |
-| **2** | **Dining Practices** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,446.72 (251.27) | 1,254.4 | **-863.87** | Decisive Improvement |
-| **3** | **Taste Dispositions** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 54,586.18 (245.60) | 1,187.5 | **-724.41** | Decisive Improvement |
-| **4** | **Cosmopolitan** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,804.97 (245.00) | 1,235.7 | **-505.62** | Decisive Improvement |
-| **5** | **Dining Practices** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 54,818.51 (247.60) | 1,185.9 | **-492.08** | Decisive Improvement |
-| **6** | **Cultural Capital (Base)** | Cell 4: Relaxed RS | Relaxed (`cs`) | Crossed Slopes | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Decisive Improvement |
-| **7** | **Cosmopolitan** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 55,069.70 (243.43) | 1,176.9 | **-240.89** | Substantial Improvement |
-| **8** | **Cultural Capital (Base)** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
-| **9** | **Dining Practices** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
-| **10** | **Cultural Capital (Base)** | Cell 2: Relaxed RI | Relaxed (`cs`) | Random Intercepts | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
-| **11** | **Taste Dispositions** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
-| **12** | **Cosmopolitan** | Cell 3: Strict RS | Strict Proportional Odds | Crossed Slopes | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
-| **13** | **Cosmopolitan** | Cell 1: Strict RI | Strict Proportional Odds | Random Intercepts | 55,309.75 (241.93) | 1,141.8 | **-0.84** | Indistinguishable from Baseline |
-| **14** | **Cultural Capital (Base)** | **Model 1: Strict RI** | **Strict Proportional Odds** | **Random Intercepts** | **55,310.59 (241.69)** | **1,141.6** | **0.00** | ***Reference Baseline*** |
-| **15** | **Taste Dispositions** | Cell 1: Strict RI | Strict Proportional Odds | Random Intercepts | 55,311.35 (242.25) | 1,143.1 | **+0.76** | Indistinguishable from Baseline |
-| **16** | **Dining Practices** | Cell 1: Strict RI | Strict Proportional Odds | Random Intercepts | 55,312.28 (241.61) | 1,138.4 | **+1.69** | Indistinguishable from Baseline |
+| Domain | Model Specification | Threshold Constraint | Random Effects | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. Baseline}}$ | Substantive Predictive Fit |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
+| **Core Baseline (Cultural Capital)** | **Model 1: Strict RI** | **Strict Proportional Odds** | **Random Intercepts** | **55,310.59 (241.69)** | **1,141.6** | **0.00** | ***Reference Baseline*** |
+| | **Model 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
+| | **Model 3: Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
+| | **Model 4: Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | **54,961.97 (244.84)** | 1,217.9 | **-348.62** | Decisive Improvement |
+| **Dining Practices** | **Practices Strict RI** | Strict Proportional Odds | Random Intercepts | 55,312.28 (241.61) | 1,138.4 | **+1.69** | Indistinguishable from Baseline |
+| | **Practices Relaxed RI** | Relaxed (`cs`) | Random Intercepts | 54,818.51 (247.60) | 1,185.9 | **-492.08** | Decisive Improvement |
+| | **Practices Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
+| | **Practices Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | **54,446.72 (251.27)** | 1,254.4 | **-863.87** | Decisive Improvement |
+| **Taste Dispositions** | **Dispositions Strict RI** | Strict Proportional Odds | Random Intercepts | 55,311.35 (242.25) | 1,143.1 | **+0.76** | Indistinguishable from Baseline |
+| | **Dispositions Relaxed RI** | Relaxed (`cs`) | Random Intercepts | 54,586.18 (245.60) | 1,187.5 | **-724.41** | Decisive Improvement |
+| | **Dispositions Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
+| | **Dispositions Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | **54,348.26 (247.35)** | 1,246.1 | **-962.33** | Decisive Improvement (Top Model) |
+| **Cosmopolitan Capital** | **Cosmopolitan Strict RI** | Strict Proportional Odds | Random Intercepts | 55,309.75 (241.93) | 1,141.8 | **-0.84** | Indistinguishable from Baseline |
+| | **Cosmopolitan Relaxed RI** | Relaxed (`cs`) | Random Intercepts | 55,069.70 (243.43) | 1,176.9 | **-240.89** | Substantial Improvement |
+| | **Cosmopolitan Strict RS** | Strict Proportional Odds | Crossed Random Slopes | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
+| | **Cosmopolitan Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | **54,804.97 (245.00)** | 1,235.7 | **-505.62** | Decisive Improvement |
 
 *Note:* Baseline reference model is Cultural Capital Strict RI ($\text{WAIC} = 55,310.59$). Negative $\Delta \text{WAIC}$ indicates superior out-of-sample predictive fit. "Relaxed" indicates category-specific threshold transitions (`cs()`). "Crossed Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
 
