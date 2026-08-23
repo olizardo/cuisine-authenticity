@@ -2320,7 +2320,8 @@ window.Quarto = {
   <li><a href="#data-preparation-and-reshaping" id="toc-data-preparation-and-reshaping" class="nav-link" data-scroll-target="#data-preparation-and-reshaping">2. Data Preparation and Reshaping</a></li>
   <li><a href="#modeling-strategy-bayesian-adjacent-category-models" id="toc-modeling-strategy-bayesian-adjacent-category-models" class="nav-link" data-scroll-target="#modeling-strategy-bayesian-adjacent-category-models">3. Modeling Strategy: Bayesian Adjacent Category Models</a>
   <ul class="collapse">
-  <li><a href="#core-baseline-model-taxonomy-a-2-times-2-factorial-design" id="toc-core-baseline-model-taxonomy-a-2-times-2-factorial-design" class="nav-link" data-scroll-target="#core-baseline-model-taxonomy-a-2-times-2-factorial-design">3.1 Core Baseline Model Taxonomy: A <span class="math inline">\(2 \times 2\)</span> Factorial Design</a></li>
+  <li><a href="#substantive-domains-and-factorial-taxonomy" id="toc-substantive-domains-and-factorial-taxonomy" class="nav-link" data-scroll-target="#substantive-domains-and-factorial-taxonomy">3.1 Substantive Domains and Factorial Taxonomy</a></li>
+  <li><a href="#structural-cells-and-model-estimation" id="toc-structural-cells-and-model-estimation" class="nav-link" data-scroll-target="#structural-cells-and-model-estimation">3.2 Structural Cells and Model Estimation</a></li>
   </ul></li>
   <li><a href="#bayesian-model-fit-and-comparison" id="toc-bayesian-model-fit-and-comparison" class="nav-link" data-scroll-target="#bayesian-model-fit-and-comparison">4. Bayesian Model Fit and Comparison</a></li>
   <li><a href="#baseline-cuisine-authenticity-and-demographic-fixed-effects" id="toc-baseline-cuisine-authenticity-and-demographic-fixed-effects" class="nav-link" data-scroll-target="#baseline-cuisine-authenticity-and-demographic-fixed-effects">5. Baseline Cuisine Authenticity and Demographic Fixed Effects</a>
@@ -2398,9 +2399,40 @@ window.Quarto = {
 <p>Given the bounded, seven-point ordinal structure of the outcome variable, standard linear models are ill-suited because they impose equal spacing assumptions across discrete response categories. We therefore employ Bayesian multilevel ordinal regression via the <code>brms</code> package, specifying an adjacent category (ACAT) link function. Unlike cumulative models that estimate the probability of reaching or exceeding a given threshold, adjacent category models estimate the conditional log-odds of selecting category <span class="math inline">\(k+1\)</span> relative to category <span class="math inline">\(k\)</span>:</p>
 <p><span class="math display">\[\log \left( \frac{P(Y_{ij} = k + 1)}{P(Y_{ij} = k)} \right) = \mu_{ij} - \tau_k\]</span></p>
 <p>where <span class="math inline">\(\tau_k\)</span> represents the threshold transition cutpoint (<span class="math inline">\(k = 1, \dots, 6\)</span>). This formulation aligns directly with how survey respondents navigate step-wise alternatives along an ordered Likert scale.</p>
-<section id="core-baseline-model-taxonomy-a-2-times-2-factorial-design" class="level3">
-<h3 class="anchored" data-anchor-id="core-baseline-model-taxonomy-a-2-times-2-factorial-design">3.1 Core Baseline Model Taxonomy: A <span class="math inline">\(2 \times 2\)</span> Factorial Design</h3>
-<p>To evaluate how model assumptions affect substantive conclusions, the statistical architecture begins with a balanced <span class="math inline">\(2 \times 2\)</span> factorial grid crossing two structural dimensions: <strong>Threshold Proportionality</strong> (Strict Equal Slopes vs. Relaxed Category-Specific Slopes <code>cs()</code>) and <strong>Cuisine Slope Heterogeneity</strong> (Random Intercepts vs. Crossed Random Slopes). This baseline taxonomy crosses Model 1 (Strict RI), Model 2 (Relaxed RI), Model 3 (Strict RS), and Model 4 (Relaxed RS), which are subsequently expanded across the three substantive extension domains (Dining Practices, Taste Dispositions, and Cosmopolitan Capital) to form the full 16-cell factorial taxonomy.</p>
+<section id="substantive-domains-and-factorial-taxonomy" class="level3">
+<h3 class="anchored" data-anchor-id="substantive-domains-and-factorial-taxonomy">3.1 Substantive Domains and Factorial Taxonomy</h3>
+<p>To test the multifaceted mechanisms of cultural distinction, the statistical modeling architecture is organized into <strong>four substantive domains</strong>, with each domain estimated across a balanced <span class="math inline">\(2 \times 2\)</span> factorial grid crossing two structural dimensions: <strong>Threshold Proportionality</strong> (Strict Equal Slopes vs. Relaxed Category-Specific Slopes <code>cs()</code>) and <strong>Cuisine Slope Heterogeneity</strong> (Random Intercepts vs. Crossed Random Slopes). This produces a comprehensive <span class="math inline">\(4 \times 2 \times 2 = 16\)</span> model taxonomy:</p>
+<ol type="1">
+<li><strong>Domain 1: Core Baseline &amp; Cultural Capital Models (<code>base</code>)</strong>
+<ul>
+<li><em>Theoretical Objective:</em> Evaluates how institutionalized educational credentials, embodied childhood socialization, and political ideology structure culinary authenticity evaluations across traditions.</li>
+<li><em>Variables Included:</em>
+<ul>
+<li><em>Political Ideology:</em> Social Conservatism (<code>social_c</code>: standardized composite index), Economic Conservatism (<code>economic_c</code>: standardized composite index).</li>
+<li><em>Cultural Capital &amp; Socialization:</em> Educational Attainment (<code>educ_c</code>: continuous education level), Parental Education (<code>peduc_c</code>: highest parental educational attainment), Childhood Arts Socialization (<code>arts_c</code>: frequency of arts exposure during childhood).</li>
+<li><em>Demographic Controls:</em> Household Income (<code>income_c</code>: standardized household income), Age (<code>age_c</code>: standardized respondent age), Gender Identification (<code>gend.f</code>: Man, Woman, Nonbinary/Other), and Ethnoracial Identification (<code>race.f</code>: White, Black, Hispanic/Latino, Asian, Native American, Other).</li>
+</ul></li>
+</ul></li>
+<li><strong>Domain 2: Dining &amp; Cultural Practices Models (<code>practices</code>)</strong>
+<ul>
+<li><em>Theoretical Objective:</em> Investigates whether active adult consumption behaviors and behavioral dining frequency reinforce institutional gastronomic distinction, and whether early embodied socialization acts as an anchoring counterweight once adult practices are controlled.</li>
+<li><em>Domain-Specific Covariates:</em> Adult Highbrow Arts Attendance (<code>highbrow_arts_c</code>: frequency of attending museums, classical concerts, theater, and ballet), Fine Dining Frequency (<code>fancy_rest_c</code>: frequency of dining at upscale table-service restaurants), and Fast Food Consumption Frequency (<code>fast_food_c</code>: frequency of eating at mass fast-food chains), estimated alongside all baseline demographic and cultural capital covariates.</li>
+</ul></li>
+<li><strong>Domain 3: Bourdieu Food Taste Dispositions Models (<code>dispositions</code>)</strong>
+<ul>
+<li><em>Theoretical Objective:</em> Provides direct construct validation for the authenticity continuum by testing whether generalized aesthetic food preferences systematically map onto the domestic elder versus professional chef poles.</li>
+<li><em>Domain-Specific Covariates:</em> Preference for Exotic and Authentic Foods (<code>taste_authentic_c</code>: liking unfamiliar, traditional, and authentic dishes), Familiar and Comfort Foods (<code>taste_familiar_c</code>: liking conventional, predictable comfort foods), Light and Fresh Dishes (<code>taste_light_c</code>: preference for delicate, health-conscious textures), and Rich and Hearty Dishes (<code>taste_rich_c</code>: preference for heavy, filling foods), estimated alongside all baseline covariates.</li>
+</ul></li>
+<li><strong>Domain 4: Cosmopolitan Capital &amp; Social Networks Models (<code>cosmopolitan</code>)</strong>
+<ul>
+<li><em>Theoretical Objective:</em> Assesses whether relational openness, global citizenship identity, and bridging social capital structure culinary distinction, examining whether diverse social networks promote gastronomic valorization across marginalized cuisines.</li>
+<li><em>Domain-Specific Covariates:</em> Inter-Ethnic Friendship Network Diversity (<code>network_diversity_c</code>: racial and ethnic diversity within close friendship circles) and Global Citizen Identification (<code>cosmo_global_c</code>: self-identification as a citizen of the world), estimated alongside all baseline covariates.</li>
+</ul></li>
+</ol>
+</section>
+<section id="structural-cells-and-model-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="structural-cells-and-model-estimation">3.2 Structural Cells and Model Estimation</h3>
+<p>Within each of the four substantive domains, four structural specifications are estimated: * <strong>Cell 1: Strict Random Intercepts (Strict RI):</strong> Imposes the strict proportional odds constraint (<span class="math inline">\(\beta_k = \beta\)</span>) across all threshold transitions and specifies random intercepts for respondents and cuisines (<code>(1 | respondent_id) + (1 | cuisine)</code>). * <strong>Cell 2: Relaxed Random Intercepts (Relaxed RI):</strong> Relaxes proportional odds using category-specific parameters (<code>cs()</code>) across all substantive domain predictors, allowing predictor effects to vary across rating cutpoints. * <strong>Cell 3: Strict Random Slopes (Strict RS):</strong> Maintains strict proportional odds but incorporates crossed random slopes for cuisines on continuous focal predictors (<code>(1 + x | cuisine)</code>), capturing cuisine-specific slope heterogeneity. * <strong>Cell 4: Relaxed Random Slopes (Relaxed RS):</strong> Simultaneously incorporates category-specific threshold transitions (<code>cs()</code>) and crossed random slopes across cuisines, representing the most flexible and comprehensive specification in each domain.</p>
 <p>Model estimation employs the <code>cmdstanr</code> backend with weakly informative priors (<span class="math inline">\(\text{Normal}(0, 1.5)\)</span> for intercepts; <span class="math inline">\(\text{Normal}(0, 1)\)</span> for slopes; <span class="math inline">\(\text{Student-}t(3, 0, 2.5)\)</span> for random standard deviations; <span class="math inline">\(\text{LKJ}(1)\)</span> for correlation matrices). Posterior distributions are sampled across 2,000 iterations per chain across 4 chains (1,000 warmup iterations), yielding 4,000 post-warmup draws with satisfactory effective sample sizes and diagnostic convergence (<span class="math inline">\(\hat{R} &lt; 1.01\)</span>).</p>
 </section>
 </section>

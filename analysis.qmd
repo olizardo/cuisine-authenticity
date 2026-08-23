@@ -30,9 +30,33 @@ $$\log \left( \frac{P(Y_{ij} = k + 1)}{P(Y_{ij} = k)} \right) = \mu_{ij} - \tau_
 
 where $\tau_k$ represents the threshold transition cutpoint ($k = 1, \dots, 6$). This formulation aligns directly with how survey respondents navigate step-wise alternatives along an ordered Likert scale.
 
-### 3.1 Core Baseline Model Taxonomy: A $2 \times 2$ Factorial Design
+### 3.1 Substantive Domains and Factorial Taxonomy
 
-To evaluate how model assumptions affect substantive conclusions, the statistical architecture begins with a balanced $2 \times 2$ factorial grid crossing two structural dimensions: **Threshold Proportionality** (Strict Equal Slopes vs. Relaxed Category-Specific Slopes `cs()`) and **Cuisine Slope Heterogeneity** (Random Intercepts vs. Crossed Random Slopes). This baseline taxonomy crosses Model 1 (Strict RI), Model 2 (Relaxed RI), Model 3 (Strict RS), and Model 4 (Relaxed RS), which are subsequently expanded across the three substantive extension domains (Dining Practices, Taste Dispositions, and Cosmopolitan Capital) to form the full 16-cell factorial taxonomy.
+To test the multifaceted mechanisms of cultural distinction, the statistical modeling architecture is organized into **four substantive domains**, with each domain estimated across a balanced $2 \times 2$ factorial grid crossing two structural dimensions: **Threshold Proportionality** (Strict Equal Slopes vs. Relaxed Category-Specific Slopes `cs()`) and **Cuisine Slope Heterogeneity** (Random Intercepts vs. Crossed Random Slopes). This produces a comprehensive $4 \times 2 \times 2 = 16$ model taxonomy:
+
+1. **Domain 1: Core Baseline & Cultural Capital Models (`base`)**
+   * *Theoretical Objective:* Evaluates how institutionalized educational credentials, embodied childhood socialization, and political ideology structure culinary authenticity evaluations across traditions.
+   * *Variables Included:*
+     * *Political Ideology:* Social Conservatism (`social_c`: standardized composite index), Economic Conservatism (`economic_c`: standardized composite index).
+     * *Cultural Capital & Socialization:* Educational Attainment (`educ_c`: continuous education level), Parental Education (`peduc_c`: highest parental educational attainment), Childhood Arts Socialization (`arts_c`: frequency of arts exposure during childhood).
+     * *Demographic Controls:* Household Income (`income_c`: standardized household income), Age (`age_c`: standardized respondent age), Gender Identification (`gend.f`: Man, Woman, Nonbinary/Other), and Ethnoracial Identification (`race.f`: White, Black, Hispanic/Latino, Asian, Native American, Other).
+2. **Domain 2: Dining & Cultural Practices Models (`practices`)**
+   * *Theoretical Objective:* Investigates whether active adult consumption behaviors and behavioral dining frequency reinforce institutional gastronomic distinction, and whether early embodied socialization acts as an anchoring counterweight once adult practices are controlled.
+   * *Domain-Specific Covariates:* Adult Highbrow Arts Attendance (`highbrow_arts_c`: frequency of attending museums, classical concerts, theater, and ballet), Fine Dining Frequency (`fancy_rest_c`: frequency of dining at upscale table-service restaurants), and Fast Food Consumption Frequency (`fast_food_c`: frequency of eating at mass fast-food chains), estimated alongside all baseline demographic and cultural capital covariates.
+3. **Domain 3: Bourdieu Food Taste Dispositions Models (`dispositions`)**
+   * *Theoretical Objective:* Provides direct construct validation for the authenticity continuum by testing whether generalized aesthetic food preferences systematically map onto the domestic elder versus professional chef poles.
+   * *Domain-Specific Covariates:* Preference for Exotic and Authentic Foods (`taste_authentic_c`: liking unfamiliar, traditional, and authentic dishes), Familiar and Comfort Foods (`taste_familiar_c`: liking conventional, predictable comfort foods), Light and Fresh Dishes (`taste_light_c`: preference for delicate, health-conscious textures), and Rich and Hearty Dishes (`taste_rich_c`: preference for heavy, filling foods), estimated alongside all baseline covariates.
+4. **Domain 4: Cosmopolitan Capital & Social Networks Models (`cosmopolitan`)**
+   * *Theoretical Objective:* Assesses whether relational openness, global citizenship identity, and bridging social capital structure culinary distinction, examining whether diverse social networks promote gastronomic valorization across marginalized cuisines.
+   * *Domain-Specific Covariates:* Inter-Ethnic Friendship Network Diversity (`network_diversity_c`: racial and ethnic diversity within close friendship circles) and Global Citizen Identification (`cosmo_global_c`: self-identification as a citizen of the world), estimated alongside all baseline covariates.
+
+### 3.2 Structural Cells and Model Estimation
+
+Within each of the four substantive domains, four structural specifications are estimated:
+* **Cell 1: Strict Random Intercepts (Strict RI):** Imposes the strict proportional odds constraint ($\beta_k = \beta$) across all threshold transitions and specifies random intercepts for respondents and cuisines (`(1 | respondent_id) + (1 | cuisine)`).
+* **Cell 2: Relaxed Random Intercepts (Relaxed RI):** Relaxes proportional odds using category-specific parameters (`cs()`) across all substantive domain predictors, allowing predictor effects to vary across rating cutpoints.
+* **Cell 3: Strict Random Slopes (Strict RS):** Maintains strict proportional odds but incorporates crossed random slopes for cuisines on continuous focal predictors (`(1 + x | cuisine)`), capturing cuisine-specific slope heterogeneity.
+* **Cell 4: Relaxed Random Slopes (Relaxed RS):** Simultaneously incorporates category-specific threshold transitions (`cs()`) and crossed random slopes across cuisines, representing the most flexible and comprehensive specification in each domain.
 
 Model estimation employs the `cmdstanr` backend with weakly informative priors ($\text{Normal}(0, 1.5)$ for intercepts; $\text{Normal}(0, 1)$ for slopes; $\text{Student-}t(3, 0, 2.5)$ for random standard deviations; $\text{LKJ}(1)$ for correlation matrices). Posterior distributions are sampled across 2,000 iterations per chain across 4 chains (1,000 warmup iterations), yielding 4,000 post-warmup draws with satisfactory effective sample sizes and diagnostic convergence ($\hat{R} < 1.01$).
 
