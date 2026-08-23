@@ -1,0 +1,24 @@
+# R and Editor Temp Files
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+.DS_Store
+*.log
+*.tmp
+
+# Quarto / knitr artifacts
+*_files/
+*_cache/
+*.knit.md
+*.utf8.md
+
+# Renv libraries (restored via renv.lock)
+renv/library/
+renv/staging/
+renv/local/
+renv/cellar/
+
+# Model RDS Objects (>200MB total)
+cache/*.rds
+!cache/cuisine_waic_comparison.rds
