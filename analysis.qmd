@@ -18,7 +18,51 @@ Building upon recent sociological theory on cultural consumption and distinction
 
 ## 2. Data Preparation and Reshaping
 
-The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples ($N = 1,212$ unique respondents). Data preprocessing, implemented in `data/recode.dat.R` and extended in `scripts/data_prep_extension.R`, cleans and standardizes demographic indicators including respondent age, educational attainment, parental education, household income, gender, and ethnoracial identification. Key continuous predictors, such as social conservatism and economic conservatism indices, are standardized to mean zero and unit variance prior to estimation so that model intercepts reflect the predicted response for an average sample participant.
+## 2. Data Preparation and Reshaping
+
+The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples ($N = 1,212$ unique respondents). Data preprocessing, implemented in `data/recode.dat.R` and extended in `scripts/data_prep_extension.R`, cleans and standardizes demographic indicators including respondent age, educational attainment, parental education, household income, gender, and ethnoracial identification. Key continuous predictors are standardized to mean zero and unit variance prior to estimation so that model intercepts reflect the predicted response for an average sample participant.
+
+### 2.1 Survey Operationalization and Variable Measurement
+
+Each substantive predictor in the statistical models is operationalized from specific survey items:
+
+#### Dependent Variable: Cuisine Authenticity and Professionalization Scale
+* **Survey Item:** Respondents evaluated fifteen national and regional cuisines (French, Japanese, Swedish, Italian, Korean, Vietnamese, Peruvian, Moroccan, Lebanese, Pakistani, Mexican, Ethiopian, Jamaican, Nigerian, Native American) on a 7-point Likert scale asking whether the ideal preparation is grounded in domestic tradition or elite professional craftsmanship:
+  * **1:** *"A traditional recipe prepared by an elder at home"*
+  * **4:** *"Equal / One is not better than the other"* (Neutral Midpoint)
+  * **7:** *"A developed recipe prepared by a professional chef at a high-end restaurant"*
+  * Categories 2–3 and 5–6 represent intermediate gradations toward the domestic and professional poles, respectively.
+
+#### 1. Political Ideology Indicators
+* **Social Conservatism (`social_c`):** Measured on a 7-point Likert scale ($1 = \text{"Very liberal"}$, $2 = \text{"Liberal"}$, $3 = \text{"Slightly liberal"}$, $4 = \text{"Centrist"}$, $5 = \text{"Slightly conservative"}$, $6 = \text{"Conservative"}$, $7 = \text{"Very conservative"}$) evaluating political orientation on social and cultural issues. Standardized to mean zero and unit variance.
+* **Economic Conservatism (`economic_c`):** Measured on an identical 7-point Likert scale ($1 = \text{"Very liberal"}$ to $7 = \text{"Very conservative"}$) evaluating political orientation on economic, fiscal, and market issues. Standardized to mean zero and unit variance.
+
+#### 2. Cultural Capital & Socialization Indicators
+* **Respondent Educational Attainment (`educ_c`):** Measured on a 7-category ordinal scale: $1 = \text{Less than 9th grade}$, $2 = \text{Some high school}$, $3 = \text{High school graduate / GED}$, $4 = \text{Some college / vocational school}$, $5 = \text{Associate degree}$, $6 = \text{Bachelor's degree (BA/BS)}$, $7 = \text{Graduate or professional degree (MA/MS, PhD, MD, JD)}$. Standardized continuous predictor.
+* **Parental Educational Attainment (`peduc_c`):** Measured on the identical 7-category ordinal scale evaluating the highest educational credential attained by the respondent's parents. Standardized continuous predictor.
+* **Childhood Arts Socialization (`arts_c`):** Measured as the reported frequency of arts exposure and cultural socialization during childhood (museum visits, concerts, theater attendance, reading). Standardized continuous predictor.
+
+#### 3. Behavioral Dining & Cultural Practices (Domain 2)
+* **Fine Dining Frequency (`fancy_rest_c`):** Measured on a 7-point ordinal scale asking how often the respondent ate at a "fancy, table-service restaurant" in the past year: $1 = \text{Not in past year}$, $2 = 1\text{--}2\text{ times}$, $3 = 3\text{--}5\text{ times}$, $4 = 6\text{--}11\text{ times}$, $5 = 12\text{--}23\text{ times}$, $6 = 24\text{--}51\text{ times}$, $7 = 52+\text{ times (weekly or more)}$. Standardized.
+* **Fast Food Frequency (`fast_food_c`):** Measured on the identical 7-point frequency scale asking how often the respondent ate at fast-food restaurants in the past year. Standardized.
+* **Adult Highbrow Arts Attendance (`highbrow_arts_c`):** Continuous composite index constructed as the arithmetic mean frequency across five highbrow cultural activities in the past year, each evaluated on the same 7-point frequency scale ($1 = \text{Never}$ to $7 = 52+\text{ times}$): (1) art museums, (2) art galleries, (3) classical symphony orchestra or opera, (4) live theatrical plays or musicals, and (5) live dance or ballet performances ($\alpha = 0.84$). Standardized.
+
+#### 4. Bourdieu Food Taste Dispositions (Domain 3)
+* Evaluated across four distinct sensory and aesthetic food preference dimensions measured on 7-point Likert liking scales ($1 = \text{"Very Much Dislike"}$, $2 = \text{"Dislike"}$, $3 = \text{"Somewhat Dislike"}$, $4 = \text{"Neither Like nor Dislike"}$, $5 = \text{"Somewhat Like"}$, $6 = \text{"Like"}$, $7 = \text{"Very Much Like"}$):
+  * **Exotic / Authentic Preference (`taste_authentic_c`):** Liking for "exotic, authentic, and traditional dishes." Standardized.
+  * **Familiar / Comfort Preference (`taste_familiar_c`):** Liking for "conventional, familiar, and comfort food dishes." Standardized.
+  * **Light / Fresh Texture Preference (`taste_light_c`):** Preference for "light, airy, fresh, and delicate" food preparations. Standardized.
+  * **Rich / Hearty Texture Preference (`taste_rich_c`):** Preference for "rich, hearty, filling, and savory" food preparations. Standardized.
+
+#### 5. Cosmopolitan Capital & Social Networks (Domain 4)
+* **Friendship Network Diversity (`network_diversity_c`):** Summed index ($0\text{--}5$) measuring the presence of strong close friendship ties across five distinct ethnoracial minority groups: Asian, Black, Hispanic/Latino, Middle Eastern/North African (MENA), and Native American close friends. Standardized.
+* **Global Citizen Identity (`cosmo_global_c`):** Evaluated on a 7-point influence scale ($1 = \text{"Not at all influential"}$, $4 = \text{"Moderately influential"}$, $7 = \text{"Extremely influential"}$) rating how much being a "citizen of the world" influences the respondent's personal self-identity. Standardized.
+
+#### 6. Sociodemographic Controls
+* **Household Income (`income_c`):** 12-category ordinal scale ($1 = <\$10\text{k}$, $2 = \$10\text{k}\text{--}\$19.9\text{k}$, ..., $11 = \$100\text{k}\text{--}\$149.9\text{k}$, $12 = \ge \$150\text{k}$). Category 13 ("Prefer not to say") is recoded as missing and mean-imputed prior to standardization.
+* **Age (`age_c`):** Continuous chronological age in years ($17\text{--}88$). Standardized.
+* **Gender Identification (`gend.f`):** Categorical factor: Man (reference baseline), Woman, Nonbinary/Other.
+* **Ethnoracial Identification (`race.f`):** Categorical factor: White (reference baseline), Black, Hispanic/Latino, Asian, Native American, Mixed/Other.
 
 To accommodate crossed hierarchical modeling, the survey structure is converted from wide format into a stacked longitudinal panel containing 18,180 ratings across 1,212 unique respondents. In this configuration, each observation corresponds to an individual respondent rating a specific cuisine. Structuring the data in this long format enables the simultaneous specification of random intercepts and slopes for both respondents and cuisines, accounting for individual-level response styles as well as baseline variations inherent to each culinary tradition.
 

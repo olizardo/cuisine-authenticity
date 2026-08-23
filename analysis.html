@@ -2318,6 +2318,10 @@ window.Quarto = {
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1. Introduction</a></li>
   <li><a href="#data-preparation-and-reshaping" id="toc-data-preparation-and-reshaping" class="nav-link" data-scroll-target="#data-preparation-and-reshaping">2. Data Preparation and Reshaping</a></li>
+  <li><a href="#data-preparation-and-reshaping-1" id="toc-data-preparation-and-reshaping-1" class="nav-link" data-scroll-target="#data-preparation-and-reshaping-1">2. Data Preparation and Reshaping</a>
+  <ul class="collapse">
+  <li><a href="#survey-operationalization-and-variable-measurement" id="toc-survey-operationalization-and-variable-measurement" class="nav-link" data-scroll-target="#survey-operationalization-and-variable-measurement">2.1 Survey Operationalization and Variable Measurement</a></li>
+  </ul></li>
   <li><a href="#modeling-strategy-bayesian-adjacent-category-models" id="toc-modeling-strategy-bayesian-adjacent-category-models" class="nav-link" data-scroll-target="#modeling-strategy-bayesian-adjacent-category-models">3. Modeling Strategy: Bayesian Adjacent Category Models</a>
   <ul class="collapse">
   <li><a href="#substantive-domains-and-factorial-taxonomy" id="toc-substantive-domains-and-factorial-taxonomy" class="nav-link" data-scroll-target="#substantive-domains-and-factorial-taxonomy">3.1 Substantive Domains and Factorial Taxonomy</a></li>
@@ -2391,8 +2395,78 @@ window.Quarto = {
 </section>
 <section id="data-preparation-and-reshaping" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation-and-reshaping">2. Data Preparation and Reshaping</h2>
-<p>The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples (<span class="math inline">\(N = 1,212\)</span> unique respondents). Data preprocessing, implemented in <code>data/recode.dat.R</code> and extended in <code>scripts/data_prep_extension.R</code>, cleans and standardizes demographic indicators including respondent age, educational attainment, parental education, household income, gender, and ethnoracial identification. Key continuous predictors, such as social conservatism and economic conservatism indices, are standardized to mean zero and unit variance prior to estimation so that model intercepts reflect the predicted response for an average sample participant.</p>
+</section>
+<section id="data-preparation-and-reshaping-1" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation-and-reshaping-1">2. Data Preparation and Reshaping</h2>
+<p>The analytical dataset pools survey responses gathered across Qualtrics and Prolific samples (<span class="math inline">\(N = 1,212\)</span> unique respondents). Data preprocessing, implemented in <code>data/recode.dat.R</code> and extended in <code>scripts/data_prep_extension.R</code>, cleans and standardizes demographic indicators including respondent age, educational attainment, parental education, household income, gender, and ethnoracial identification. Key continuous predictors are standardized to mean zero and unit variance prior to estimation so that model intercepts reflect the predicted response for an average sample participant.</p>
+<section id="survey-operationalization-and-variable-measurement" class="level3">
+<h3 class="anchored" data-anchor-id="survey-operationalization-and-variable-measurement">2.1 Survey Operationalization and Variable Measurement</h3>
+<p>Each substantive predictor in the statistical models is operationalized from specific survey items:</p>
+<section id="dependent-variable-cuisine-authenticity-and-professionalization-scale" class="level4">
+<h4 class="anchored" data-anchor-id="dependent-variable-cuisine-authenticity-and-professionalization-scale">Dependent Variable: Cuisine Authenticity and Professionalization Scale</h4>
+<ul>
+<li><strong>Survey Item:</strong> Respondents evaluated fifteen national and regional cuisines (French, Japanese, Swedish, Italian, Korean, Vietnamese, Peruvian, Moroccan, Lebanese, Pakistani, Mexican, Ethiopian, Jamaican, Nigerian, Native American) on a 7-point Likert scale asking whether the ideal preparation is grounded in domestic tradition or elite professional craftsmanship:
+<ul>
+<li><strong>1:</strong> <em>“A traditional recipe prepared by an elder at home”</em></li>
+<li><strong>4:</strong> <em>“Equal / One is not better than the other”</em> (Neutral Midpoint)</li>
+<li><strong>7:</strong> <em>“A developed recipe prepared by a professional chef at a high-end restaurant”</em></li>
+<li>Categories 2–3 and 5–6 represent intermediate gradations toward the domestic and professional poles, respectively.</li>
+</ul></li>
+</ul>
+</section>
+<section id="political-ideology-indicators" class="level4">
+<h4 class="anchored" data-anchor-id="political-ideology-indicators">1. Political Ideology Indicators</h4>
+<ul>
+<li><strong>Social Conservatism (<code>social_c</code>):</strong> Measured on a 7-point Likert scale (<span class="math inline">\(1 = \text{&quot;Very liberal&quot;}\)</span>, <span class="math inline">\(2 = \text{&quot;Liberal&quot;}\)</span>, <span class="math inline">\(3 = \text{&quot;Slightly liberal&quot;}\)</span>, <span class="math inline">\(4 = \text{&quot;Centrist&quot;}\)</span>, <span class="math inline">\(5 = \text{&quot;Slightly conservative&quot;}\)</span>, <span class="math inline">\(6 = \text{&quot;Conservative&quot;}\)</span>, <span class="math inline">\(7 = \text{&quot;Very conservative&quot;}\)</span>) evaluating political orientation on social and cultural issues. Standardized to mean zero and unit variance.</li>
+<li><strong>Economic Conservatism (<code>economic_c</code>):</strong> Measured on an identical 7-point Likert scale (<span class="math inline">\(1 = \text{&quot;Very liberal&quot;}\)</span> to <span class="math inline">\(7 = \text{&quot;Very conservative&quot;}\)</span>) evaluating political orientation on economic, fiscal, and market issues. Standardized to mean zero and unit variance.</li>
+</ul>
+</section>
+<section id="cultural-capital-socialization-indicators" class="level4">
+<h4 class="anchored" data-anchor-id="cultural-capital-socialization-indicators">2. Cultural Capital &amp; Socialization Indicators</h4>
+<ul>
+<li><strong>Respondent Educational Attainment (<code>educ_c</code>):</strong> Measured on a 7-category ordinal scale: <span class="math inline">\(1 = \text{Less than 9th grade}\)</span>, <span class="math inline">\(2 = \text{Some high school}\)</span>, <span class="math inline">\(3 = \text{High school graduate / GED}\)</span>, <span class="math inline">\(4 = \text{Some college / vocational school}\)</span>, <span class="math inline">\(5 = \text{Associate degree}\)</span>, <span class="math inline">\(6 = \text{Bachelor&#39;s degree (BA/BS)}\)</span>, <span class="math inline">\(7 = \text{Graduate or professional degree (MA/MS, PhD, MD, JD)}\)</span>. Standardized continuous predictor.</li>
+<li><strong>Parental Educational Attainment (<code>peduc_c</code>):</strong> Measured on the identical 7-category ordinal scale evaluating the highest educational credential attained by the respondent’s parents. Standardized continuous predictor.</li>
+<li><strong>Childhood Arts Socialization (<code>arts_c</code>):</strong> Measured as the reported frequency of arts exposure and cultural socialization during childhood (museum visits, concerts, theater attendance, reading). Standardized continuous predictor.</li>
+</ul>
+</section>
+<section id="behavioral-dining-cultural-practices-domain-2" class="level4">
+<h4 class="anchored" data-anchor-id="behavioral-dining-cultural-practices-domain-2">3. Behavioral Dining &amp; Cultural Practices (Domain 2)</h4>
+<ul>
+<li><strong>Fine Dining Frequency (<code>fancy_rest_c</code>):</strong> Measured on a 7-point ordinal scale asking how often the respondent ate at a “fancy, table-service restaurant” in the past year: <span class="math inline">\(1 = \text{Not in past year}\)</span>, <span class="math inline">\(2 = 1\text{--}2\text{ times}\)</span>, <span class="math inline">\(3 = 3\text{--}5\text{ times}\)</span>, <span class="math inline">\(4 = 6\text{--}11\text{ times}\)</span>, <span class="math inline">\(5 = 12\text{--}23\text{ times}\)</span>, <span class="math inline">\(6 = 24\text{--}51\text{ times}\)</span>, <span class="math inline">\(7 = 52+\text{ times (weekly or more)}\)</span>. Standardized.</li>
+<li><strong>Fast Food Frequency (<code>fast_food_c</code>):</strong> Measured on the identical 7-point frequency scale asking how often the respondent ate at fast-food restaurants in the past year. Standardized.</li>
+<li><strong>Adult Highbrow Arts Attendance (<code>highbrow_arts_c</code>):</strong> Continuous composite index constructed as the arithmetic mean frequency across five highbrow cultural activities in the past year, each evaluated on the same 7-point frequency scale (<span class="math inline">\(1 = \text{Never}\)</span> to <span class="math inline">\(7 = 52+\text{ times}\)</span>): (1) art museums, (2) art galleries, (3) classical symphony orchestra or opera, (4) live theatrical plays or musicals, and (5) live dance or ballet performances (<span class="math inline">\(\alpha = 0.84\)</span>). Standardized.</li>
+</ul>
+</section>
+<section id="bourdieu-food-taste-dispositions-domain-3" class="level4">
+<h4 class="anchored" data-anchor-id="bourdieu-food-taste-dispositions-domain-3">4. Bourdieu Food Taste Dispositions (Domain 3)</h4>
+<ul>
+<li>Evaluated across four distinct sensory and aesthetic food preference dimensions measured on 7-point Likert liking scales (<span class="math inline">\(1 = \text{&quot;Very Much Dislike&quot;}\)</span>, <span class="math inline">\(2 = \text{&quot;Dislike&quot;}\)</span>, <span class="math inline">\(3 = \text{&quot;Somewhat Dislike&quot;}\)</span>, <span class="math inline">\(4 = \text{&quot;Neither Like nor Dislike&quot;}\)</span>, <span class="math inline">\(5 = \text{&quot;Somewhat Like&quot;}\)</span>, <span class="math inline">\(6 = \text{&quot;Like&quot;}\)</span>, <span class="math inline">\(7 = \text{&quot;Very Much Like&quot;}\)</span>):
+<ul>
+<li><strong>Exotic / Authentic Preference (<code>taste_authentic_c</code>):</strong> Liking for “exotic, authentic, and traditional dishes.” Standardized.</li>
+<li><strong>Familiar / Comfort Preference (<code>taste_familiar_c</code>):</strong> Liking for “conventional, familiar, and comfort food dishes.” Standardized.</li>
+<li><strong>Light / Fresh Texture Preference (<code>taste_light_c</code>):</strong> Preference for “light, airy, fresh, and delicate” food preparations. Standardized.</li>
+<li><strong>Rich / Hearty Texture Preference (<code>taste_rich_c</code>):</strong> Preference for “rich, hearty, filling, and savory” food preparations. Standardized.</li>
+</ul></li>
+</ul>
+</section>
+<section id="cosmopolitan-capital-social-networks-domain-4" class="level4">
+<h4 class="anchored" data-anchor-id="cosmopolitan-capital-social-networks-domain-4">5. Cosmopolitan Capital &amp; Social Networks (Domain 4)</h4>
+<ul>
+<li><strong>Friendship Network Diversity (<code>network_diversity_c</code>):</strong> Summed index (<span class="math inline">\(0\text{--}5\)</span>) measuring the presence of strong close friendship ties across five distinct ethnoracial minority groups: Asian, Black, Hispanic/Latino, Middle Eastern/North African (MENA), and Native American close friends. Standardized.</li>
+<li><strong>Global Citizen Identity (<code>cosmo_global_c</code>):</strong> Evaluated on a 7-point influence scale (<span class="math inline">\(1 = \text{&quot;Not at all influential&quot;}\)</span>, <span class="math inline">\(4 = \text{&quot;Moderately influential&quot;}\)</span>, <span class="math inline">\(7 = \text{&quot;Extremely influential&quot;}\)</span>) rating how much being a “citizen of the world” influences the respondent’s personal self-identity. Standardized.</li>
+</ul>
+</section>
+<section id="sociodemographic-controls" class="level4">
+<h4 class="anchored" data-anchor-id="sociodemographic-controls">6. Sociodemographic Controls</h4>
+<ul>
+<li><strong>Household Income (<code>income_c</code>):</strong> 12-category ordinal scale (<span class="math inline">\(1 = &lt;\$10\text{k}\)</span>, <span class="math inline">\(2 = \$10\text{k}\text{--}\$19.9\text{k}\)</span>, …, <span class="math inline">\(11 = \$100\text{k}\text{--}\$149.9\text{k}\)</span>, <span class="math inline">\(12 = \ge \$150\text{k}\)</span>). Category 13 (“Prefer not to say”) is recoded as missing and mean-imputed prior to standardization.</li>
+<li><strong>Age (<code>age_c</code>):</strong> Continuous chronological age in years (<span class="math inline">\(17\text{--}88\)</span>). Standardized.</li>
+<li><strong>Gender Identification (<code>gend.f</code>):</strong> Categorical factor: Man (reference baseline), Woman, Nonbinary/Other.</li>
+<li><strong>Ethnoracial Identification (<code>race.f</code>):</strong> Categorical factor: White (reference baseline), Black, Hispanic/Latino, Asian, Native American, Mixed/Other.</li>
+</ul>
 <p>To accommodate crossed hierarchical modeling, the survey structure is converted from wide format into a stacked longitudinal panel containing 18,180 ratings across 1,212 unique respondents. In this configuration, each observation corresponds to an individual respondent rating a specific cuisine. Structuring the data in this long format enables the simultaneous specification of random intercepts and slopes for both respondents and cuisines, accounting for individual-level response styles as well as baseline variations inherent to each culinary tradition.</p>
+</section>
+</section>
 </section>
 <section id="modeling-strategy-bayesian-adjacent-category-models" class="level2">
 <h2 class="anchored" data-anchor-id="modeling-strategy-bayesian-adjacent-category-models">3. Modeling Strategy: Bayesian Adjacent Category Models</h2>
