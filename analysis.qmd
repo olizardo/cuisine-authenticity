@@ -2,7 +2,7 @@
 title: "Data Analysis Pipeline and Preliminary Results"
 subtitle: "Cuisine Authenticity, Cultural Distinction, and Ideological Polarization"
 author: "Analysis Report"
-date: "August 22, 2026"
+date: "August 23, 2026"
 format: 
   html:
     toc: true
@@ -47,7 +47,7 @@ Model performance was evaluated using the Watanabe-Akaike Information Criterion 
 
 The comparison indicates that incorporating a distributional variance component yields substantial improvements in predictive accuracy over location-only specifications, with $\Delta$ WAIC exceeding 1,600 points. Allowing for cuisine-specific random slopes and category-specific thresholds also provides measurable improvements over the strict baseline. The hybrid model integrating distributional variance with cuisine-specific random slopes demonstrates the strongest overall empirical fit ($\text{WAIC} = 53,432.63$), while the category-specific random slopes formulation provides the top performance among non-distributional specifications ($\text{WAIC} = 54,961.97$).
 
-## 5. Preliminary Findings: Baseline and Fixed Effects
+## 5. Baseline and Demographic Fixed Effects
 
 ### 5.1 Global Demographic Fixed Effects
 
@@ -163,7 +163,7 @@ Childhood arts exposure exhibits pronounced divergence across culinary tradition
 
 ## 9. Theoretical Hypotheses & Extensions: Authenticity vs. Highbrow Distinction
 
-This section directly tests the four core hypotheses and theoretical questions regarding the politicization of taste, multidimensional ideology, culinary consecration hierarchies, and cultural capital mechanisms.
+This section integrates the theoretical hypotheses with the novel Bayesian models fitted on the high-performance computing cluster, addressing ideological sorting, culinary consecration hierarchies, cultural practices, taste dispositions, and cosmopolitan network diversity.
 
 ### 9.1 Hypotheses H1–H3: Political Ideology Asymmetry
 
@@ -187,7 +187,7 @@ Within the Subaltern/Peripheral tier, baseline perceptions are overwhelmingly an
 
 ### 9.3 Cultural Capital Disaggregation: Socialization, Institutional Distinction, and Economic Capital
 
-To disentangle the distinct mechanisms of cultural capital, the model disaggregates embodied early childhood socialization (`child_arts`), institutionalized educational credentials (`educ`), inherited familial capital (`parented`), and material economic resources (`income`). Figure 14 displays the posterior distributions of these four capital dimensions on the authenticity scale.
+To disentangle the distinct mechanisms of cultural capital, the baseline model disaggregates embodied early childhood socialization (`child_arts`), institutionalized educational credentials (`educ`), inherited familial capital (`parented`), and material economic resources (`income`). Figure 14 displays the posterior distributions of these four capital dimensions on the authenticity scale.
 
 ![](Plots/ext_cultural_capital_mechanisms.png){fig-align="center" width="100%"}
 
@@ -195,8 +195,34 @@ The parameter estimates demonstrate a pronounced detachment between institutiona
 
 Conversely, early childhood arts socialization ($\text{median} = -0.12$, $95\%\text{ CrI } [-0.44, 0.17]$, $P(\beta < 0) = 79.5\%$) and parental education ($\text{median} = -0.07$, $95\%\text{ CrI } [-0.37, 0.21]$) maintain negative median estimates that span zero in global location. Household income similarly exhibits a narrow distribution centered near zero ($\text{median} = -0.01$, $95\%\text{ CrI } [-0.07, 0.05]$). This pattern indicates that elite culinary distinction in contemporary society is not simply a passive reflection of childhood arts immersion or material affluence, but is actively driven by adult educational socialization and political alignment.
 
-### 9.4 Substantive Implications for Omnivorousness and Taste Sociology
+### 9.4 Behavioral Dining Practices and Embodied Cultural Socialization
 
-These findings contribute to contemporary debates in the sociology of culture and taste. While classical omnivorousness theory emphasized the expansion of taste repertoires across categorical genres, these results demonstrate that elite culinary consumption is organized around *competing modes of highbrow evaluation*. The domestic elder authenticity schema valorizes provenance, heritage, and informal cultural roots, whereas the professional chef schema valorizes institutionalized technique, formal complexity, and professional hierarchy.
+To evaluate how behavioral dining practices shape authenticity schemas alongside cultural capital, Model EXT-Practices estimated the simultaneous effects of fine dining frequency (`fancy_restaurant`), fast food consumption (`fast_food`), and broad highbrow arts participation (`highbrow_arts_freq`). Figure 15 displays the posterior parameter distributions for this model.
 
-Furthermore, our results demonstrate that the politicization of cultural capital is highly asymmetric: social conservatism systematically pulls respondents toward institutionalized hierarchy and professional technique across all cuisine types, while also generating substantial evaluation dispersion and contestation. Conversely, progressive social attitudes align with the valorization of subaltern domestic authenticity, reflecting a cosmopolitan evaluative schema that locates culinary excellence in traditional cultural preservation.
+![](Plots/ext_practices_forest.png){fig-align="center" width="100%"}
+
+The estimates uncover a striking dual mechanism within cultural capital. Frequent participation in highbrow arts activities, such as attending museums, theaters, and operas, is a credibly positive predictor of endorsing professional chef craftsmanship ($\text{median} = +0.14$, $95\%\text{ CrI } [0.07, 0.21]$, $P(\beta > 0) = 99.98\%$). Frequent patronage of fine dining restaurants similarly shifts respondents toward the professional chef pole ($\text{median} = +0.09$, $95\%\text{ CrI } [0.01, 0.17]$, $P(\beta > 0) = 98.2\%$). In contrast, mass consumption via fast food frequency exhibits an attenuated estimate centered near zero ($\text{median} = +0.03$, $95\%\text{ CrI } [-0.03, 0.09]$, $P(\beta > 0) = 83.6\%$).
+
+Crucially, when active highbrow arts participation and fine dining practices are held constant, embodied childhood arts socialization reveals a credibly negative association with professionalization ($\text{median} = -0.09$, $95\%\text{ CrI } [-0.16, -0.03]$, $P(\beta < 0) = 99.92\%$). This finding suggests that early embodied aesthetic socialization anchors culinary taste in heritage, tradition, and domestic craftsmanship, whereas adult institutionalized cultural consumption actively reinforces the valorization of elite restaurant technique.
+
+### 9.5 Bourdieu Food Taste Dispositions and Construct Validation
+
+Model EXT-Dispositions tested whether general food taste dispositions—specifically preferences for exotic and authentic dishes versus conventional and familiar items, as well as delicate versus hearty textures—systematically align with the elder versus chef evaluative scale. Figure 16 displays the posterior distributions from this model.
+
+![](Plots/ext_dispositions_forest.png){fig-align="center" width="100%"}
+
+The parameter estimates provide direct construct validation for the authenticity scale. Respondents who report higher liking for "exotic and authentic" food systematically evaluate culinary traditions toward the domestic elder anchor ($\text{median} = -0.09$, $95\%\text{ CrI } [-0.15, -0.02]$, $P(\beta < 0) = 99.43\%$). This indicates that cultural consumers who actively seek authentic culinary experiences conceptualize authenticity as rooted in ancestral domestic heritage rather than professionalized restaurant gastronomy. Preference for conventional and familiar food exhibits no directional association with the scale ($\text{median} = -0.01$, $P(\beta > 0) = 43.9\%$), while preferences for light and rich food textures maintain slight negative shifts that span the credibility boundary.
+
+### 9.6 Cosmopolitan Capital and Social Network Diversity
+
+Model EXT-Cosmopolitan evaluated whether self-identification as a global citizen (`cosmo_global`) and the diversity of inter-ethnic friendship networks (`network_diversity`) structure culinary authenticity orientations. Figure 17 presents the posterior distributions for these parameters.
+
+![](Plots/ext_cosmopolitan_forest.png){fig-align="center" width="100%"}
+
+The results indicate that possessing a diverse, inter-ethnic close friendship network is a credibly positive predictor of endorsing professional chef mastery ($\text{median} = +0.06$, $95\%\text{ CrI } [0.00, 0.12]$, $P(\beta > 0) = 97.85\%$). Identifying strongly as a citizen of the world exhibits a positive point estimate ($\text{median} = +0.04$, $P(\beta > 0) = 88.8\%$) with credible intervals spanning zero. Across all models, social conservatism maintains an invariant and credibly positive association with professional chef technique ($\text{median} = +0.14$, $P(\beta > 0) = 99.5\%$), confirming the robustness of political sorting across diverse model specifications.
+
+### 9.7 Substantive Implications for Omnivorousness and Taste Sociology
+
+These empirical findings provide substantive contributions to contemporary sociology of culture and taste. While classical omnivorousness theory focused primarily on the volume and breadth of categorical genres consumed, this study demonstrates that elite culinary consumption is organized around *competing evaluative schemas*. The domestic elder authenticity schema valorizes provenance, familial heritage, and informal cultural roots, whereas the professional chef schema valorizes institutionalized technique, formal mastery, and professional hierarchy.
+
+Furthermore, our results demonstrate that the politicization of cultural distinction is highly asymmetric. Social conservatism consistently pulls respondents toward institutionalized hierarchy and professional technique across all culinary traditions, while also generating substantial evaluation dispersion and contestation. Conversely, progressive social orientations align with the valorization of subaltern domestic authenticity, reflecting a cosmopolitan evaluative schema that locates culinary excellence in traditional cultural preservation.
