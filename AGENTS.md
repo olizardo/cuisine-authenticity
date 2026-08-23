@@ -37,7 +37,7 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | **Practices** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_practices_strict_ri.rds` |
 | | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_practices_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_practices_strict_rs.rds` |
-| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **MCMC Finished (Hoffman2 Saving)** | `hier_practices_relaxed_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_practices_relaxed_rs.rds` |
 | **Dispositions** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_dispositions_strict_ri.rds` |
 | | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_dispositions_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_dispositions_strict_rs.rds` |
@@ -45,29 +45,30 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | **Cosmopolitan** | Cell 1 (Strict RI) | Strict Proportional Odds | Random Intercepts | **Completed (Local & Cluster)** | `hier_cosmopolitan_strict_ri.rds` |
 | | Cell 2 (Relaxed RI) | Category-Specific (`cs`) | Random Intercepts | **Completed (Local & Cluster)** | `hier_cosmopolitan_relaxed_ri.rds` |
 | | Cell 3 (Strict RS) | Strict Proportional Odds | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_cosmopolitan_strict_rs.rds` |
-| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed on Hoffman2** | `hier_cosmopolitan_relaxed_rs.rds` |
-| **Omnibus Meta** | Meta Relaxed RI | Relaxed CS (All 14 Vars) | Random Intercepts | **Running (Hoffman2 Array 14512323 Task 1, 45% Warmup)** | `hier_meta_relaxed_ri.rds` |
-| | Meta-Meta Relaxed RS | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Running (Hoffman2 Array 14512323 Task 2, Sampling)** | `hier_meta_relaxed_rs.rds` |
+| | Cell 4 (Relaxed RS) | Category-Specific (`cs`) | Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_cosmopolitan_relaxed_rs.rds` |
+| **Omnibus Meta** | Meta Relaxed RI | Relaxed CS (All 14 Vars) | Random Intercepts | **Running (Hoffman2 Array 14512323 Task 1, 75% Sampling)** | `hier_meta_relaxed_ri.rds` |
+| | Meta-Meta Relaxed RS | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Running (Hoffman2 Array 14512323 Task 2, 10% Warmup)** | `hier_meta_relaxed_rs.rds` |
 
-### Consolidated WAIC Fit Table (Ordered by Model Complexity)
+### Consolidated WAIC Fit Table (All 16 Factorial Models, Ordered by Out-of-Sample Fit)
 
-| Domain | Model Specification | Threshold Constraint | Random Effects | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ |
-|:---|:---|:---:|:---:|:---|:---:|:---:|:---:|
-| **Core Baseline** | **Model 1: Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_base_strict_ri.rds` | 55,310.59 (241.69) | 1,141.6 | **0.00** |
-| | **Model 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_base_relaxed_ri.rds` | 55,177.51 (243.10) | 1,173.3 | **-133.08** |
-| | **Model 3: Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_base_strict_rs.rds` | 55,171.37 (243.27) | 1,185.2 | **-139.22** |
-| | **Model 4: Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_base_relaxed_rs.rds` | **54,961.97 (244.84)** | 1,217.9 | **-348.62** |
-| **Dining Practices** | **Practices Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_practices_strict_ri.rds` | 55,312.19 (241.87) | 1,148.9 | **+1.60** |
-| | **Practices Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_practices_relaxed_ri.rds` | **54,818.89 (248.11)** | 1,237.9 | **-491.70** |
-| | **Practices Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_practices_strict_rs.rds` | 55,176.81 (242.61) | 1,160.9 | **-133.78** |
-| **Taste Dispositions** | **Dispositions Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_dispositions_strict_ri.rds` | 55,310.82 (241.77) | 1,146.7 | **+0.23** |
-| | **Dispositions Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_dispositions_relaxed_ri.rds` | **54,585.83 (246.04)** | 1,223.1 | **-724.76** |
-| | **Dispositions Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_dispositions_strict_rs.rds` | 55,248.60 (242.35) | 1,162.9 | **-61.99** |
-| **Cosmopolitan Capital** | **Cosmopolitan Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_cosmopolitan_relaxed_ri.rds` | **55,069.96 (243.34)** | 1,189.6 | **-240.63** |
-| | **Cosmopolitan Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_cosmopolitan_strict_rs.rds` | 55,296.93 (242.10) | 1,151.7 | **-13.66** |
-
-*Consolidated WAIC cache: `cache/full_model_fit_comparison.rds` and `.csv`.*
-*Cluster WAIC Batch Job `14512447` computing criteria for newly finished Relaxed RS models.*
+| Rank | Domain | Model Specification | Threshold | Random Effects | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}$ |
+|:---:|:---|:---|:---:|:---:|:---|:---:|:---:|:---:|
+| **1** | **Taste Dispositions** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | `hier_dispositions_relaxed_rs.rds` | **54,348.26 (247.35)** | 1,246.1 | **0.00** |
+| **2** | **Dining Practices** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | `hier_practices_relaxed_rs.rds` | **54,446.72 (249.77)** | 1,310.2 | **+98.46** |
+| **3** | **Taste Dispositions** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Intercepts | `hier_dispositions_relaxed_ri.rds` | **54,586.18 (245.60)** | 1,187.5 | **+237.93** |
+| **4** | **Cosmopolitan** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | `hier_cosmopolitan_relaxed_rs.rds` | **54,804.97 (245.00)** | 1,235.7 | **+456.72** |
+| **5** | **Dining Practices** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Intercepts | `hier_practices_relaxed_ri.rds` | **54,818.51 (247.60)** | 1,185.9 | **+470.25** |
+| **6** | **Cultural Capital** | **Cell 4: Relaxed RS** | Relaxed (`cs`) | Crossed Slopes | `hier_base_relaxed_rs.rds` | **54,961.97 (244.84)** | 1,217.9 | **+613.71** |
+| **7** | **Cosmopolitan** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Intercepts | `hier_cosmopolitan_relaxed_ri.rds` | **55,069.70 (243.43)** | 1,176.9 | **+721.44** |
+| **8** | **Cultural Capital** | **Cell 3: Strict RS** | Strict | Crossed Slopes | `hier_base_strict_rs.rds` | **55,171.37 (243.27)** | 1,185.2 | **+823.11** |
+| **9** | **Dining Practices** | **Cell 3: Strict RS** | Strict | Crossed Slopes | `hier_practices_strict_rs.rds` | **55,176.81 (242.61)** | 1,160.9 | **+828.55** |
+| **10** | **Cultural Capital** | **Cell 2: Relaxed RI** | Relaxed (`cs`) | Intercepts | `hier_base_relaxed_ri.rds` | **55,177.51 (243.10)** | 1,173.3 | **+829.25** |
+| **11** | **Taste Dispositions** | **Cell 3: Strict RS** | Strict | Crossed Slopes | `hier_dispositions_strict_rs.rds` | **55,248.60 (242.35)** | 1,162.9 | **+900.34** |
+| **12** | **Cosmopolitan** | **Cell 3: Strict RS** | Strict | Crossed Slopes | `hier_cosmopolitan_strict_rs.rds` | **55,296.93 (242.10)** | 1,151.7 | **+948.67** |
+| **13** | **Cosmopolitan** | **Cell 1: Strict RI** | Strict | Intercepts | `hier_cosmopolitan_strict_ri.rds` | **55,309.75 (241.93)** | 1,141.8 | **+961.50** |
+| **14** | **Cultural Capital** | **Cell 1: Strict RI** | Strict | Intercepts | `hier_base_strict_ri.rds` | **55,310.59 (241.69)** | 1,141.6 | **+962.33** |
+| **15** | **Taste Dispositions** | **Cell 1: Strict RI** | Strict | Intercepts | `hier_dispositions_strict_ri.rds` | **55,311.35 (242.25)** | 1,143.1 | **+963.10** |
+| **16** | **Dining Practices** | **Cell 1: Strict RI** | Strict | Intercepts | `hier_practices_strict_ri.rds` | **55,312.28 (241.61)** | 1,138.4 | **+964.02** |
 
 ### WAIC Computation Protocol
 * **Cluster-Side Computation:** Compute WAIC directly on Hoffman2 via `scripts/submit_hoffman_waic.sh` and `scripts/compute_taxonomy_waic.R` using sequential 1-core execution with 16GB memory.
