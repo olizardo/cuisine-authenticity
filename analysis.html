@@ -2468,21 +2468,21 @@ window.Quarto = {
 </div>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 13%">
-<col style="width: 11%">
-<col style="width: 11%">
-<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 10%">
 <col style="width: 13%">
 <col style="width: 13%">
 <col style="width: 13%">
-<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: center;">Model</th>
-<th style="text-align: left;">Model Description</th>
-<th style="text-align: left;">Specification &amp; Domain</th>
-<th style="text-align: left;">Relaxed Predictors (<code>cs</code>)</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Domain</th>
+<th style="text-align: center;">Relaxed</th>
+<th style="text-align: center;">Random Slopes</th>
 <th style="text-align: center;">WAIC (SE)</th>
 <th style="text-align: center;"><span class="math inline">\(p_{\text{WAIC}}\)</span></th>
 <th style="text-align: center;"><span class="math inline">\(\Delta \text{WAIC}_{\text{vs. M1}}\)</span></th>
@@ -2491,70 +2491,70 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"><strong>Model 1</strong></td>
-<td style="text-align: left;"><strong>Baseline Strict</strong></td>
-<td style="text-align: left;">Strict Proportional Odds + Random Intercepts</td>
-<td style="text-align: left;"><em>None (Strict)</em></td>
+<td style="text-align: left;"><strong>Model 1</strong></td>
+<td style="text-align: left;">Base</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">55,310.59 (241.69)</td>
 <td style="text-align: center;">1,141.6</td>
 <td style="text-align: center;"><strong>0.00</strong></td>
 <td style="text-align: left;"><em>Reference Baseline</em></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><strong>Model 2</strong></td>
-<td style="text-align: left;"><strong>Relaxed CS</strong></td>
-<td style="text-align: left;">Category-Specific Slopes + Random Intercepts</td>
-<td style="text-align: left;">Education, Parental Educ, Childhood Arts, Social Cons, Economic Cons</td>
+<td style="text-align: left;"><strong>Model 2</strong></td>
+<td style="text-align: left;">Base</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">55,177.51 (243.10)</td>
 <td style="text-align: center;">1,173.3</td>
 <td style="text-align: center;"><strong>-133.08</strong></td>
 <td style="text-align: left;">Substantial Improvement</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;"><strong>Model 3</strong></td>
-<td style="text-align: left;"><strong>Random Slopes Strict</strong></td>
-<td style="text-align: left;">Strict Proportional Odds + Cuisine Slopes</td>
-<td style="text-align: left;"><em>None (Strict)</em></td>
+<td style="text-align: left;"><strong>Model 3</strong></td>
+<td style="text-align: left;">Base</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">55,171.37 (243.27)</td>
 <td style="text-align: center;">1,185.2</td>
 <td style="text-align: center;"><strong>-139.22</strong></td>
 <td style="text-align: left;">Substantial Improvement</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><strong>Model 4</strong></td>
-<td style="text-align: left;"><strong>Relaxed CS + Random Slopes</strong></td>
-<td style="text-align: left;">Category-Specific Slopes + Cuisine Slopes</td>
-<td style="text-align: left;">Education, Parental Educ, Childhood Arts, Social Cons, Economic Cons</td>
+<td style="text-align: left;"><strong>Model 4</strong></td>
+<td style="text-align: left;">Base</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">54,961.97 (244.84)</td>
 <td style="text-align: center;">1,217.9</td>
 <td style="text-align: center;"><strong>-348.62</strong></td>
 <td style="text-align: left;">Substantial Improvement (Top Model)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;"><strong>Model 5</strong></td>
-<td style="text-align: left;"><strong>EXT-Practices</strong></td>
-<td style="text-align: left;">Dining Practices + Highbrow Arts + Slopes</td>
-<td style="text-align: left;"><em>None (Strict)</em></td>
+<td style="text-align: left;"><strong>Model 5</strong></td>
+<td style="text-align: left;">Practices</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">55,176.81 (242.61)</td>
 <td style="text-align: center;">1,160.9</td>
 <td style="text-align: center;"><strong>-133.78</strong></td>
 <td style="text-align: left;">Substantial Improvement</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><strong>Model 6</strong></td>
-<td style="text-align: left;"><strong>EXT-Dispositions</strong></td>
-<td style="text-align: left;">Taste Dispositions + Cuisine Slopes</td>
-<td style="text-align: left;"><em>None (Strict)</em></td>
+<td style="text-align: left;"><strong>Model 6</strong></td>
+<td style="text-align: left;">Dispositions</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">55,248.60 (242.35)</td>
 <td style="text-align: center;">1,162.9</td>
 <td style="text-align: center;"><strong>-61.99</strong></td>
 <td style="text-align: left;">Moderate Improvement</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;"><strong>Model 7</strong></td>
-<td style="text-align: left;"><strong>EXT-Cosmopolitan</strong></td>
-<td style="text-align: left;">Cosmopolitan Identity + Network Diversity</td>
-<td style="text-align: left;"><em>None (Strict)</em></td>
+<td style="text-align: left;"><strong>Model 7</strong></td>
+<td style="text-align: left;">Cosmopolitan</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">55,296.93 (242.10)</td>
 <td style="text-align: center;">1,151.7</td>
 <td style="text-align: center;"><strong>-13.66</strong></td>
@@ -2562,6 +2562,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+<p><em>Note:</em> “Relaxed” indicates category-specific threshold transitions (<code>cs()</code>) estimated across education, parental education, childhood arts socialization, social conservatism, and economic conservatism. “Random Slopes” indicates crossed cuisine-level random slopes on continuous focal predictors.</p>
 <p>The information criterion comparisons demonstrate that relaxing the proportional odds assumption across rating thresholds (<span class="math inline">\(\Delta \text{WAIC} = -133.08\)</span> for Model 2 vs. Model 1) and allowing predictor slopes to vary across culinary traditions (<span class="math inline">\(\Delta \text{WAIC} = -139.22\)</span> for Model 3 vs. Model 1) both yield decisive improvements in model fit. Combining category-specific threshold transitions with crossed cuisine random slopes (Model 4) achieves the lowest WAIC overall, producing a <strong>348.62-point improvement</strong> over the baseline strict model. Among the theoretical extensions, incorporating behavioral dining practices (Model 5) provides the largest fit gain over the baseline model (<span class="math inline">\(\Delta \text{WAIC} = -133.78\)</span>).</p>
 </section>
 <section id="baseline-cuisine-authenticity-and-demographic-fixed-effects" class="level2">

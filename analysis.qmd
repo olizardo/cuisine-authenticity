@@ -51,15 +51,17 @@ Model performance was evaluated using the Watanabe-Akaike Information Criterion 
 
 ![](Plots/model_fit_comparison.png){fig-align="center" width="100%"}
 
-| Model | Model Description | Specification & Domain | Relaxed Predictors (`cs`) | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ | Relative Fit vs. Model 1 |
-|:---:|:---|:---|:---|:---:|:---:|:---:|:---|
-| **Model 1** | **Baseline Strict** | Strict Proportional Odds + Random Intercepts | *None (Strict)* | 55,310.59 (241.69) | 1,141.6 | **0.00** | *Reference Baseline* |
-| **Model 2** | **Relaxed CS** | Category-Specific Slopes + Random Intercepts | Education, Parental Educ, Childhood Arts, Social Cons, Economic Cons | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
-| **Model 3** | **Random Slopes Strict** | Strict Proportional Odds + Cuisine Slopes | *None (Strict)* | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
-| **Model 4** | **Relaxed CS + Random Slopes** | Category-Specific Slopes + Cuisine Slopes | Education, Parental Educ, Childhood Arts, Social Cons, Economic Cons | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Substantial Improvement (Top Model) |
-| **Model 5** | **EXT-Practices** | Dining Practices + Highbrow Arts + Slopes | *None (Strict)* | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
-| **Model 6** | **EXT-Dispositions** | Taste Dispositions + Cuisine Slopes | *None (Strict)* | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
-| **Model 7** | **EXT-Cosmopolitan** | Cosmopolitan Identity + Network Diversity | *None (Strict)* | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
+| Model | Domain | Relaxed | Random Slopes | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. M1}}$ | Relative Fit vs. Model 1 |
+|:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
+| **Model 1** | Base | — | — | 55,310.59 (241.69) | 1,141.6 | **0.00** | *Reference Baseline* |
+| **Model 2** | Base | ✓ | — | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
+| **Model 3** | Base | — | ✓ | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
+| **Model 4** | Base | ✓ | ✓ | 54,961.97 (244.84) | 1,217.9 | **-348.62** | Substantial Improvement (Top Model) |
+| **Model 5** | Practices | — | ✓ | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
+| **Model 6** | Dispositions | — | ✓ | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
+| **Model 7** | Cosmopolitan | — | ✓ | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
+
+*Note:* "Relaxed" indicates category-specific threshold transitions (`cs()`) estimated across education, parental education, childhood arts socialization, social conservatism, and economic conservatism. "Random Slopes" indicates crossed cuisine-level random slopes on continuous focal predictors.
 
 The information criterion comparisons demonstrate that relaxing the proportional odds assumption across rating thresholds ($\Delta \text{WAIC} = -133.08$ for Model 2 vs. Model 1) and allowing predictor slopes to vary across culinary traditions ($\Delta \text{WAIC} = -139.22$ for Model 3 vs. Model 1) both yield decisive improvements in model fit. Combining category-specific threshold transitions with crossed cuisine random slopes (Model 4) achieves the lowest WAIC overall, producing a **348.62-point improvement** over the baseline strict model. Among the theoretical extensions, incorporating behavioral dining practices (Model 5) provides the largest fit gain over the baseline model ($\Delta \text{WAIC} = -133.78$).
 
