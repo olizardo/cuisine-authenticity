@@ -92,56 +92,64 @@ m3 <- load_model("3_rs")
 m6 <- load_model("6_relaxed_rs")
 
 # -------------------------------------------------------------
-# 2. WAIC Model Fit Comparison
+# 2. WAIC Model Fit Comparison across all 16 Taxonomy Models
 # -------------------------------------------------------------
-cat("\n1. Generating WAIC Model Fit Comparison...\n")
-models_to_check <- list(
-  "Model 1: Baseline Strict"               = m1,
-  "Model 2: Relaxed CS"                    = m2,
-  "Model 3: Random Slopes Strict"          = m3,
-  "Model 4: Relaxed CS + Random Slopes"    = m6
-)
+cat("\n1. Generating WAIC Model Fit Comparison across all 16 taxonomy models...\n")
 
-waic_list <- list()
-for (n in names(models_to_check)) {
-  m <- models_to_check[[n]]
-  if (!is.null(m) && !is.null(m$criteria$waic)) {
-    w <- m$criteria$waic$estimates["waic", ]
-    waic_list[[n]] <- data.frame(Model = n, WAIC = w["Estimate"], SE = w["SE"])
-  }
-}
-
-if (length(waic_list) > 0) {
-  waic_df <- bind_rows(waic_list) %>%
+fit_comp_path <- here("cache", "full_model_fit_comparison.rds")
+if (file.exists(fit_comp_path)) {
+  full_fit_df <- readRDS(fit_comp_path)
+  
+  domain_clean_labels <- c(
+    "base"         = "Cultural Capital (Base)",
+    "practices"    = "Dining Practices",
+    "dispositions" = "Taste Dispositions",
+    "cosmopolitan" = "Cosmopolitan Capital"
+  )
+  
+  domain_colors <- c(
+    "Cultural Capital (Base)" = "#7570b3",
+    "Dining Practices"        = "#d95f02",
+    "Taste Dispositions"      = "#1b9e77",
+    "Cosmopolitan Capital"    = "#0072B2"
+  )
+  
+  full_plot_df <- full_fit_df %>%
     mutate(
-      Delta_WAIC = WAIC - min(WAIC),
-      Rank = rank(WAIC),
-      IsBest = ifelse(Rank == 1, "Best Fitting Model", "Alternative Models")
+      Domain_Clean = domain_clean_labels[Domain],
+      Thresh_Label = ifelse(Threshold == "relaxed", "Relaxed CS", "Strict PO"),
+      RE_Label = ifelse(Random_Effects == "rs", "Crossed Slopes", "Random Intercepts"),
+      Model_Title = sprintf("%s [%s, %s]", Domain_Clean, Thresh_Label, RE_Label),
+      Delta_Label = ifelse(Delta_WAIC == 0, "Top Fit (0.0)", sprintf("+%.1f", Delta_WAIC))
     ) %>%
     arrange(WAIC)
   
-  saveRDS(waic_df, here("cache", "cuisine_waic_comparison.rds"))
-  
-  p_waic <- ggplot(waic_df, aes(x = reorder(Model, -WAIC), y = WAIC, color = IsBest)) +
-    geom_pointrange(aes(ymin = WAIC - SE, ymax = WAIC + SE), linewidth = 0.9, size = 0.8) +
-    geom_text(aes(label = sprintf("Δ %.1f", Delta_WAIC)), hjust = -0.3, vjust = -0.5, size = 3.5, fontface = "bold", show.legend = FALSE) +
-    scale_color_manual(values = c("Best Fitting Model" = "#0072B2", "Alternative Models" = "gray45"), name = NULL) +
-    coord_flip() +
+  p_waic <- ggplot(full_plot_df, aes(x = reorder(Model_Title, -WAIC), y = WAIC, color = Domain_Clean)) +
+    geom_pointrange(aes(ymin = WAIC - SE, ymax = WAIC + SE), linewidth = 0.85, size = 0.65) +
+    geom_text(
+      aes(label = Delta_Label),
+      hjust = -0.25,
+      vjust = -0.3,
+      size = 3.2,
+      fontface = "bold",
+      show.legend = FALSE
+    ) +
+    scale_color_manual(values = domain_colors, name = "Substantive Domain") +
+    coord_flip(ylim = c(54000, 55800)) +
     labs(
-      title = "Bayesian Model Fit Comparison (WAIC)",
-      subtitle = "Information criteria comparison across adjacent category models (N = 18,180 ratings across 1,212 respondents)",
+      title = "Bayesian Model Fit Comparison Across Full Factorial Taxonomy",
+      subtitle = "WAIC Comparison Across 16 Hierarchical Adjacent Category Models (N = 18,180 ratings across 1,212 respondents)",
       x = NULL,
       y = "Watanabe-Akaike Information Criterion (WAIC ± 1 SE; Lower is Better)",
-      caption = "WAIC computed across 4,000 post-warmup MCMC draws. Points represent WAIC estimates; error bars indicate ± 1 standard error.\nΔ values reflect difference in WAIC relative to the top-performing model (Relaxed CS + Random Slopes)."
+      caption = "WAIC computed across 4,000 post-warmup MCMC draws per model. Points represent posterior WAIC estimates; error bars indicate ± 1 standard error.\nΔ values reflect difference in WAIC relative to the top-performing model (Taste Dispositions [Relaxed CS, Crossed Slopes])."
     ) +
-    theme_cuisine(base_size = 12) +
+    theme_cuisine(base_size = 11) +
     theme(
-      axis.text.y = element_text(face = "bold", size = 10),
-      legend.position = "top",
-      legend.justification = "left"
+      axis.text.y = element_text(size = 9.5, face = "bold"),
+      legend.position = "bottom"
     )
   
-  ggsave(pfile("model_fit_comparison"), p_waic, width = 10, height = 5.0, dpi = 300, bg = "white")
+  ggsave(pfile("model_fit_comparison"), p_waic, width = 10.5, height = 7.5, dpi = 300, bg = "white")
 }
 
 # -------------------------------------------------------------
