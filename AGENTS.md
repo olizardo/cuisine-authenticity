@@ -83,31 +83,31 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 
 ### Core Theoretical Hypotheses (Childress & Lizardo)
 * **H1 & H2: Ideological Sorting into Highbrow Modes**:
-  - *Social Conservatism*: Credibly pro-chef across all 17 models ($\text{grand mean } \bar{\beta} = +0.150$, median range $[+0.107, +0.193]$, $P(\beta > 0) \ge 99.1\%$).
+  - *Social Conservatism*: Credibly pro-chef across all 18 models ($\text{grand mean } \bar{\beta} = +0.148$, median range $[+0.107, +0.193]$, $P(\beta > 0) \ge 99.1\%$).
   - *Progressive / Social Liberalism*: Credibly domestic elder authenticity.
 * **H3: Social vs. Economic Ideological Asymmetry**:
-  - *Economic Conservatism*: Attenuated and centered near zero ($\text{grand mean } \bar{\beta} = -0.021$, median range $[-0.043, +0.003]$, $95\%\text{ CrI } [-0.151, +0.063]$).
+  - *Economic Conservatism*: Attenuated and centered near zero ($\text{grand mean } \bar{\beta} = -0.022$, median range $[-0.043, +0.003]$, $95\%\text{ CrI } [-0.151, +0.094]$).
   - *Posterior Contrast Test*: $P(\beta_{\text{social}} - \beta_{\text{economic}} > 0 \mid \text{Data}) = 99.3\%$. Culinary distinction is fundamentally organized around symbolic and cultural boundaries rather than fiscal/market preferences.
 * **H4: Cuisine Consecration Hierarchies & Ideological Slopes**:
   - *Consecrated Cuisines* (French $\mu = +0.690$, Japanese $\mu = +0.289$, Swedish $\mu = +0.198$): Firmly chef-anchored at baseline.
   - *Subaltern Cuisines* (Native American $\mu = -0.269$, Nigerian $\mu = -0.246$, Jamaican $\mu = -0.223$, Ethiopian $\mu = -0.165$, Mexican $\mu = -0.148$, Pakistani $\mu = -0.141$): Strongly elder-anchored at baseline.
-  - *Ideological Tension*: Social conservatism acts as a countervailing force across subaltern cuisines (Native American $+0.34$, Pakistani $+0.25$, Mexican $+0.24$, Jamaican $+0.24$), pulling peripheral traditions toward professionalization.
+  - *Ideological Tension*: Social conservatism acts as a countervailing force across subaltern cuisines (Native American $+0.30$, Pakistani $+0.22$, Mexican $+0.21$, Jamaican $+0.21$), pulling peripheral traditions toward professionalization.
 
 ### Cultural Capital & Socialization Mechanisms
 * **Cultural Capital Dual Mechanism**:
-  - *Adult Highbrow Arts Participation*: Credibly pro-chef ($\bar{\beta} = +0.119$, $P > 0 = 98.6\%$).
-  - *Fine Dining Frequency*: Credibly pro-chef ($\bar{\beta} = +0.108$, $P > 0 = 98.2\%$), with strongest pulls on subaltern cuisines (Native American $+0.24$, Mexican $+0.20$, Italian $+0.18$).
-  - *Childhood Arts Socialization*: Once adult cultural consumption is controlled, early childhood arts exposure credibly shifts ratings toward **domestic elder authenticity** ($\bar{\beta} = -0.052$, $P(\beta < 0) \ge 99.9\%$). Early embodied socialization roots taste in heritage and tradition, whereas adult institutionalized consumption valorizes professional restaurant gastronomy.
-  - *Educational Attainment*: Credibly pro-chef ($\bar{\beta} = +0.096$, $P > 0 = 93.4\%$).
+  - *Adult Highbrow Arts Participation*: Credibly pro-chef ($\bar{\beta} = +0.117$, $P > 0 = 98.6\%$).
+  - *Fine Dining Frequency*: Credibly pro-chef ($\bar{\beta} = +0.111$, $P > 0 = 98.2\%$), with strongest pulls on subaltern cuisines (Native American $+0.20$, Mexican $+0.18$, Italian $+0.16$).
+  - *Childhood Arts Socialization*: Once adult cultural consumption is controlled, early childhood arts exposure credibly shifts ratings toward **domestic elder authenticity** ($\bar{\beta} = -0.053$, $P(\beta < 0) \ge 99.9\%$). Early embodied socialization roots taste in heritage and tradition, whereas adult institutionalized consumption valorizes professional restaurant gastronomy.
+  - *Educational Attainment*: Credibly pro-chef ($\bar{\beta} = +0.094$, $P > 0 = 93.3\%$).
   - *Household Income*: Centered near zero ($\bar{\beta} = +0.020$, spans zero), demonstrating detachment of cultural schemas from sheer economic wealth.
 
 ### Construct Validation & Network Diversity
 * **Bourdieu Taste Dispositions**:
-  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($\bar{\beta} = -0.095$, $P(\beta < 0) \ge 99.4\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking.
-  - *Cuisine Heterogeneity*: This effect holds across all subaltern cuisines (Nigerian $-0.14$, Peruvian $-0.13$, Moroccan $-0.12$, Ethiopian $-0.12$, Pakistani $-0.11$, Jamaican $-0.11$, Lebanese $-0.10$).
+  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($\bar{\beta} = -0.100$, $P(\beta < 0) \ge 99.4\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking.
+  - *Cuisine Heterogeneity*: This effect holds across all subaltern cuisines (Nigerian $-0.13$, Peruvian $-0.13$, Moroccan $-0.12$, Ethiopian $-0.12$, Pakistani $-0.11$, Jamaican $-0.10$, Lebanese $-0.10$).
 * **Social Networks & Cosmopolitan Capital**:
-  - Inter-ethnic close friendship network diversity credibly increases appreciation for professional chef execution ($\bar{\beta} = +0.050$, $P > 0 \ge 96.6\%$).
-  - *Global Citizen Identity*: Elevates marginalized cuisines into fine dining legitimacy (Native American $+0.09$, Mexican $+0.06$) while de-centering Western haute culinary hegemony (French $-0.02$).
+  - Inter-ethnic close friendship network diversity credibly increases appreciation for professional chef execution ($\bar{\beta} = +0.045$, $P > 0 \ge 96.6\%$).
+  - *Global Citizen Identity*: Elevates marginalized cuisines into fine dining legitimacy (Native American $+0.15$ and $+0.08$, Italian $+0.13$, Mexican $+0.08$ and $+0.06$) while de-centering Western haute culinary hegemony (French $-0.02$).
 
 ---
 
@@ -125,7 +125,7 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 ### Plot Conventions & Guidelines
 * **Half-Eye Posterior Distributions (`stat_halfeye`):** Master consensus forest plots (Figure 2: Cuisine Random Intercepts; Figure 3: Fixed Effects Stability Envelope) incorporate full posterior density slabs, posterior medians, 80% and 95% credible intervals, with specification stability tick marks (`+`) representing individual model posterior medians.
 * **Strict Effect-Size Ordering:**
-  - *Fixed Effects Stability Envelope (Figure 3):* Order predictors along the y-axis strictly from lowest / most negative effect size at the bottom (Ethnoracial Mixed White $-0.261$) to highest / most positive effect size at the top (Social Conservatism $+0.150$).
+  - *Fixed Effects Stability Envelope (Figure 3):* Order predictors along the y-axis strictly from lowest / most negative effect size at the bottom (Ethnoracial Mixed White $-0.257$) to highest / most positive effect size at the top (Social Conservatism $+0.148$).
   - *Baseline Cuisine Hierarchy (Figure 2):* Order cuisines along the y-axis strictly from lowest / most domestic elder at the bottom (Native American $-0.269$) to highest / most pro-chef at the top (French $+0.690$).
   - *Cuisine Random Slopes (Figures 9–13):* Partition y-axis into three vertical consecration facet strips: `Consecrated`, `Intermediate`, `Subaltern` via `facet_grid(cuisine_group ~ predictor_label, scales = "free", space = "free_y")`. Order cuisines within each tier by the focal predictor's median net slope.
 * **No Redundant Text Labels:** Do not overlay text annotations with point estimates / CI bounds on forest plots when the visual halfeyes and interval bars already convey them.
@@ -133,10 +133,10 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 
 ### Complete Figure Registry & Quarto Workflow
 * `scripts/extract_fixed_effects_stability.R`:
-  - Figure 3: `Plots/fixed_effects_stability_forest.png` (Cross-Specification Fixed Effects Stability Envelope with Half-Eyes across all 17 models)
+  - Figure 3: `Plots/fixed_effects_stability_forest.png` (Cross-Specification Fixed Effects Stability Envelope with Half-Eyes across all 18 models)
 * `scripts/generate_plots.R`:
-  - Figure 1: `Plots/model_fit_comparison.png` (WAIC Model Fit Comparison across all 17 models)
-  - Figure 2: `Plots/cuisine_random_effects.png` (Baseline Cuisine Random Intercepts with Half-Eyes across 17 models)
+  - Figure 1: `Plots/model_fit_comparison.png` (WAIC Model Fit Comparison across all 18 models)
+  - Figure 2: `Plots/cuisine_random_effects.png` (Baseline Cuisine Random Intercepts with Half-Eyes across 18 models)
   - Figure 4: `Plots/ideology_cs_midpoint_effects.png` (Ideology Midpoint Contrast Shifts)
   - Figure 5: `Plots/cultural_cs_midpoint_effects.png` (Cultural Capital Midpoint Contrast Shifts)
   - Figure 9: `Plots/rs_cuisine_slopes_ideology.png` (Cuisine Random Slopes: Ideology, partitioned by Consecration Tiers: `Consecrated`, `Intermediate`, `Subaltern`)
@@ -159,3 +159,21 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 * **Module Loading:** Source `/u/local/Modules/default/init/bash`, load `gcc/10.2.0` before `R`.
 * **Array Staggering:** Always stagger array task startups by at least 5 to 15 minutes (`sleep $(( (SGE_TASK_ID - 1) * 300 ))`) to prevent parallel compilation clashes.
 * **Threaded MCMC:** Use `threads = threading(threads_per_chain)` in `brm()`.
+
+---
+
+## 7. Google Drive & Manuscript Synchronization Standards
+
+* **Google Doc ID:** `1qU0OoUbKx_jQ6t1BvkSJ2F2mdbqmJbhqfyRs3SNdrNY`
+* **Google Doc URL:** `https://docs.google.com/document/d/1qU0OoUbKx_jQ6t1BvkSJ2F2mdbqmJbhqfyRs3SNdrNY/edit?usp=sharing`
+* **Master Driver Script:** `scripts/sync_manuscript.R` (run via `Rscript scripts/sync_manuscript.R` or `source("scripts/sync_manuscript.R")`).
+* **Table Pre-Computation:** `scripts/generate_md_tables.R` serializes markdown tables to `cache/` (`table_hypotheses.md`, `table_fit_comparison.md`, `table_cuisine_hierarchy.md`, `table_parameter_stability.md`).
+* **In-Place OpenXML Engine (`scripts/sync_manuscript.py`):**
+  - **Typography Rules:**
+    - Universal base font is **Alegreya Sans** across `docDefaults`, standard paragraph styles (Headings 1–6, Normal, Title, Subtitle), tables, captions, and notes.
+    - Software/package names (`brms`, `cmdstanr`, `CmdStan`, `loo`, `bayesplot`, `tidybayes`, `ggplot2`) are formatted in **Courier New** two font sizes smaller (10 pt / `sz=20` relative to 12 pt body text).
+    - All non-Alegreya font overrides (Cardo, Nova Mono, Lato, Aptos) are strictly stripped from all XML parts (`document.xml`, `styles.xml`, `theme1.xml`, `fontTable.xml`, `footer1.xml`).
+  - **Layout & Structure Rules:**
+    - Main body narrative contains an uninterrupted narrative flow without inline tables or figures.
+    - **Tables Section (`TABLES`):** Placed at the end of the manuscript containing Tables 1, 2, and 3 formatted in APA 7th style with captions and notes.
+    - **Figures Section (`FIGURES`):** Placed at the end of the manuscript containing Figures 1 through 13 at native 6.5-inch column width, each paired with its bold title and italicized APA explanatory note.
