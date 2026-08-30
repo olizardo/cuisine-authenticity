@@ -300,8 +300,8 @@ generate_stability_plot <- function(full_draws_df, stability_summary) {
     stat_halfeye(
       point_interval = median_qi,
       .width = c(0.80, 0.95),
-      point_size = 2.8,
-      interval_size = 1.0,
+      point_size = 3.2,
+      interval_size_range = c(0.75, 1.9),
       slab_alpha = 0.15,
       scale = 0.65
     ) +
@@ -329,10 +329,10 @@ generate_stability_plot <- function(full_draws_df, stability_summary) {
     coord_cartesian(xlim = c(-0.52, 0.38)) +
     labs(
       title = "Cross-Specification Stability Envelope: Consensus Posterior Distributions",
-      subtitle = "Posterior distributions (half-eyes) synthesized across all 17 completed Bayesian models, ordered by mean effect size\nTick marks (+) represent individual model posterior medians demonstrating specification stability",
+      subtitle = "Posterior distributions (half-eyes) synthesized across all 18 completed Bayesian models, ordered by mean effect size\nTick marks (+) represent individual model posterior medians demonstrating specification stability",
       x = "Estimated Shift in Log-Odds (Toward Professional Chef)",
       y = NULL,
-      caption = "Half-eye density slabs, posterior medians, and 80%/95% CrIs synthesized across 17 completed Bayesian model specifications.\nTick marks (+) show individual model posterior medians (k = 17 for core predictors, k = 5 for domain extension predictors).\nPredictors ordered strictly along the y-axis by posterior mean effect size."
+      caption = "Half-eye density slabs, posterior medians, and 80%/95% CrIs synthesized across all 18 completed Bayesian model specifications.\nTick marks (+) show individual model posterior medians (k = 18 for core predictors, k = 6 for domain extension predictors).\nPredictors ordered strictly along the y-axis by posterior mean effect size."
     ) +
     theme_minimal(base_family = "sans", base_size = 11) +
     theme(
@@ -344,7 +344,9 @@ generate_stability_plot <- function(full_draws_df, stability_summary) {
       legend.title = element_text(size = 9.5, face = "bold"),
       legend.text = element_text(size = 9),
       legend.box = "horizontal",
-      legend.margin = margin(t = 2, b = 2),
+      legend.box.just = "center",
+      legend.spacing.x = unit(0.4, "cm"),
+      legend.margin = margin(t = 6, b = 2),
       panel.grid.minor = element_blank(),
       panel.grid.major.y = element_line(color = "gray90", linewidth = 0.5)
     ) +

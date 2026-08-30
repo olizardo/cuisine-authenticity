@@ -92,6 +92,10 @@ theme_cuisine <- function(base_size = 11) {
       legend.position = "bottom",
       legend.title = element_text(face = "bold", size = base_size * 0.85),
       legend.text = element_text(size = base_size * 0.8),
+      legend.box = "horizontal",
+      legend.box.just = "center",
+      legend.spacing.x = unit(0.4, "cm"),
+      legend.margin = margin(t = 6, b = 2),
       plot.margin = margin(t = 12, r = 16, b = 12, l = 12)
     )
 }
@@ -249,8 +253,8 @@ plot_consensus_cuisine_slopes <- function(slopes_df, vars, var_labels, title, su
     stat_halfeye(
       point_interval = median_qi,
       .width = c(0.80, 0.95),
-      point_size = 2.8,
-      interval_size = 1.0,
+      point_size = 3.2,
+      interval_size_range = c(0.75, 1.9),
       slab_alpha = 0.15,
       scale = 0.65
     ) +
@@ -280,7 +284,8 @@ plot_consensus_cuisine_slopes <- function(slopes_df, vars, var_labels, title, su
       axis.text.y = element_text(face = "bold", size = 9, color = "gray15"),
       panel.spacing = unit(0.9, "lines"),
       legend.position = "bottom"
-    )
+    ) +
+    guides(fill = guide_legend(nrow = 1), color = guide_legend(nrow = 1))
   
   if (!is.null(filename)) {
     out_path <- file.path(plot_dir, filename)
@@ -305,7 +310,15 @@ all_vars <- c(
   "cosmo_global_c", "network_diversity_c"
 )
 
-all_slopes_df <- extract_random_slopes_consensus(all_vars)
+rs_cache_file <- file.path(cache_dir, "random_slopes_draws.rds")
+if (file.exists(rs_cache_file)) {
+  cat("Loading cached random slopes draws from cache/random_slopes_draws.rds...\n")
+  all_slopes_df <- readRDS(rs_cache_file)
+} else {
+  all_slopes_df <- extract_random_slopes_consensus(all_vars)
+  saveRDS(all_slopes_df, rs_cache_file)
+  cat("Saved extracted random slopes to cache/random_slopes_draws.rds\n")
+}
 
 # Figure 9: Political Ideology Slopes
 cat("\nGenerating Figure 9: Political Ideology Slopes...\n")

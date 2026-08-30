@@ -6,15 +6,13 @@
 #' @details Evaluates directional credibility based on ≥ 95% posterior probability mass
 #'   on either side of zero: P(theta > 0 | Data) >= 0.95 or P(theta < 0 | Data) >= 0.95.
 #'   Generates:
-#'   1. Plots/model_fit_comparison.png (WAIC Model Fit Comparison)
+#'   1. Plots/model_fit_comparison.png (WAIC Model Fit Comparison across all 18 models)
 #'   2. Plots/demographic_fixed_effects.png (Global Fixed Effects on Authenticity Location - Model 6)
-#'   3. Plots/cuisine_random_effects.png (Baseline Cuisine Random Intercepts - Model 6)
-#'   4. Plots/rs_cuisine_slopes_ideology.png (Cuisine-Specific Random Slopes for Ideology - Model 3/6)
-#'   5. Plots/rs_cuisine_slopes_cultural.png (Cuisine-Specific Random Slopes for Cultural Capital - Model 3/6)
-#'   6. Plots/ideology_cs_effects.png (Threshold-Specific Shifts for Political Ideology - Model 2)
-#'   7. Plots/ideology_cs_midpoint_effects.png (Midpoint Contrast Shifts for Political Ideology - Model 2)
-#'   8. Plots/cultural_cs_effects.png (Threshold-Specific Shifts for Cultural Capital - Model 2)
-#'   9. Plots/cultural_cs_midpoint_effects.png (Midpoint Contrast Shifts for Cultural Capital - Model 2)
+#'   3. Plots/cuisine_random_effects.png (Baseline Cuisine Random Intercepts across all 18 models)
+#'   4. Plots/rs_cuisine_slopes_ideology.png (Cuisine-Specific Random Slopes for Ideology)
+#'   5. Plots/rs_cuisine_slopes_cultural.png (Cuisine-Specific Random Slopes for Cultural Capital)
+#'   6. Plots/ideology_cs_midpoint_effects.png (Consensus Midpoint Contrasts for Political Ideology)
+#'   7. Plots/cultural_cs_midpoint_effects.png (Consensus Midpoint Contrasts for Cultural Capital)
 #' @author Cuisine Authenticity Project
 
 suppressPackageStartupMessages({
@@ -58,6 +56,10 @@ theme_cuisine <- function(base_size = 12) {
       legend.position = "bottom",
       legend.title = element_text(face = "bold", size = base_size * 0.85),
       legend.text = element_text(size = base_size * 0.8),
+      legend.box = "horizontal",
+      legend.box.just = "center",
+      legend.spacing.x = unit(0.4, "cm"),
+      legend.margin = margin(t = 6, b = 2),
       plot.margin = margin(t = 12, r = 16, b = 12, l = 12)
     )
 }
@@ -171,137 +173,11 @@ if (file.exists(fit_comp_path)) {
 }
 
 # -------------------------------------------------------------
-# 3. Global Demographic Fixed Effects (Model 6: Relaxed CS + Random Slopes)
+# 2. Baseline Cuisine Random Intercepts (Consensus across all 18 models)
 # -------------------------------------------------------------
-if (!is.null(m6)) {
-  cat("2. Generating Demographic Fixed Effects Plot (Model 6: Relaxed CS + Random Slopes)...\n")
-  
-  non_cs_vars <- c("b_income_c", "b_age_c", "b_gend.fWoman",
-                   "b_race.fAsian", "b_race.fBlack", "b_race.fHispanic", 
-                   "b_race.fMixedOther", "b_race.fMixedWhite")
-  non_cs_vars <- intersect(non_cs_vars, variables(m6))
-  
-  draws_non_cs <- m6 %>%
-    gather_draws(!!!syms(non_cs_vars)) %>%
-    mutate(
-      Predictor = case_when(
-        .variable == "b_income_c" ~ "Household Income",
-        .variable == "b_age_c" ~ "Age",
-        .variable == "b_gend.fWoman" ~ "Woman",
-        .variable == "b_race.fAsian" ~ "Asian",
-        .variable == "b_race.fBlack" ~ "Black",
-        .variable == "b_race.fHispanic" ~ "Hispanic",
-        .variable == "b_race.fMixedOther" ~ "Mixed / Other Race",
-        .variable == "b_race.fMixedWhite" ~ "Mixed White"
-      )
-    )
-  
-  # Category-specific predictors: average across 6 thresholds
-  cs_draws_list <- list(
-    m6 %>% spread_draws(bcs_social_c[threshold]) %>% group_by(.chain, .iteration, .draw) %>% 
-      summarize(.value = mean(bcs_social_c), .groups = "drop") %>% mutate(Predictor = "Social Conservatism"),
-    m6 %>% spread_draws(bcs_economic_c[threshold]) %>% group_by(.chain, .iteration, .draw) %>% 
-      summarize(.value = mean(bcs_economic_c), .groups = "drop") %>% mutate(Predictor = "Economic Conservatism"),
-    m6 %>% spread_draws(bcs_educ_c[threshold]) %>% group_by(.chain, .iteration, .draw) %>% 
-      summarize(.value = mean(bcs_educ_c), .groups = "drop") %>% mutate(Predictor = "Educational Attainment"),
-    m6 %>% spread_draws(bcs_peduc_c[threshold]) %>% group_by(.chain, .iteration, .draw) %>% 
-      summarize(.value = mean(bcs_peduc_c), .groups = "drop") %>% mutate(Predictor = "Parental Education"),
-    m6 %>% spread_draws(bcs_arts_c[threshold]) %>% group_by(.chain, .iteration, .draw) %>% 
-      summarize(.value = mean(bcs_arts_c), .groups = "drop") %>% mutate(Predictor = "Childhood Arts Exposure")
-  )
-  
-  all_draws_fixed <- bind_rows(draws_non_cs, bind_rows(cs_draws_list))
-  
-  summary_fixed <- all_draws_fixed %>%
-    group_by(Predictor) %>%
-    summarize(
-      median = median(.value),
-      q2.5 = quantile(.value, 0.025),
-      q97.5 = quantile(.value, 0.975),
-      p_pos = mean(.value > 0),
-      p_neg = mean(.value < 0),
-      p_dir = max(p_pos, p_neg),
-      cred_status = case_when(
-        p_pos >= 0.95 ~ "Credibly Pro Chef (≥ 95% Mass)",
-        p_neg >= 0.95 ~ "Credibly Domestic Elder (≥ 95% Mass)",
-        TRUE ~ "Spans Zero (< 95% Mass)"
-      ),
-      .groups = "drop"
-    )
-  
-  # Logical ordering by variable type (Race/Ethnicity at bottom, Demographics, Cultural/Socioeconomic Capital, Ideology at top)
-  pred_order <- c(
-    # Race / Ethnicity
-    "Mixed / Other Race",
-    "Mixed White",
-    "Hispanic",
-    "Black",
-    "Asian",
-    # Demographics
-    "Woman",
-    "Age",
-    # Cultural & Socioeconomic Capital
-    "Household Income",
-    "Childhood Arts Exposure",
-    "Parental Education",
-    "Educational Attainment",
-    # Political Ideology
-    "Economic Conservatism",
-    "Social Conservatism"
-  )
-  
-  all_draws_plot <- all_draws_fixed %>%
-    left_join(summary_fixed %>% select(Predictor, cred_status), by = "Predictor") %>%
-    mutate(
-      Predictor = factor(Predictor, levels = pred_order),
-      cred_status = factor(cred_status, levels = c(
-        "Credibly Pro Chef (≥ 95% Mass)",
-        "Credibly Domestic Elder (≥ 95% Mass)",
-        "Spans Zero (< 95% Mass)"
-      ))
-    )
-  
-  p_fixed <- ggplot(all_draws_plot, aes(x = .value, y = Predictor, fill = cred_status, color = cred_status)) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "gray40", linewidth = 0.75) +
-    stat_halfeye(
-      point_interval = median_qi,
-      .width = c(0.80, 0.95),
-      point_size = 3.2,
-      interval_size = 1.1,
-      slab_alpha = 0.15,
-      scale = 0.68
-    ) +
-    scale_fill_manual(values = color_credibility, name = "Directional Credibility (≥ 95% Posterior Mass)") +
-    scale_color_manual(values = color_credibility, name = "Directional Credibility (≥ 95% Posterior Mass)") +
-    scale_x_continuous(
-      breaks = seq(-0.5, 0.3, by = 0.1),
-      labels = function(x) sprintf("%+.1f", x)
-    ) +
-    coord_cartesian(xlim = c(-0.52, 0.35)) +
-    labs(
-      title = "Demographic Fixed Effects on Cuisine Authenticity",
-      subtitle = "Bayesian posterior distributions from Relaxed CS + Random Slopes model (Model 6)\nPositive shifts favor 'Professional Chef' (7) | Negative shifts favor 'Traditional Domestic Elder' (1)",
-      x = "Effect Size (Log-Odds Step-Wise Shift)",
-      y = NULL,
-      caption = "Bayesian crossed random coefficients ACAT model with category-specific effects (Model 6; 4,000 MCMC draws, N = 18,180).\nPoints indicate posterior medians; thick and thin bars represent 80% and 95% credible intervals.\nPredictors organized by substantive domain: Political Ideology, Cultural Capital & Socioeconomic Status, Demographics, and Ethnoracial Identity."
-    ) +
-    theme_cuisine(base_size = 12) +
-    theme(
-      axis.text.y = element_text(face = "bold", size = 10.5, color = "gray15"),
-      panel.grid.major.y = element_line(color = "gray92", linewidth = 0.4),
-      legend.position = "bottom"
-    )
-  
-  ggsave(pfile("demographic_fixed_effects"), p_fixed, width = 10.0, height = 7.5, dpi = 300, bg = "white")
-}
+cat("2. Generating Baseline Cuisine Random Intercepts Consensus Plot across all 18 models...\n")
 
-# -------------------------------------------------------------
-# 4. Baseline Cuisine Random Intercepts (Model 6)
-# -------------------------------------------------------------
-if (!is.null(m6)) {
-  cat("3. Generating Baseline Cuisine Random Intercepts Consensus Plot across all 18 models...\n")
-  
-  source(here("scripts", "model_registry.R"))
+source(here("scripts", "model_registry.R"))
   
   cuisines_list <- c("japanese", "french", "italian", "mexican", "moroccan", 
                      "korean", "peruvian", "native_american", "swedish", 
@@ -428,8 +304,8 @@ if (!is.null(m6)) {
     stat_halfeye(
       point_interval = median_qi,
       .width = c(0.80, 0.95),
-      point_size = 2.8,
-      interval_size = 1.0,
+      point_size = 3.2,
+      interval_size_range = c(0.75, 1.9),
       slab_alpha = 0.15,
       scale = 0.65
     ) +
@@ -470,12 +346,13 @@ if (!is.null(m6)) {
       legend.title = element_text(face = "bold", size = 10),
       legend.text = element_text(size = 9.5),
       legend.box = "horizontal",
-      legend.margin = margin(t = 2, b = 2)
+      legend.box.just = "center",
+      legend.spacing.x = unit(0.4, "cm"),
+      legend.margin = margin(t = 6, b = 2)
     ) +
     guides(fill = guide_legend(nrow = 1), color = guide_legend(nrow = 1))
   
   ggsave(pfile("cuisine_random_effects"), p_re, width = 10.0, height = 7.0, dpi = 300, bg = "white")
-}
 
 # -------------------------------------------------------------
 # 5. Cuisine Random Slopes: Cross-Model Consensus (Ideology & Cultural Capital)

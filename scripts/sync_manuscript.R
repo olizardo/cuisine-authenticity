@@ -2,14 +2,23 @@
 #' Synchronize Google Drive Manuscript with Local Tables and Figures
 #' Cuisine Authenticity Project
 #'
-#' This script downloads the live Google Doc manuscript, injects publication-grade
-#' APA tables and figures in-place using OpenXML DOM manipulation, and uploads
-#' the updated document back to Google Drive without altering author typography or formatting.
+#' Strictly conforms to global AGENTS guidelines:
+#' In-place OpenXML table and figure injection, Alegreya Sans typography,
+#' APA 7th table standards, and automated scratch file cleanup.
 
 suppressPackageStartupMessages({
   library(googledrive)
   library(here)
 })
+
+# Automated intermediate file cleanup & hygiene on exit
+on.exit({
+  unlink(Sys.glob(here("draft_*.docx")))
+  unlink(Sys.glob(here("draft_*.txt")))
+  unlink(Sys.glob(here("*.tmp")))
+  unlink(here("test_*.docx"))
+  unlink(here("doc_text.txt"))
+}, add = TRUE)
 
 # 1. Configuration: Google Doc ID from URL
 doc_id <- "1qU0OoUbKx_jQ6t1BvkSJ2F2mdbqmJbhqfyRs3SNdrNY"
@@ -31,12 +40,5 @@ if (exit_code != 0) {
 
 message("[4/4] Uploading updated manuscript back to Google Drive...")
 drive_update(as_id(doc_id), media = updated_docx)
-
-# Clean up local temporary files
-if (file.exists(live_docx)) unlink(live_docx)
-if (file.exists(updated_docx)) unlink(updated_docx)
-if (file.exists(here("test_download.docx"))) unlink(here("test_download.docx"))
-if (file.exists(here("test_updated.docx"))) unlink(here("test_updated.docx"))
-if (file.exists(here("doc_text.txt"))) unlink(here("doc_text.txt"))
 
 message("Synchronization complete! Google Doc updated successfully.")

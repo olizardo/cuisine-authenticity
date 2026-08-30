@@ -49,28 +49,28 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 | **Omnibus Meta** | Meta Relaxed RI (Model 17) | Relaxed CS (All 14 Vars) | Random Intercepts | **Completed (Local & Cluster)** | `hier_meta_relaxed_ri.rds` |
 | | Meta-Meta Relaxed RS (Model 18) | Relaxed CS (All 14 Vars) | Full Cuisine Random Slopes | **Completed (Local & Cluster)** | `hier_meta_relaxed_rs.rds` |
 
-### Consolidated WAIC Fit Table (All 18 Completed Models, Ordered by Complexity)
+### Consolidated Model Fit Table (All 18 Completed Models, M1–M18)
 
-| Domain | Model Specification | Threshold Constraint | Random Effects | Cache File | WAIC (SE) | $p_{\text{WAIC}}$ | $\Delta \text{WAIC}_{\text{vs. Baseline}}$ | Substantive Predictive Fit |
-|:---|:---|:---:|:---:|:---|:---:|:---:|:---:|:---|
-| **Core Baseline (Cultural Capital)** | **Model 1: Strict RI** | **Strict Proportional Odds** | **Random Intercepts** | `hier_base_strict_ri.rds` | **55,310.59 (241.69)** | **1,141.6** | **0.00** | ***Reference Baseline*** |
-| | **Model 2: Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_base_relaxed_ri.rds` | 55,177.51 (243.10) | 1,173.3 | **-133.08** | Substantial Improvement |
-| | **Model 3: Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_base_strict_rs.rds` | 55,171.37 (243.27) | 1,185.2 | **-139.22** | Substantial Improvement |
-| | **Model 4: Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_base_relaxed_rs.rds` | **54,961.97 (244.84)** | 1,217.9 | **-348.62** | Decisive Improvement |
-| **Dining Practices** | **Practices Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_practices_strict_ri.rds` | 55,312.28 (241.61) | 1,138.4 | **+1.69** | Indistinguishable from Baseline |
-| | **Practices Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_practices_relaxed_ri.rds` | 54,818.51 (247.60) | 1,185.9 | **-492.08** | Decisive Improvement |
-| | **Practices Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_practices_strict_rs.rds` | 55,176.81 (242.61) | 1,160.9 | **-133.78** | Substantial Improvement |
-| | **Practices Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_practices_relaxed_rs.rds` | **54,447.28 (250.65)** | 1,254.3 | **-863.31** | Decisive Improvement |
-| **Taste Dispositions** | **Dispositions Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_dispositions_strict_ri.rds` | 55,311.35 (242.25) | 1,143.1 | **+0.76** | Indistinguishable from Baseline |
-| | **Dispositions Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_dispositions_relaxed_ri.rds` | 54,586.18 (245.60) | 1,187.5 | **-724.41** | Decisive Improvement |
-| | **Dispositions Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_dispositions_strict_rs.rds` | 55,248.60 (242.35) | 1,162.9 | **-61.99** | Moderate Improvement |
-| | **Dispositions Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_dispositions_relaxed_rs.rds` | **54,348.26 (247.35)** | 1,246.1 | **-962.33** | Decisive Improvement |
-| **Cosmopolitan Capital** | **Cosmopolitan Strict RI** | Strict Proportional Odds | Random Intercepts | `hier_cosmopolitan_strict_ri.rds` | 55,309.75 (241.93) | 1,141.8 | **-0.84** | Indistinguishable from Baseline |
-| | **Cosmopolitan Relaxed RI** | Relaxed (`cs`) | Random Intercepts | `hier_cosmopolitan_relaxed_ri.rds` | 55,069.70 (243.43) | 1,176.9 | **-240.89** | Substantial Improvement |
-| | **Cosmopolitan Strict RS** | Strict Proportional Odds | Crossed Random Slopes | `hier_cosmopolitan_strict_rs.rds` | 55,296.93 (242.10) | 1,151.7 | **-13.66** | Modest Improvement |
-| | **Cosmopolitan Relaxed RS** | Relaxed (`cs`) | Crossed Random Slopes | `hier_cosmopolitan_relaxed_rs.rds` | **54,804.97 (245.00)** | 1,235.7 | **-505.62** | Decisive Improvement |
-| **Omnibus Meta** | **Omnibus Meta Relaxed RI (Model 17)** | Relaxed (`cs`, All 14 Vars) | Random Intercepts | `hier_meta_relaxed_ri.rds` | 54,311.35 (249.03) | 1,213.3 | **-999.24** | Decisive Improvement |
-| | **Omnibus Meta Relaxed RS (Model 18)** | Relaxed (`cs`, All 14 Vars) | Crossed Random Slopes | `hier_meta_relaxed_rs.rds` | **53,934.59 (252.15)** | **1,322.6** | **-1,375.99** | **Decisive Improvement (Top Overall Model)** |
+| Model | Specification / Architecture | WAIC | ΔWAIC |
+|:---:|:---|:---:|:---:|
+| **M1** | **Base Strict RI:** `(1\|ID) + (1\|Cuisine)` | 55,310.6 | **Ref** |
+| **M2** | **Base Relaxed CS:** `(1\|ID) + (1\|Cuisine)` | 55,177.5 | **-133.1** |
+| **M3** | **Base Strict RS:** `(1\|ID) + (1+Base\|Cuisine)` | 55,171.4 | **-139.2** |
+| **M4** | **Base Relaxed RS:** `(1\|ID) + (1+Base\|Cuisine)` | 54,961.0 | **-348.6** |
+| **M5** | **Practices Strict RI:** `(1\|ID) + (1\|Cuisine)` | 55,312.3 | **+1.7** |
+| **M6** | **Practices Relaxed CS:** `(1\|ID) + (1\|Cuisine)` | 54,818.5 | **-492.1** |
+| **M7** | **Practices Strict RS:** `(1\|ID) + (1+Pract\|Cuisine)` | 55,176.8 | **-133.8** |
+| **M8** | **Practices Relaxed RS:** `(1\|ID) + (1+Pract\|Cuisine)` | 54,447.3 | **-863.3** |
+| **M9** | **Dispositions Strict RI:** `(1\|ID) + (1\|Cuisine)` | 55,311.4 | **+0.8** |
+| **M10** | **Dispositions Relaxed CS:** `(1\|ID) + (1\|Cuisine)` | 54,586.2 | **-724.4** |
+| **M11** | **Dispositions Strict RS:** `(1\|ID) + (1+Disp\|Cuisine)` | 55,248.6 | **-62.0** |
+| **M12** | **Dispositions Relaxed RS:** `(1\|ID) + (1+Disp\|Cuisine)` | 54,348.3 | **-962.3** |
+| **M13** | **Cosmopolitan Strict RI:** `(1\|ID) + (1\|Cuisine)` | 55,309.8 | **-0.8** |
+| **M14** | **Cosmopolitan Relaxed CS:** `(1\|ID) + (1\|Cuisine)` | 55,069.7 | **-240.9** |
+| **M15** | **Cosmopolitan Strict RS:** `(1\|ID) + (1+Cosmo\|Cuisine)` | 55,296.9 | **-13.7** |
+| **M16** | **Cosmopolitan Relaxed RS:** `(1\|ID) + (1+Cosmo\|Cuisine)` | 54,805.0 | **-505.6** |
+| **M17** | **Omnibus Meta Relaxed RI:** `(1\|ID) + (1\|Cuisine)` | 54,311.4 | **-999.2** |
+| **M18** | **Omnibus Meta Relaxed RS:** `(1\|ID) + (1+All\|Cuisine)` | **53,934.6** | **-1,376.0** |
 
 ### WAIC Computation Protocol
 * **Cluster-Side Computation:** Compute WAIC directly on Hoffman2 via `scripts/submit_hoffman_waic.sh` and `scripts/compute_taxonomy_waic.R` using sequential 1-core execution with 16GB memory.
@@ -79,35 +79,34 @@ $$\mathbf{\text{hier\_\{\text{domain}\}\_\{\text{threshold}\}\_\{\text{re}\}.rds
 
 ---
 
-## 3. Key Empirical Findings & Hypothesis Tests
+## 3. Key Empirical Findings & Theoretical Hypotheses
 
-### Core Theoretical Hypotheses (Childress & Lizardo)
-* **H1 & H2: Ideological Sorting into Highbrow Modes**:
+### Complete Hypotheses Registry
+* **H1: Cuisine Consecration Hierarchy**:
+  - *Consecrated Cuisines* (French $\mu = +0.691$, Japanese $\mu = +0.290$, Swedish $\mu = +0.199$): Firmly chef-anchored at baseline ($P > 0 \ge 99.0\%$).
+  - *Intermediate Cuisines* (Korean $+0.079$, Italian $+0.074$, Vietnamese $-0.041$, Peruvian $-0.061$, Moroccan $-0.076$, Lebanese $-0.080$): Neutrally centered spanning zero.
+  - *Subaltern Cuisines* (Native American $-0.271$, Nigerian $-0.246$, Jamaican $-0.223$, Ethiopian $-0.165$, Mexican $-0.148$, Pakistani $-0.141$): Strongly elder-anchored at baseline ($P < 0 \ge 96.0\%$).
+* **H2 & H3: Ideological Polarization & Asymmetry**:
   - *Social Conservatism*: Credibly pro-chef across all 18 models ($\text{grand mean } \bar{\beta} = +0.148$, median range $[+0.107, +0.193]$, $P(\beta > 0) \ge 99.1\%$).
-  - *Progressive / Social Liberalism*: Credibly domestic elder authenticity.
-* **H3: Social vs. Economic Ideological Asymmetry**:
   - *Economic Conservatism*: Attenuated and centered near zero ($\text{grand mean } \bar{\beta} = -0.022$, median range $[-0.043, +0.003]$, $95\%\text{ CrI } [-0.151, +0.094]$).
   - *Posterior Contrast Test*: $P(\beta_{\text{social}} - \beta_{\text{economic}} > 0 \mid \text{Data}) = 99.3\%$. Culinary distinction is fundamentally organized around symbolic and cultural boundaries rather than fiscal/market preferences.
-* **H4: Cuisine Consecration Hierarchies & Ideological Slopes**:
-  - *Consecrated Cuisines* (French $\mu = +0.690$, Japanese $\mu = +0.289$, Swedish $\mu = +0.198$): Firmly chef-anchored at baseline.
-  - *Subaltern Cuisines* (Native American $\mu = -0.269$, Nigerian $\mu = -0.246$, Jamaican $\mu = -0.223$, Ethiopian $\mu = -0.165$, Mexican $\mu = -0.148$, Pakistani $\mu = -0.141$): Strongly elder-anchored at baseline.
-  - *Ideological Tension*: Social conservatism acts as a countervailing force across subaltern cuisines (Native American $+0.30$, Pakistani $+0.22$, Mexican $+0.21$, Jamaican $+0.21$), pulling peripheral traditions toward professionalization.
-
-### Cultural Capital & Socialization Mechanisms
-* **Cultural Capital Dual Mechanism**:
-  - *Adult Highbrow Arts Participation*: Credibly pro-chef ($\bar{\beta} = +0.117$, $P > 0 = 98.6\%$).
-  - *Fine Dining Frequency*: Credibly pro-chef ($\bar{\beta} = +0.111$, $P > 0 = 98.2\%$), with strongest pulls on subaltern cuisines (Native American $+0.20$, Mexican $+0.18$, Italian $+0.16$).
+* **H4 & H6: Cultural Capital Dual Mechanism & Economic Wealth Decoupling**:
+  - *Formal Educational Attainment*: Credibly pro-chef ($\bar{\beta} = +0.094$, $P > 0 = 93.3\%$).
   - *Childhood Arts Socialization*: Once adult cultural consumption is controlled, early childhood arts exposure credibly shifts ratings toward **domestic elder authenticity** ($\bar{\beta} = -0.053$, $P(\beta < 0) \ge 99.9\%$). Early embodied socialization roots taste in heritage and tradition, whereas adult institutionalized consumption valorizes professional restaurant gastronomy.
-  - *Educational Attainment*: Credibly pro-chef ($\bar{\beta} = +0.094$, $P > 0 = 93.3\%$).
   - *Household Income*: Centered near zero ($\bar{\beta} = +0.020$, spans zero), demonstrating detachment of cultural schemas from sheer economic wealth.
-
-### Construct Validation & Network Diversity
-* **Bourdieu Taste Dispositions**:
-  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($\bar{\beta} = -0.100$, $P(\beta < 0) \ge 99.4\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking.
-  - *Cuisine Heterogeneity*: This effect holds across all subaltern cuisines (Nigerian $-0.13$, Peruvian $-0.13$, Moroccan $-0.12$, Ethiopian $-0.12$, Pakistani $-0.11$, Jamaican $-0.10$, Lebanese $-0.10$).
-* **Social Networks & Cosmopolitan Capital**:
+* **H5: Cosmopolitan Capital & Social Networks**:
   - Inter-ethnic close friendship network diversity credibly increases appreciation for professional chef execution ($\bar{\beta} = +0.045$, $P > 0 \ge 96.6\%$).
   - *Global Citizen Identity*: Elevates marginalized cuisines into fine dining legitimacy (Native American $+0.15$ and $+0.08$, Italian $+0.13$, Mexican $+0.08$ and $+0.06$) while de-centering Western haute culinary hegemony (French $-0.02$).
+* **H7: Behavioral Dining Practices**:
+  - *Adult Highbrow Arts Participation*: Credibly pro-chef ($\bar{\beta} = +0.117$, $P > 0 = 98.6\%$).
+  - *Fine Dining Frequency*: Credibly pro-chef ($\bar{\beta} = +0.111$, $P > 0 = 98.2\%$), with strongest pro-chef pulls on subaltern cuisines (Native American $+0.20$, Mexican $+0.18$, Italian $+0.16$).
+  - *Fast Food Frequency*: Centered near zero ($\bar{\beta} = +0.038$, spans zero).
+* **H8: Aesthetic Disposition Validation**:
+  - Liking "Exotic and Authentic" food credibly predicts domestic elder authenticity ($\bar{\beta} = -0.100$, $P(\beta < 0) \ge 99.4\%$), directly validating that authenticity seekers locate excellence in traditional domestic cooking. Holds across all subaltern cuisines (Nigerian $-0.13$, Peruvian $-0.13$, Moroccan $-0.12$, Ethiopian $-0.12$, Pakistani $-0.11$, Jamaican $-0.10$, Lebanese $-0.10$).
+* **H9: Ideological Countervailing Slopes**:
+  - Social conservatism acts as a countervailing force across subaltern cuisines (Native American $+0.30$, Pakistani $+0.22$, Lebanese $+0.21$, Jamaican $+0.21$, Mexican $+0.21$, Nigerian $+0.18$), pulling peripheral traditions toward professionalization.
+* **H10: Non-Proportional Threshold Dynamics**:
+  - Category-specific adjacent category contrasts relative to Category 4 (neutral midpoint) confirm asymmetric threshold shifts across scale levels.
 
 ---
 
@@ -120,35 +119,36 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 
 ---
 
-## 5. Visual Standards, Ordering Rules & Quarto Pipeline
+## 5. Visual Standards, Ordering Rules & Asset Pipeline
 
 ### Plot Conventions & Guidelines
-* **Half-Eye Posterior Distributions (`stat_halfeye`):** Master consensus forest plots (Figure 2: Cuisine Random Intercepts; Figure 3: Fixed Effects Stability Envelope) incorporate full posterior density slabs, posterior medians, 80% and 95% credible intervals, with specification stability tick marks (`+`) representing individual model posterior medians.
+* **Half-Eye Posterior Distributions (`stat_halfeye`):** Master consensus forest plots (Figure 1: Cuisine Random Intercepts; Figure 2: Fixed Effects Stability Envelope; Figures 3–7: Midpoint Contrasts; Figures 8–12: Random Slopes) incorporate full posterior density slabs, posterior medians, 80% and 95% credible intervals, with specification stability tick marks (`+`) representing individual model posterior medians.
+* **Dual-Interval Multi-Width Thickness (`interval_size_range`):** Always supply `.width = c(0.80, 0.95)` with `interval_size_range = c(0.75, 1.9)` to visually distinguish the thick inner 80% credible interval from the thinner outer 95% credible interval. Never pass a single fixed scalar like `interval_size = ...`.
+* **Marker & Color Mapping (Grayscale Consistency Standard):**
+  - *Credible Shift (≥ 95% Posterior Mass):* Solid marker (`shape = 16`), `#0072B2` (Deep Blue) for pro-chef/positive shifts, `#D55E00` (Vermillion) for domestic elder/negative shifts.
+  - *Non-Credible / Spanning Zero (< 95% Mass):* Rendered consistently in grayscale (`"gray60"`) with solid markers.
+  - *Sizing:* `point_size = 4.8` (or `3.2` on dense multi-facet/multi-panel plots).
+  - *Density Slabs:* `slab_alpha = 0.15` with `scale = 0.65` (or `0.45` on crowded categorical dodge plots).
+* **Responsive Legend Layout & Centering:** Enforce single-row guide strips (`nrow = 1`) and centered legend boxes via `theme(legend.box = "horizontal", legend.box.just = "center", legend.spacing.x = unit(0.4, "cm"), legend.margin = margin(t = 6, b = 2))`.
 * **Strict Effect-Size Ordering:**
-  - *Fixed Effects Stability Envelope (Figure 3):* Order predictors along the y-axis strictly from lowest / most negative effect size at the bottom (Ethnoracial Mixed White $-0.257$) to highest / most positive effect size at the top (Social Conservatism $+0.148$).
-  - *Baseline Cuisine Hierarchy (Figure 2):* Order cuisines along the y-axis strictly from lowest / most domestic elder at the bottom (Native American $-0.269$) to highest / most pro-chef at the top (French $+0.690$).
-  - *Cuisine Random Slopes (Figures 9–13):* Partition y-axis into three vertical consecration facet strips: `Consecrated`, `Intermediate`, `Subaltern` via `facet_grid(cuisine_group ~ predictor_label, scales = "free", space = "free_y")`. Order cuisines within each tier by the focal predictor's median net slope.
-* **No Redundant Text Labels:** Do not overlay text annotations with point estimates / CI bounds on forest plots when the visual halfeyes and interval bars already convey them.
+  - *Fixed Effects Stability Envelope (Figure 2):* Order predictors along the y-axis strictly from lowest / most negative effect size at the bottom (Ethnoracial Mixed White $-0.257$) to highest / most positive effect size at the top (Social Conservatism $+0.148$).
+  - *Baseline Cuisine Hierarchy (Figure 1):* Order cuisines along the y-axis strictly from lowest / most domestic elder at the bottom (Native American $-0.271$) to highest / most pro-chef at the top (French $+0.691$).
+  - *Cuisine Random Slopes (Figures 8–12):* Partition y-axis into three vertical consecration facet strips: `Consecrated`, `Intermediate`, `Subaltern` via `facet_grid(cuisine_group ~ predictor_label, scales = "free", space = "free_y")`. Order cuisines within each tier by the focal predictor's median net slope.
 * **Tightened Axis Framing:** Adjust `coord_cartesian()` and `scale_x_continuous()` tightly to empirical distribution spans (e.g. `[-0.65, +1.05]` for cuisine random intercepts; `[-0.52, +0.38]` for demographic fixed effects).
 
-### Complete Figure Registry & Quarto Workflow
-* `scripts/extract_fixed_effects_stability.R`:
-  - Figure 3: `Plots/fixed_effects_stability_forest.png` (Cross-Specification Fixed Effects Stability Envelope with Half-Eyes across all 18 models)
-* `scripts/generate_plots.R`:
-  - Figure 1: `Plots/model_fit_comparison.png` (WAIC Model Fit Comparison across all 18 models)
-  - Figure 2: `Plots/cuisine_random_effects.png` (Baseline Cuisine Random Intercepts with Half-Eyes across 18 models)
-  - Figure 4: `Plots/ideology_cs_midpoint_effects.png` (Ideology Midpoint Contrast Shifts)
-  - Figure 5: `Plots/cultural_cs_midpoint_effects.png` (Cultural Capital Midpoint Contrast Shifts)
-  - Figure 9: `Plots/rs_cuisine_slopes_ideology.png` (Cuisine Random Slopes: Ideology, partitioned by Consecration Tiers: `Consecrated`, `Intermediate`, `Subaltern`)
-  - Figure 10: `Plots/rs_cuisine_slopes_cultural.png` (Cuisine Random Slopes: Cultural Capital, partitioned by Consecration Tiers: `Consecrated`, `Intermediate`, `Subaltern`)
-* `scripts/generate_novel_extension_plots.R`:
-  - Figure 6: `Plots/practices_cs_midpoint_effects.png` (Practices Midpoint Contrasts)
-  - Figure 11: `Plots/rs_cuisine_slopes_practices.png` (Practices Cuisine Slopes: Highbrow Arts, Fine Dining, Fast Food; partitioned by Consecration Tiers)
-  - Figure 7: `Plots/dispositions_cs_midpoint_effects.png` (Dispositions Midpoint Contrasts)
-  - Figure 12: `Plots/rs_cuisine_slopes_dispositions.png` (Dispositions Cuisine Slopes: Exotic/Authentic, Familiar/Comfort; partitioned by Consecration Tiers)
-  - Figure 8: `Plots/cosmopolitan_cs_midpoint_effects.png` (Cosmopolitan Midpoint Contrasts)
-  - Figure 13: `Plots/rs_cuisine_slopes_cosmopolitan.png` (Cosmopolitan Cuisine Slopes: Global Citizen, Friendship Network Diversity; partitioned by Consecration Tiers)
-* Render pipeline: `quarto render analysis.qmd` $\to$ `analysis.html`.
+### Complete Figure Registry (Figures 1–12 in Manuscript)
+* Figure 1: `Plots/cuisine_random_effects.png` (Baseline Cuisine Authenticity Hierarchy: Cross-Specification Consensus)
+* Figure 2: `Plots/fixed_effects_stability_forest.png` (Cross-Specification Parameter Stability Envelope Across All 18 Models)
+* Figure 3: `Plots/ideology_cs_midpoint_effects.png` (Political Ideology Multi-Model Midpoint Contrasts)
+* Figure 4: `Plots/cultural_cs_midpoint_effects.png` (Cultural Capital Multi-Model Midpoint Contrasts)
+* Figure 5: `Plots/practices_cs_midpoint_effects.png` (Dining Practices Multi-Model Midpoint Contrasts)
+* Figure 6: `Plots/dispositions_cs_midpoint_effects.png` (Bourdieu Taste Dispositions Multi-Model Midpoint Contrasts)
+* Figure 7: `Plots/cosmopolitan_cs_midpoint_effects.png` (Cosmopolitan Capital Multi-Model Midpoint Contrasts)
+* Figure 8: `Plots/rs_cuisine_slopes_ideology.png` (Cuisine Random Slopes: Ideology, partitioned by Consecration Tiers)
+* Figure 9: `Plots/rs_cuisine_slopes_cultural.png` (Cuisine Random Slopes: Cultural Capital, partitioned by Consecration Tiers)
+* Figure 10: `Plots/rs_cuisine_slopes_practices.png` (Cuisine Random Slopes: Dining Practices, partitioned by Consecration Tiers)
+* Figure 11: `Plots/rs_cuisine_slopes_dispositions.png` (Cuisine Random Slopes: Taste Dispositions, partitioned by Consecration Tiers)
+* Figure 12: `Plots/rs_cuisine_slopes_cosmopolitan.png` (Cuisine Random Slopes: Cosmopolitan Capital, partitioned by Consecration Tiers)
 
 ---
 
@@ -167,13 +167,42 @@ $$\text{Spans Zero / Uncertain: } 0.05 < P(\theta > 0 \mid \text{Data}) < 0.95 \
 * **Google Doc ID:** `1qU0OoUbKx_jQ6t1BvkSJ2F2mdbqmJbhqfyRs3SNdrNY`
 * **Google Doc URL:** `https://docs.google.com/document/d/1qU0OoUbKx_jQ6t1BvkSJ2F2mdbqmJbhqfyRs3SNdrNY/edit?usp=sharing`
 * **Master Driver Script:** `scripts/sync_manuscript.R` (run via `Rscript scripts/sync_manuscript.R` or `source("scripts/sync_manuscript.R")`).
-* **Table Pre-Computation:** `scripts/generate_md_tables.R` serializes markdown tables to `cache/` (`table_hypotheses.md`, `table_fit_comparison.md`, `table_cuisine_hierarchy.md`, `table_parameter_stability.md`).
+* **Table Pre-Computation:** `scripts/generate_md_tables.R` serializes markdown tables to `cache/` (`table_hypotheses.md`, `table_fit_comparison.md`).
 * **In-Place OpenXML Engine (`scripts/sync_manuscript.py`):**
-  - **Typography Rules:**
+  - **Non-Destructive Live Document Text Preservation (Crucial Source of Truth):**
+    - The sync engine parses the live document downloaded from Google Drive (`draft_live.docx`) and **preserves all user prose, edits, paragraphs, headings, citations, and custom table content verbatim**.
+    - Under no circumstances should manuscript sections or paragraphs be reconstructed from hardcoded Python template strings.
+    - Only project table elements (`Table 1`, `Table 2`) and figure drawing/caption/note blocks (`Figures 1–12`) are surgically updated/injected at their respective anchors.
+  - **Typography Rules & "Alien Font" Trap Prevention:**
     - Universal base font is **Alegreya Sans** across `docDefaults`, standard paragraph styles (Headings 1–6, Normal, Title, Subtitle), tables, captions, and notes.
     - Software/package names (`brms`, `cmdstanr`, `CmdStan`, `loo`, `bayesplot`, `tidybayes`, `ggplot2`) are formatted in **Courier New** two font sizes smaller (10 pt / `sz=20` relative to 12 pt body text).
-    - All non-Alegreya font overrides (Cardo, Nova Mono, Lato, Aptos) are strictly stripped from all XML parts (`document.xml`, `styles.xml`, `theme1.xml`, `fontTable.xml`, `footer1.xml`).
-  - **Layout & Structure Rules:**
-    - Main body narrative contains an uninterrupted narrative flow without inline tables or figures.
-    - **Tables Section (`TABLES`):** Placed at the end of the manuscript containing Tables 1, 2, and 3 formatted in APA 7th style with captions and notes.
-    - **Figures Section (`FIGURES`):** Placed at the end of the manuscript containing Figures 1 through 13 at native 6.5-inch column width, each paired with its bold title and italicized APA explanatory note.
+    - All alien/foreign font overrides (Cardo, Nova Mono, Lato, Aptos, Caudex) and direct run overrides (`<w:shd>`, `<w:highlight>`, `<w:color>`, `<w:sz>`, `<w:vertAlign w:val="baseline"/>`) are strictly stripped from all XML parts (`document.xml`, `styles.xml`, `theme1.xml`, `fontTable.xml`, `footer1.xml`) while preserving genuine semantic formatting (`<w:b>`, `<w:i>`, `<w:vertAlign w:val="subscript"/>`, `<w:vertAlign w:val="superscript"/>`).
+  - **Universal APA 7th Table Styling:**
+    - Total table width scales to full **6.5-inch portrait width** (`9360 dxa`).
+    - Column 1 left-justified (`jc="left"`), numeric/statistic columns center-justified (`jc="center"`).
+    - Anti-word-break protection (`<w:suppressAutoHyphens/>` on all cell paragraphs) and `<w:noWrap/>` on numeric cells.
+    - Row protection (`<w:cantSplit/>` on all rows) and repeating headers (`<w:tblHeader/>` on header row).
+    - APA horizontal borders: 1pt top border (`sz="8"`), 0.5pt header-bottom border (`sz="4"`), 1pt table-bottom border (`sz="8"`), vertical borders `w:val="none"`.
+    - Cell margins: top/bottom `120 dxa` (6pt), left/right `160 dxa` (8pt).
+    - Concise column naming (e.g. `Model`, `Specification / Architecture`, `WAIC`, `ΔWAIC`).
+  - **Mathematical Equations & Formulas (OMML Standards):**
+    - Standalone mathematical formulas (Equations 1–3) are formatted as centered formulas with **zero first-line indent** (`firstLine="0"`), **centered alignment** (`jc="center"`), and balanced vertical spacing (`before="140" after="140"`).
+    - Formatted using native OMML (`http://schemas.openxmlformats.org/officeDocument/2006/math` with `<m:oMath>`, `<m:f>`, `<m:sSub>`, `<m:sSup>`, `<m:nary>`, `<m:d>`) so Google Docs and Microsoft Word render native equation objects.
+    - Standalone equation paragraphs are explicitly distinguished from normal body prose containing inline math runs to preserve 0.5-inch indentation on prose.
+  - **Document Paragraph & Indentation Normalization:**
+    - **Normal Body Prose:** Inherits `Normal` style with **0.5-inch first-line indent** (`w:firstLine="720"` / 36 pt), `w:left="0"`, `w:right="0"`, justified alignment (`jc="both"`).
+    - **Headings (H1, H2, H3):** Zero first-line indent (`firstLine="0"`), left-aligned (`jc="left"`), with clean style inheritance and direct run overrides stripped. Automated purge of phantom empty heading paragraphs.
+    - **Table Captions (`Table X. ...`):** Bold (`<w:b/>`), left-aligned (`jc="left"`), zero first-line indent (`firstLine="0"`), tight spacing (`before="180" after="80"`).
+    - **Figure Drawings:** Dual DrawingML extent synchronization to native 6.5 in width ($5,943,600\text{ EMUs}$) and exact aspect-ratio height; centered (`jc="center"`), zero first-line indent.
+    - **Figure Captions (`Figure X. ...`):** Placed **below** the figure drawing, bold (`<w:b/>`), justified (`jc="both"`), zero first-line indent (`firstLine="0"`), tight spacing (`before="80" after="60"`).
+    - **Table & Figure Notes (`Note: ...`):** Strictly styled as `Normal` (**never** `Heading4`), zero first-line indent (`firstLine="0"`), justified (`jc="both"`), tight spacing (`before="40" after="200"`).
+  - **Inline Placement Architecture:**
+    - Tables and figures are placed **inline** directly following their substantive text discussions rather than segregated into separate appendix sections at the end of the manuscript.
+    - **Table 1** (*Summary of Theoretical Hypotheses*): Placed at the conclusion of the `HYPOTHESES` section, directly preceding `DATA AND METHODS`.
+    - **Table 2** (*Model Comparison and Predictive Fit Progression*): Placed inline under `Results -> Bayesian Model Fit and Taxonomy Comparison`.
+    - **Figure 1** (*Baseline Cuisine Authenticity Hierarchy*): Placed inline under `Results -> Baseline Authenticity by Cuisine: Cross-Specification Consensus`.
+    - **Figure 2** (*Cross-Specification Parameter Stability Envelope*): Placed inline under `Results -> Cross-Specification Consensus and Fixed Effects Stability Envelope`.
+    - **Figures 3–7** (*Midpoint Contrasts: Ideology, Cultural Capital, Dining Practices, Dispositions, Cosmopolitan Capital*): Placed inline under their respective contrast subsections.
+    - **Figures 8–12** (*Cuisine Random Slopes: Ideology, Cultural Capital, Dining Practices, Dispositions, Cosmopolitan Capital*): Placed inline under their respective domain slope subsections.
+    - **Figure Presentation Standard:** High-resolution centered plot drawing (6.5 in width), followed below by its bold APA caption (`Figure X. ...`), followed below by its italicized APA note (`Note: ...`).
+  - **Workspace Hygiene:** Automated `on.exit()` in `scripts/sync_manuscript.R` and `cleanup_scratch_files()` in `scripts/sync_manuscript.py` to purge transient intermediate files (`draft_*.docx`, `draft_*.txt`, `*.tmp`).

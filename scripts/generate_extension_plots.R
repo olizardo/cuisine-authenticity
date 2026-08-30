@@ -44,6 +44,10 @@ theme_cuisine <- function(base_size = 12) {
       legend.position = "bottom",
       legend.title = element_text(face = "bold", size = base_size * 0.85),
       legend.text = element_text(size = base_size * 0.8),
+      legend.box = "horizontal",
+      legend.box.just = "center",
+      legend.spacing.x = unit(0.4, "cm"),
+      legend.margin = margin(t = 6, b = 2),
       plot.margin = margin(t = 12, r = 16, b = 12, l = 12)
     )
 }
@@ -106,8 +110,8 @@ p_ext1 <- ggplot(df_h1_h3, aes(x = value, y = parameter, fill = credibility)) +
   stat_halfeye(
     point_interval = median_qi,
     .width = c(0.80, 0.95),
-    point_size = 3.5,
-    interval_size = 1.2,
+    point_size = 4.8,
+    interval_size_range = c(0.75, 1.9),
     slab_alpha = 0.15,
     scale = 0.65
   ) +
@@ -133,7 +137,8 @@ p_ext1 <- ggplot(df_h1_h3, aes(x = value, y = parameter, fill = credibility)) +
     y = "Ideological Construct",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nThick inner bar = 80% CrI; thin outer bar = 95% CrI; point = posterior median. Model estimated with brms/CmdStan."
   ) +
-  theme_cuisine(base_size = 12)
+  theme_cuisine(base_size = 12) +
+  guides(fill = guide_legend(nrow = 1))
 
 ggsave(file.path(plot_dir, "ext_h1_h3_ideology_forest.png"), p_ext1, width = 11.5, height = 5.5, dpi = 300, bg = "white")
 cat("Saved ext_h1_h3_ideology_forest.png\n")
@@ -182,8 +187,8 @@ p_ext3 <- ggplot(df_cc, aes(x = value, y = dimension, fill = credibility)) +
   stat_halfeye(
     point_interval = median_qi,
     .width = c(0.80, 0.95),
-    point_size = 3.5,
-    interval_size = 1.2,
+    point_size = 4.8,
+    interval_size_range = c(0.75, 1.9),
     slab_alpha = 0.15,
     scale = 0.65
   ) +
@@ -209,7 +214,8 @@ p_ext3 <- ggplot(df_cc, aes(x = value, y = dimension, fill = credibility)) +
     y = "Capital Dimension",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nEvaluates independent mechanisms of embodied socialization vs. institutional educational distinction."
   ) +
-  theme_cuisine(base_size = 12)
+  theme_cuisine(base_size = 12) +
+  guides(fill = guide_legend(nrow = 1))
 
 ggsave(file.path(plot_dir, "ext_cultural_capital_mechanisms.png"), p_ext3, width = 11.5, height = 6.0, dpi = 300, bg = "white")
 cat("Saved ext_cultural_capital_mechanisms.png\n")

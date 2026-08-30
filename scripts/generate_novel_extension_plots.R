@@ -35,6 +35,10 @@ theme_cuisine <- function(base_size = 12) {
       legend.position = "bottom",
       legend.title = element_text(face = "bold", size = base_size * 0.85),
       legend.text = element_text(size = base_size * 0.8),
+      legend.box = "horizontal",
+      legend.box.just = "center",
+      legend.spacing.x = unit(0.4, "cm"),
+      legend.margin = margin(t = 6, b = 2),
       plot.margin = margin(t = 12, r = 16, b = 12, l = 12)
     )
 }
@@ -96,8 +100,8 @@ p_prac <- ggplot(df_prac, aes(x = value, y = parameter, fill = credibility)) +
   stat_halfeye(
     point_interval = median_qi,
     .width = c(0.80, 0.95),
-    point_size = 3.5,
-    interval_size = 1.2,
+    point_size = 4.8,
+    interval_size_range = c(0.75, 1.9),
     slab_alpha = 0.15,
     scale = 0.65
   ) +
@@ -123,7 +127,8 @@ p_prac <- ggplot(df_prac, aes(x = value, y = parameter, fill = credibility)) +
     y = "Predictor Variable",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nThick inner bar = 80% CrI; thin outer bar = 95% CrI; point = posterior median."
   ) +
-  theme_cuisine(base_size = 12)
+  theme_cuisine(base_size = 12) +
+  guides(fill = guide_legend(nrow = 1))
 
 ggsave(file.path(plot_dir, "ext_practices_forest.png"), p_prac, width = 11.5, height = 6.5, dpi = 300, bg = "white")
 
@@ -176,8 +181,8 @@ p_disp <- ggplot(df_disp, aes(x = value, y = parameter, fill = credibility)) +
   stat_halfeye(
     point_interval = median_qi,
     .width = c(0.80, 0.95),
-    point_size = 3.5,
-    interval_size = 1.2,
+    point_size = 4.8,
+    interval_size_range = c(0.75, 1.9),
     slab_alpha = 0.15,
     scale = 0.65
   ) +
@@ -203,7 +208,8 @@ p_disp <- ggplot(df_disp, aes(x = value, y = parameter, fill = credibility)) +
     y = "Taste Disposition / Predictor",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nValidates whether explicit taste dispositions align with domestic vs professional evaluative schemas."
   ) +
-  theme_cuisine(base_size = 12)
+  theme_cuisine(base_size = 12) +
+  guides(fill = guide_legend(nrow = 1))
 
 ggsave(file.path(plot_dir, "ext_dispositions_forest.png"), p_disp, width = 11.5, height = 6.0, dpi = 300, bg = "white")
 
@@ -256,8 +262,8 @@ p_cosmo <- ggplot(df_cosmo, aes(x = value, y = parameter, fill = credibility)) +
   stat_halfeye(
     point_interval = median_qi,
     .width = c(0.80, 0.95),
-    point_size = 3.5,
-    interval_size = 1.2,
+    point_size = 4.8,
+    interval_size_range = c(0.75, 1.9),
     slab_alpha = 0.15,
     scale = 0.65
   ) +
@@ -283,7 +289,8 @@ p_cosmo <- ggplot(df_cosmo, aes(x = value, y = parameter, fill = credibility)) +
     y = "Predictor Variable",
     caption = "Directional credibility standard: ≥ 95% posterior probability mass on either side of zero.\nTests the role of cosmopolitan world-citizen identification and inter-ethnic tie diversity."
   ) +
-  theme_cuisine(base_size = 12)
+  theme_cuisine(base_size = 12) +
+  guides(fill = guide_legend(nrow = 1))
 
 ggsave(file.path(plot_dir, "ext_cosmopolitan_forest.png"), p_cosmo, width = 11.5, height = 6.0, dpi = 300, bg = "white")
 
